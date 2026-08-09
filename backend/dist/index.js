@@ -1,4 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-console.log("Hello Backend");
-//# sourceMappingURL=index.js.map
+import { createServer } from "http";
+
+const server = createServer(
+    (requrst,respone) => {
+        console.log("Hello Backend");
+    }
+)
