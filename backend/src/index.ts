@@ -1,3 +1,9 @@
 import { createServer } from "http";
 
-console.log("Hello Backend");
+const server = createServer(
+    (req,res) => {
+        console.log(req.method)
+    }
+)
+
+server.listen(3000)

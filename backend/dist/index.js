@@ -1,7 +1,6 @@
 import { createServer } from "http";
-
-const server = createServer(
-    (requrst,respone) => {
-        console.log("Hello Backend");
-    }
-)
+const server = createServer((req, res) => {
+    console.log(req.method);
+});
+server.listen(3000);
+//# sourceMappingURL=index.js.map
