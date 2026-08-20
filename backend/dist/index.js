@@ -22,10 +22,12 @@ const server = createServer((req, res) => {
                 return;
             }
             res.end(`Name : ${show.name}  Price : ${show.price}`);
+            return;
         }
         else {
             res.setHeader("Content-Type", "application/json");
             res.end(JSON.stringify(book));
+            return;
         }
         /*let show = null;
         for(let i=0;i<book.length;i++){
@@ -36,6 +38,20 @@ const server = createServer((req, res) => {
             }
         }*/
     }
+    if (req.method === "POST" && parts[1] === "book") {
+        let body = "";
+        req.on("data", (chunk) => {
+            body += chunk;
+        });
+        req.on("end", () => {
+            const obj = JSON.parse(body);
+            book.push(obj);
+            const show2 = JSON.stringify(obj);
+            res.end(show2);
+        });
+        return;
+    }
+    res.end("++ HOME PAGE ++");
 });
 server.listen(3000);
 //# sourceMappingURL=index.js.map
