@@ -4,19 +4,38 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>HuawenShuge</title>
   </head>
   <body>
-    <form id="bookform">
+    <form id="bookForm">
       <label>Name: </label>
       <input name="name">
       <label>Price: </label>
-      <input price="price">  
-      <button type="submit"></button>
+      <input name="price">  
+      <button type="submit">Add Book</button>
     </form>
-    document.getElementById("bookForm")
-    .addEventListener("submit", () => {
-        ...
-    })
+    <script>
+      document.getElementById("bookForm")
+      .addEventListener("submit", (event) => {
+        event.preventDefault()
+        const input1 = document.querySelector('[name="name"]')
+        const input2 = document.querySelector('[name="price"]')
+        const data = {
+          name: input1.value,
+          price: Number(input2.value)
+        }
+        fetch("http://localhost:3000/book",{
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(data)
+        })
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+        })
+      })
+    </script>
   </body>
 </html>

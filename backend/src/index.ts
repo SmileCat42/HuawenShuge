@@ -8,6 +8,16 @@ const book = [
 
 const server = createServer(
     (req,res) => {
+        res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173")
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type")
+
+        if (req.method === "OPTIONS") {
+            res.statusCode = 204
+            res.end()
+            return
+        }
+
         const parts = (req.url ?? "/").split("/") //?? เช็คว่าว่างไหม เพราะถ้าไม่ทำ ts มันจะฟ้อง
     
         if(req.method === "GET" && parts[1] === "book"){
@@ -35,12 +45,14 @@ const server = createServer(
         }
 
         if(req.method === "POST" && parts[1] === "book"){
+            console.log("POST >> recieved")
             let body = ""
             req.on("data", (chunk) => {
                 body += chunk
             })
             req.on("end", () => {
                 let obj
+                console.log("Body: ", body)
                 try{
                     obj = JSON.parse(body)
                 }catch(error){
@@ -76,3 +88,6 @@ const server = createServer(
         res.end("++ HOME PAGE ++")
     }
 )
+server.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});

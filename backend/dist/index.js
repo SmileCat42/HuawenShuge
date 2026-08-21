@@ -5,6 +5,14 @@ const book = [
     { id: 3, name: "CCC", price: 400 }
 ];
 const server = createServer((req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    if (req.method === "OPTIONS") {
+        res.statusCode = 204;
+        res.end();
+        return;
+    }
     const parts = (req.url ?? "/").split("/"); //?? เช็คว่าว่างไหม เพราะถ้าไม่ทำ ts มันจะฟ้อง
     if (req.method === "GET" && parts[1] === "book") {
         if (parts[2]) {
@@ -29,22 +37,43 @@ const server = createServer((req, res) => {
             res.end(JSON.stringify(book));
             return;
         }
-        /*let show = null;
-        for(let i=0;i<book.length;i++){
-            const run = book[i]
-            if(run && run.id === id){ //จากเดิมใช้ if(book[i] && book[i].id === id) >> ts เรื่องมากอีก เพราะกลัวค่าว่าง ต่อให้ดักด้วย if book[i] แล้วก็ยังกลัว book[i].id ว่างอีก เลยต้องสร้าง run มาคอยรับค่าชั่วคราวแทน อื้อ กูยอมเองก็ได้ 555
-                show = run
-                break
-            }
-        }*/
     }
     if (req.method === "POST" && parts[1] === "book") {
+        console.log("POST >> recieved");
         let body = "";
         req.on("data", (chunk) => {
             body += chunk;
         });
         req.on("end", () => {
-            const obj = JSON.parse(body);
+            let obj;
+            console.log("Body: ", body);
+            try {
+                obj = JSON.parse(body);
+            }
+            catch (error) {
+                res.end("Invalid JSON");
+                return;
+            }
+            if (!obj.name || !obj.price) {
+                res.end("Invalid data");
+                return;
+            }
+            if (typeof obj.name !== "string" || typeof obj.price !== "number") {
+                res.end("Wrong type data");
+                return;
+            }
+            if (obj.name === "" || obj.price <= 0) {
+                res.end("Please fill data or price more than 0");
+                return;
+            }
+            let maxid = 0;
+            for (let i = 0; i < book.length; i++) {
+                const run2 = book[i];
+                if (run2.id > maxid) {
+                    maxid = run2.id;
+                }
+            }
+            obj.id = maxid + 1;
             book.push(obj);
             const show2 = JSON.stringify(obj);
             res.end(show2);
@@ -53,5 +82,7 @@ const server = createServer((req, res) => {
     }
     res.end("++ HOME PAGE ++");
 });
-server.listen(3000);
+server.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
 //# sourceMappingURL=index.js.map
