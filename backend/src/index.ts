@@ -121,12 +121,8 @@ const server = createServer(
                     res.end("Pls fill detail")
                     return
                 }
-                if(obj.name !== "string" || obj.price !== "number"){
+                if(typeof obj.name !== "string" || typeof obj.price !== "number"){
                     res.end("Wrong type detail")
-                    return
-                }
-                if(obj.name === "" || !obj.price){
-                    res.end("Pls fill detail")
                     return
                 }
                 if(obj.price <=0){
@@ -139,6 +135,7 @@ const server = createServer(
                 res.end(JSON.stringify(show))
                 return
             })
+            return
         }
         res.end("++ HOME PAGE ++")
     }

@@ -80,6 +80,57 @@ const server = createServer((req, res) => {
         });
         return;
     }
+    if (req.method === "PUT" && parts[1] === "book") {
+        if (!parts[2]) {
+            res.end("Pls take more detail");
+            return;
+        }
+        const id = Number(parts[2]);
+        if (Number.isNaN(id)) {
+            res.end("Error type");
+            return;
+        }
+        console.log("PUT >> recieved ID = ", id);
+        const show = book.find((book) => id === book.id);
+        if (!show) {
+            res.statusCode = 404;
+            res.end("No data");
+            return;
+        }
+        let body = "";
+        req.on("data", (chunk) => {
+            body += chunk;
+        });
+        req.on("end", () => {
+            console.log("Body = ", body);
+            let obj;
+            try {
+                obj = JSON.parse(body);
+            }
+            catch {
+                res.end("Invalid data");
+                return;
+            }
+            if (!obj.name || !obj.price) {
+                res.end("Pls fill detail");
+                return;
+            }
+            if (typeof obj.name !== "string" || typeof obj.price !== "number") {
+                res.end("Wrong type detail");
+                return;
+            }
+            if (obj.price <= 0) {
+                res.end("Pls take price more than 0");
+                return;
+            }
+            show.name = obj.name;
+            show.price = obj.price;
+            res.setHeader("Content-Type", "application/json");
+            res.end(JSON.stringify(show));
+            return;
+        });
+        return;
+    }
     res.end("++ HOME PAGE ++");
 });
 server.listen(3000, () => {

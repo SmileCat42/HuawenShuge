@@ -14,6 +14,16 @@
       <input name="price">  
       <button type="submit">Add Book</button>
     </form>
+    </br></br>
+    <form id="EditForm">
+      <label>ID : </label>
+      <input name="id"></br>
+      <label>Name : </label>
+      <input name="name"></br>
+      <label>Price : </label>
+      <input name="price">
+      <button type="submit">Edit</button>
+    </form>
     <script>
       document.getElementById("bookForm")
       .addEventListener("submit", (event) => {
@@ -26,6 +36,32 @@
         }
         fetch("http://localhost:3000/book",{
           method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(data)
+        })
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+        })
+      })
+    </script>
+    <script>
+      document.getElementById("EditForm")
+      .addEventListener("submit", (event) => {
+        event.preventDefault()
+        const form = event.currentTarget
+        const input1 = form.querySelector('[name="id"]')
+        const input2 = form.querySelector('[name="name"]')
+        const input3 = form.querySelector('[name="price"]')
+        const id = Number(input1.value)
+        const data = {
+          name: input2.value,
+          price: Number(input3.value)
+        }
+        fetch("http://localhost:3000/book/"+id,{
+          method: "PUT",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify(data)
         })
