@@ -7,6 +7,13 @@
     <title>HuawenShuge</title>
   </head>
   <body>
+    <div id="booklist">
+
+
+    </div>
+    </br></br>
+    </br></br>
+    </br></br>
     <form id="bookForm">
       <label>Name: </label>
       <input name="name">
@@ -98,6 +105,7 @@
       })
     </script>
     <script>
+      // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
       fetch("http://localhost:3000/book", {
         method: "GET"
       })
@@ -105,8 +113,20 @@
             return response.json()
       })
       .then((data) => {
-          console.log(data)
+        console.log(data)
+        const list = document.getElementById("booklist")
+        data.forEach(book => {
+          list.innerHTML +=`
+          <div>
+            <h3>Book name : ${book.name}</h3>
+            <div>Price : ${book.price}</div>
+            <button data-id="${book.id}">Delete</button>
+          </div>`
+      });
       })
+    </script>
+    <script>
+      
     </script>
   </body>
 </html>
