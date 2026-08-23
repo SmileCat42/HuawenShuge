@@ -24,7 +24,14 @@
       <input name="price">
       <button type="submit">Edit</button>
     </form>
+    </br></br>
+    <form id="delForm">
+      <label>ID : </label>
+      <input name="id"></br>
+      <button type="submit">Delete</button>
+    </form>
     <script>
+      // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
       document.getElementById("bookForm")
       .addEventListener("submit", (event) => {
         event.preventDefault()
@@ -48,6 +55,7 @@
       })
     </script>
     <script>
+      //+++++++++++++++++++++++++++++ Edit +++++++++++++++++++++++++++++++++
       document.getElementById("EditForm")
       .addEventListener("submit", (event) => {
         event.preventDefault()
@@ -71,6 +79,33 @@
         .then((data) => {
             console.log(data)
         })
+      })
+    </script>
+    <script>
+      //+++++++++++++++++++++++++DELETE+++++++++++++++++++++++++++++++
+      document.getElementById("delForm")
+      .addEventListener("submit", (event) => {
+        event.preventDefault()
+        const form = event.currentTarget
+        const num1 = form.querySelector('[name="id"]')
+        const id = Number(num1.value)
+        fetch("http://localhost:3000/book/"+id, {
+          method: "DELETE",
+        })
+        .then((response) => {
+            console.log("Deleted >> id: ", id)
+        })
+      })
+    </script>
+    <script>
+      fetch("http://localhost:3000/book", {
+        method: "GET"
+      })
+      .then((response) => {
+            return response.json()
+      })
+      .then((data) => {
+          console.log(data)
       })
     </script>
   </body>

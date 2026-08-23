@@ -137,6 +137,29 @@ const server = createServer(
             })
             return
         }
+
+        if(req.method === "DELETE" && parts[1] === "book"){
+            if(!parts[2]){
+                res.end("No order")
+                return
+            }
+            const id = Number(parts[2])
+            if(Number.isNaN(id)){
+                res.statusCode = 400
+                res.end("Invalid path")
+                return
+            }
+            const index = book.findIndex((book) => id === book.id)
+            if(index === -1){
+                res.statusCode=404
+                res.end("Invalid index")
+                return
+            }
+            book.splice(index, 1)
+            console.log("Delete complete ID >> ", id)
+            console.log("Index : ", index)
+            return
+        }
         res.end("++ HOME PAGE ++")
     }
 )
