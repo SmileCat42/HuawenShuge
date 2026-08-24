@@ -3,7 +3,10 @@ import { createServer } from "http";
 const book = [
                 {id:1, name:"AAA", price:200},
                 {id:2, name:"BBB", price:300},
-                {id:3, name:"CCC", price:400}
+                {id:3, name:"CCC", price:400},
+                {id:4, name:"DDD", price:500},
+                {id:5, name:"EEE", price:600},
+                {id:6, name:"GGG", price:700}
             ]
 
 const server = createServer(
@@ -158,6 +161,11 @@ const server = createServer(
             book.splice(index, 1)
             console.log("Delete complete ID >> ", id)
             console.log("Index : ", index)
+            const bb = {
+                id: id,
+                index : index
+            }
+            res.end(JSON.stringify(bb))
             return
         }
         res.end("++ HOME PAGE ++")

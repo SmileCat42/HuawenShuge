@@ -1,45 +1,83 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HuawenShuge</title>
-  </head>
-  <body>
-    <div id="booklist">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HuawenShuge</title>
+</head>
+
+<body>
+  <div id="booklist">
 
 
-    </div>
-    </br></br>
-    </br></br>
-    </br></br>
-    <form id="bookForm">
-      <label>Name: </label>
-      <input name="name">
-      <label>Price: </label>
-      <input name="price">  
-      <button type="submit">Add Book</button>
-    </form>
-    </br></br>
-    <form id="EditForm">
-      <label>ID : </label>
-      <input name="id"></br>
-      <label>Name : </label>
-      <input name="name"></br>
-      <label>Price : </label>
-      <input name="price">
-      <button type="submit">Edit</button>
-    </form>
-    </br></br>
-    <form id="delForm">
-      <label>ID : </label>
-      <input name="id"></br>
-      <button type="submit">Delete</button>
-    </form>
-    <script>
-      // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
-      document.getElementById("bookForm")
+  </div>
+  </br></br>
+  </br></br>
+  </br></br>
+  <form id="bookForm">
+    <label>Name: </label>
+    <input name="name">
+    <label>Price: </label>
+    <input name="price">
+    <button type="submit">Add Book</button>
+  </form>
+  </br></br>
+  <form id="EditForm">
+    <label>ID : </label>
+    <input name="id"></br>
+    <label>Name : </label>
+    <input name="name"></br>
+    <label>Price : </label>
+    <input name="price">
+    <button type="submit">Edit</button>
+  </form>
+  </br></br>
+  <form id="delForm">
+    <label>ID : </label>
+    <input name="id"></br>
+    <button type="submit">Delete</button>
+  </form>
+  <script>
+    // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
+    function showBooks(data){
+      const list = document.getElementById("booklist")
+          list.innerHTML = ""
+          data.forEach(book => {
+            list.innerHTML += `
+          <div>
+            <h3>Book name : ${book.name}</h3>
+            <div>Price : ${book.price}</div>
+            <button data-id="${book.id}">Delete</button>
+          </div>`
+          });
+          const buttons = document.querySelectorAll("button")
+          buttons.forEach(button => {
+            button.addEventListener("click", () => {
+              const id = Number(button.dataset.id)
+              delBook(id)
+            })
+          })
+    }
+    function loadBooks() {
+      fetch("http://localhost:3000/book", {
+        method: "GET"
+      })
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+          console.log(data)
+          showBooks(data)
+        })
+    }
+    loadBooks()
+  </script>
+
+  <script>
+    // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
+    document.getElementById("bookForm")
       .addEventListener("submit", (event) => {
         event.preventDefault()
         const input1 = document.querySelector('[name="name"]')
@@ -48,22 +86,22 @@
           name: input1.value,
           price: Number(input2.value)
         }
-        fetch("http://localhost:3000/book",{
+        fetch("http://localhost:3000/book", {
           method: "POST",
-          headers: {"Content-Type": "application/json"},
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         })
-        .then((response) => {
+          .then((response) => {
             return response.json()
-        })
-        .then((data) => {
+          })
+          .then((data) => {
             console.log(data)
-        })
+          })
       })
-    </script>
-    <script>
-      //+++++++++++++++++++++++++++++ Edit +++++++++++++++++++++++++++++++++
-      document.getElementById("EditForm")
+  </script>
+  <script>
+    //+++++++++++++++++++++++++++++ Edit +++++++++++++++++++++++++++++++++
+    document.getElementById("EditForm")
       .addEventListener("submit", (event) => {
         event.preventDefault()
         const form = event.currentTarget
@@ -75,70 +113,44 @@
           name: input2.value,
           price: Number(input3.value)
         }
-        fetch("http://localhost:3000/book/"+id,{
+        fetch("http://localhost:3000/book/" + id, {
           method: "PUT",
-          headers: {"Content-Type": "application/json"},
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         })
-        .then((response) => {
+          .then((response) => {
             return response.json()
-        })
-        .then((data) => {
+          })
+          .then((data) => {
             console.log(data)
-        })
+          })
       })
-    </script>
-    <script>
-      //+++++++++++++++++++++++++DELETE+++++++++++++++++++++++++++++++
-      document.getElementById("delForm")
+  </script>
+  <script>
+    //+++++++++++++++++++++++++DELETE+++++++++++++++++++++++++++++++
+    function delBook(id){
+      fetch("http://localhost:3000/book/" + id, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            console.log("Deleted >> id: ", id)
+            loadBooks()
+          })
+    }
+    document.getElementById("delForm")
       .addEventListener("submit", (event) => {
         event.preventDefault()
         const form = event.currentTarget
         const num1 = form.querySelector('[name="id"]')
         const id = Number(num1.value)
-        fetch("http://localhost:3000/book/"+id, {
-          method: "DELETE",
-        })
-        .then((response) => {
-            console.log("Deleted >> id: ", id)
-        })
+        delBook(id)
       })
-    </script>
-    <script>
-      // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
-      fetch("http://localhost:3000/book", {
-        method: "GET"
-      })
-      .then((response) => {
-            return response.json()
-      })
-      .then((data) => {
-        console.log(data)
-        const list = document.getElementById("booklist")
-        data.forEach(book => {
-          list.innerHTML +=`
-          <div>
-            <h3>Book name : ${book.name}</h3>
-            <div>Price : ${book.price}</div>
-            <button data-id="${book.id}">Delete</button>
-          </div>`
-      });
-      const buttons = document.querySelectorAll("button")
-      buttons.forEach(button => {
-         button.addEventListener("click", () => {
-            const id = Number(button.dataset.id)
-            fetch("http://localhost:3000/book/"+id, {
-                method: "DELETE"
-            })
-            .then((response) => {
-                console.log("Deleted >> id: ", id)
-            })
-         })
-      })
-      })
-    </script>
-    <script>
-      
-    </script>
-  </body>
+  </script>
+  <script>
+
+
+  </script>
+
+</body>
+
 </html>
