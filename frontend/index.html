@@ -101,15 +101,8 @@
   </script>
   <script>
     //+++++++++++++++++++++++++++++ Edit +++++++++++++++++++++++++++++++++
-    document.getElementById("EditForm")
-      .addEventListener("submit", (event) => {
-        event.preventDefault()
-        const form = event.currentTarget
-        const input1 = form.querySelector('[name="id"]')
-        const input2 = form.querySelector('[name="name"]')
-        const input3 = form.querySelector('[name="price"]')
-        const id = Number(input1.value)
-        const data = {
+    function editBook(input1,input2,input3){
+      const data = {
           name: input2.value,
           price: Number(input3.value)
         }
@@ -123,7 +116,18 @@
           })
           .then((data) => {
             console.log(data)
+            loadBooks()
           })
+    }
+    document.getElementById("EditForm")
+      .addEventListener("submit", (event) => {
+        event.preventDefault()
+        const form = event.currentTarget
+        const input1 = form.querySelector('[name="id"]')
+        const input2 = form.querySelector('[name="name"]')
+        const input3 = form.querySelector('[name="price"]')
+        const id = Number(input1.value)
+        editBook(input1,input2,input3)
       })
   </script>
   <script>
