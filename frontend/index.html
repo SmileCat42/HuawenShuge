@@ -123,6 +123,18 @@
             <button data-id="${book.id}">Delete</button>
           </div>`
       });
+      const buttons = document.querySelectorAll("button")
+      buttons.forEach(button => {
+         button.addEventListener("click", () => {
+            const id = Number(button.dataset.id)
+            fetch("http://localhost:3000/book/"+id, {
+                method: "DELETE"
+            })
+            .then((response) => {
+                console.log("Deleted >> id: ", id)
+            })
+         })
+      })
       })
     </script>
     <script>
