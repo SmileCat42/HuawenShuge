@@ -77,15 +77,7 @@
 
   <script>
     // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
-    document.getElementById("bookForm")
-      .addEventListener("submit", (event) => {
-        event.preventDefault()
-        const input1 = document.querySelector('[name="name"]')
-        const input2 = document.querySelector('[name="price"]')
-        const data = {
-          name: input1.value,
-          price: Number(input2.value)
-        }
+    function postBook(data){
         fetch("http://localhost:3000/book", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -96,16 +88,30 @@
           })
           .then((data) => {
             console.log(data)
+            loadBooks()
           })
+      
+    }
+    document.getElementById("bookForm")
+      .addEventListener("submit", (event) => {
+        event.preventDefault()
+        const input1 = document.querySelector('[name="name"]')
+        const input2 = document.querySelector('[name="price"]')
+        const data = {
+          name: input1.value,
+          price: Number(input2.value)
+        }
+        postBook(data)
       })
   </script>
   <script>
     //+++++++++++++++++++++++++++++ Edit +++++++++++++++++++++++++++++++++
-    function editBook(input1,input2,input3){
+    function editBook(id,name,price){
       const data = {
-          name: input2.value,
-          price: Number(input3.value)
+          name: name,
+          price: price
         }
+        const id = Number(input1.value)
         fetch("http://localhost:3000/book/" + id, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -127,7 +133,9 @@
         const input2 = form.querySelector('[name="name"]')
         const input3 = form.querySelector('[name="price"]')
         const id = Number(input1.value)
-        editBook(input1,input2,input3)
+        const name = input2.value
+        const price = input3.value
+        editBook(id,name,price)
       })
   </script>
   <script>
