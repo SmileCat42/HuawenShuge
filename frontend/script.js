@@ -1,4 +1,7 @@
 import { postBook } from "./api.js"
+import { loadBooks } from "./api.js"
+import { editBook } from "./api.js"
+import { delBook } from "./api.js"
 
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
 function showBooks(data) {
@@ -40,19 +43,11 @@ function showBooks(data) {
     })
   })
 }
-function loadBooks() {
-  fetch("http://localhost:3000/book", {
-    method: "GET"
-  })
-    .then((response) => {
-      return response.json()
-    })
+loadBooks()
     .then((data) => {
       console.log(data)
       showBooks(data)
     })
-}
-loadBooks()
 
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
 document.getElementById("bookForm")
@@ -67,29 +62,14 @@ document.getElementById("bookForm")
     postBook(data)
       .then((data) => {
         console.log(data)
-        loadBooks()
+        return loadBooks()
+      })
+      .then((data) => {
+        showBooks(data)
       })
   })
 
 //+++++++++++++++++++++++++++++ Edit +++++++++++++++++++++++++++++++++
-function editBook(id, name, price) {
-  const data = {
-    name: name,
-    price: price
-  }
-  fetch("http://localhost:3000/book/" + id, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-    .then((response) => {
-      return response.json()
-    })
-    .then((data) => {
-      console.log(data)
-      loadBooks()
-    })
-}
 document.getElementById("EditForm")
   .addEventListener("submit", (event) => {
     event.preventDefault()
@@ -101,18 +81,16 @@ document.getElementById("EditForm")
     const name = input2.value
     const price = Number(input3.value)
     editBook(id, name, price)
+      .then((data) => {
+        console.log(data)
+        return loadBooks()
+      })
+      .then((data) => {
+        showBooks(data)
+      })
   })
 
 //+++++++++++++++++++++++++DELETE+++++++++++++++++++++++++++++++
-function delBook(id) {
-  fetch("http://localhost:3000/book/" + id, {
-    method: "DELETE",
-  })
-    .then((response) => {
-      console.log("Deleted >> id: ", id)
-      loadBooks()
-    })
-}
 document.getElementById("delForm")
   .addEventListener("submit", (event) => {
     event.preventDefault()
@@ -120,4 +98,11 @@ document.getElementById("delForm")
     const num1 = form.querySelector('[name="id"]')
     const id = Number(num1.value)
     delBook(id)
+      .then((data) => {
+        console.log(data)
+        return loadBooks()
+      })
+      .then((data) => {
+        showBooks(data)
+      })
   })
