@@ -3,10 +3,7 @@ import pool from "./db.js";
 const book = [
     { id: 1, name: "AAA", price: 200 },
     { id: 2, name: "BBB", price: 300 },
-    { id: 3, name: "CCC", price: 400 },
-    { id: 4, name: "DDD", price: 500 },
-    { id: 5, name: "EEE", price: 600 },
-    { id: 6, name: "GGG", price: 700 }
+    { id: 3, name: "CCC", price: 400 }
 ];
 const server = createServer(async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
@@ -36,13 +33,6 @@ const server = createServer(async (req, res) => {
             res.setHeader("Content-Type", "application/json");
             res.end(JSON.stringify(show.rows));
             return;
-            /*if(!show){ //จากเดิมเราใช้ show === null เพื่อดูว่าค่าว่างไหม แต่ ts เรื่องเยอะ เขาคำนึงถึง undefine ด้วย ซึ่งเป็นคนละเคส จึงต้องใช้ !show เพื่อตรวจสอบทั้ง null และ undefine
-                res.statusCode = 404
-                res.end("No data")
-                return
-            }
-            res.end(`Name : ${show.name}  Price : ${show.price}`)
-            return*/
         }
         else {
             const show3 = await pool.query("select *from products");
@@ -57,7 +47,7 @@ const server = createServer(async (req, res) => {
         req.on("data", (chunk) => {
             body += chunk;
         });
-        req.on("end", () => {
+        req.on("end", async () => {
             let obj;
             console.log("Body: ", body);
             try {
@@ -79,17 +69,25 @@ const server = createServer(async (req, res) => {
                 res.end("Please fill data or price more than 0");
                 return;
             }
-            let maxid = 0;
-            for (let i = 0; i < book.length; i++) {
-                const run2 = book[i];
-                if (run2.id > maxid) {
-                    maxid = run2.id;
+            /*let maxid = 0
+            for(let i=0; i<book.length;i++){
+                const run2 = book[i]!
+                if(run2.id > maxid){
+                    maxid = run2.id
                 }
             }
-            obj.id = maxid + 1;
-            book.push(obj);
-            const show2 = JSON.stringify(obj);
-            res.end(show2);
+            obj.id = maxid+1*/
+            try {
+                const show1 = await pool.query(`insert into products(name, price, author, detail)
+                    values($1, $2, $3, $4) RETURNING*`, [obj.name, obj.price, obj.author, obj.detail]);
+                res.setHeader("Content-Type", "application/json");
+                res.end(JSON.stringify(show1.rows[0]));
+            }
+            catch (error) {
+                console.error("DB Insert Error:", error);
+                res.statusCode = 500;
+                res.end("Database error");
+            }
         });
         return;
     }

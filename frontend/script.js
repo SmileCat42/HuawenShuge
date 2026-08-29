@@ -55,9 +55,13 @@ document.getElementById("bookForm")
     event.preventDefault()
     const input1 = document.querySelector('[name="name"]')
     const input2 = document.querySelector('[name="price"]')
+    const input3 = document.querySelector('[name="author"]')
+    const input4 = document.querySelector('[name="detail"]')
     const data = {
       name: input1.value,
-      price: Number(input2.value)
+      price: Number(input2.value),
+      author: input3.value,
+      detail: input4.value
     }
     postBook(data)
       .then((data) => {

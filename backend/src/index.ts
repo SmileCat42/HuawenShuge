@@ -1,6 +1,12 @@
 import { createServer } from "http";
 import pool from "./db.js"
 
+const book = [
+    { id: 1, name: "AAA", price: 200 },
+    { id: 2, name: "BBB", price: 300 },
+    { id: 3, name: "CCC", price: 400 }
+];
+
 const server = createServer(
     async (req,res) => {
         res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173")
@@ -51,7 +57,7 @@ const server = createServer(
             req.on("data", (chunk) => {
                 body += chunk
             })
-            req.on("end", () => {
+            req.on("end", async () => {
                 let obj
                 console.log("Body: ", body)
                 try{
@@ -80,10 +86,19 @@ const server = createServer(
                     }
                 }
                 obj.id = maxid+1*/
-                await pool.query("insert into products")
-                
-                const show2 = JSON.stringify(obj)
-                res.end(show2)
+                try{
+                    const show1 = await pool.query(
+                    `insert into products(name, price, author, detail)
+                    values($1, $2, $3, $4) RETURNING*`, 
+                    [obj.name, obj.price, obj.author, obj.detail])
+
+                res.setHeader("Content-Type", "application/json")
+                res.end(JSON.stringify(show1.rows[0]))
+                }catch(error){
+                    console.error("DB Insert Error:", error)
+                    res.statusCode = 500
+                    res.end("Database error")
+                }
             })
             return
         }
