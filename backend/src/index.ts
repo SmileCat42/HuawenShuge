@@ -1,16 +1,8 @@
 import { createServer } from "http";
-
-const book = [
-                {id:1, name:"AAA", price:200},
-                {id:2, name:"BBB", price:300},
-                {id:3, name:"CCC", price:400},
-                {id:4, name:"DDD", price:500},
-                {id:5, name:"EEE", price:600},
-                {id:6, name:"GGG", price:700}
-            ]
+import pool from "./db.js"
 
 const server = createServer(
-    (req,res) => {
+    async (req,res) => {
         res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173")
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         res.setHeader("Access-Control-Allow-Headers", "Content-Type")
@@ -22,6 +14,8 @@ const server = createServer(
         }
 
         const parts = (req.url ?? "/").split("/") //?? เช็คว่าว่างไหม เพราะถ้าไม่ทำ ts มันจะฟ้อง
+
+        
     
         if(req.method === "GET" && parts[1] === "book"){
             if(parts[2]){
@@ -32,17 +26,21 @@ const server = createServer(
                     res.end("Invalid Book id :(")
                     return
                 }
-                const show = book.find((book) => book.id === id)
-                if(!show){ //จากเดิมเราใช้ show === null เพื่อดูว่าค่าว่างไหม แต่ ts เรื่องเยอะ เขาคำนึงถึง undefine ด้วย ซึ่งเป็นคนละเคส จึงต้องใช้ !show เพื่อตรวจสอบทั้ง null และ undefine
+                const show = await pool.query("select *from products where id = $1", [id])
+
+                if(show.rows.length === 0){
                     res.statusCode = 404
-                    res.end("No data")
+                    res.end("Not found")
                     return
                 }
-                res.end(`Name : ${show.name}  Price : ${show.price}`)
+
+                res.setHeader("Content-Type", "application/json")
+                res.end(JSON.stringify(show.rows))
                 return
             }else{
+                const show3 = await pool.query("select *from products")
                 res.setHeader("Content-Type", "application/json")
-                res.end(JSON.stringify(book))
+                res.end(JSON.stringify(show3.rows))
                 return
             }
         }
@@ -74,15 +72,16 @@ const server = createServer(
                     res.end("Please fill data or price more than 0")
                     return
                 }
-                let maxid = 0
+                /*let maxid = 0
                 for(let i=0; i<book.length;i++){
                     const run2 = book[i]!
                     if(run2.id > maxid){
                         maxid = run2.id
                     }
                 }
-                obj.id = maxid+1
-                book.push(obj)
+                obj.id = maxid+1*/
+                await pool.query("insert into products")
+                
                 const show2 = JSON.stringify(obj)
                 res.end(show2)
             })

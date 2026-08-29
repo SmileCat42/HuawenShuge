@@ -1,4 +1,5 @@
 import { createServer } from "http";
+import pool from "./db.js";
 const book = [
     { id: 1, name: "AAA", price: 200 },
     { id: 2, name: "BBB", price: 300 },
@@ -7,7 +8,7 @@ const book = [
     { id: 5, name: "EEE", price: 600 },
     { id: 6, name: "GGG", price: 700 }
 ];
-const server = createServer((req, res) => {
+const server = createServer(async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -26,18 +27,27 @@ const server = createServer((req, res) => {
                 res.end("Invalid Book id :(");
                 return;
             }
-            const show = book.find((book) => book.id === id);
-            if (!show) { //จากเดิมเราใช้ show === null เพื่อดูว่าค่าว่างไหม แต่ ts เรื่องเยอะ เขาคำนึงถึง undefine ด้วย ซึ่งเป็นคนละเคส จึงต้องใช้ !show เพื่อตรวจสอบทั้ง null และ undefine
+            const show = await pool.query("select *from products where id = $1", [id]);
+            if (show.rows.length === 0) {
                 res.statusCode = 404;
-                res.end("No data");
+                res.end("Not found");
                 return;
             }
-            res.end(`Name : ${show.name}  Price : ${show.price}`);
+            res.setHeader("Content-Type", "application/json");
+            res.end(JSON.stringify(show.rows));
             return;
+            /*if(!show){ //จากเดิมเราใช้ show === null เพื่อดูว่าค่าว่างไหม แต่ ts เรื่องเยอะ เขาคำนึงถึง undefine ด้วย ซึ่งเป็นคนละเคส จึงต้องใช้ !show เพื่อตรวจสอบทั้ง null และ undefine
+                res.statusCode = 404
+                res.end("No data")
+                return
+            }
+            res.end(`Name : ${show.name}  Price : ${show.price}`)
+            return*/
         }
         else {
+            const show3 = await pool.query("select *from products");
             res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify(book));
+            res.end(JSON.stringify(show3.rows));
             return;
         }
     }
