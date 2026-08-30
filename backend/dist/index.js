@@ -149,20 +149,22 @@ const server = createServer(async (req, res) => {
             res.end("Invalid path");
             return;
         }
-        const index = book.findIndex((book) => id === book.id);
+        /*const index = book.findIndex((book) => id === book.id)
         if (index === -1) {
-            res.statusCode = 404;
-            res.end("Invalid index");
+            res.statusCode = 404
+            res.end("Invalid index")
+            return
+        }*/
+        const show2 = await pool.query(`delete from products where id = $1`, [id]);
+        if (show2.rowCount === 0) {
+            res.end("Delete fail");
             return;
         }
-        book.splice(index, 1);
         console.log("Delete complete ID >> ", id);
-        console.log("Index : ", index);
-        const bb = {
-            id: id,
-            index: index
-        };
-        res.end(JSON.stringify(bb));
+        res.end(JSON.stringify({
+            message: "Delete success!",
+            id: id
+        }));
         return;
     }
     res.end("++ HOME PAGE ++");
