@@ -9,10 +9,12 @@ export function postBook(data) {
           })
 }
 
-export function editBook(id, name, price) {
+export function editBook(id, name, price, author, detail) {
   const data = {
     name: name,
-    price: price
+    price: price,
+    author: author,
+    detail: detail
   }
   return fetch("http://localhost:3000/book/" + id, {
     method: "PUT",

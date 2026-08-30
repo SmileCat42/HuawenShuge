@@ -12,6 +12,8 @@ function showBooks(data) {
           <div>
             <h3>Book name : ${book.name}</h3>
             <div>Price : ${book.price}</div>
+            <div>Author : ${book.author}</div>
+            <div>Detail : ${book.detail}</div></br>
             <button data-id="${book.id}" class = "delBtn">Delete</button>
             <button data-id="${book.id}"
               data-name="${book.name}" data-price="${book.price}"
@@ -81,10 +83,14 @@ document.getElementById("EditForm")
     const input1 = form.querySelector('[name="id"]')
     const input2 = form.querySelector('[name="name"]')
     const input3 = form.querySelector('[name="price"]')
+    const input4 = form.querySelector('[name="author"]')
+    const input5 = form.querySelector('[name="detail"]')
     const id = Number(input1.value)
     const name = input2.value
     const price = Number(input3.value)
-    editBook(id, name, price)
+    const author = input4.value
+    const detail = input5.value
+    editBook(id, name, price, author, detail)
       .then((data) => {
         console.log(data)
         return loadBooks()

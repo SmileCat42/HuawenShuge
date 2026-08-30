@@ -8,7 +8,7 @@ const book = [
 ];
 
 const server = createServer(
-    async (req,res) => {
+    async (req, res) => {
         res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173")
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         res.setHeader("Access-Control-Allow-Headers", "Content-Type")
@@ -21,20 +21,20 @@ const server = createServer(
 
         const parts = (req.url ?? "/").split("/") //?? เช็คว่าว่างไหม เพราะถ้าไม่ทำ ts มันจะฟ้อง
 
-        
-    
-        if(req.method === "GET" && parts[1] === "book"){
-            if(parts[2]){
+
+
+        if (req.method === "GET" && parts[1] === "book") {
+            if (parts[2]) {
                 console.log("GET >> ", parts[1], " ID: ", parts[2])
                 const id = Number(parts[2])
-                if(Number.isNaN(id)){ //ควรตรวจสอบกรณีที่ไม่ได้ส่งมาเป็นเลข เช่น book/abc
+                if (Number.isNaN(id)) { //ควรตรวจสอบกรณีที่ไม่ได้ส่งมาเป็นเลข เช่น book/abc
                     res.statusCode = 400
                     res.end("Invalid Book id :(")
                     return
                 }
                 const show = await pool.query("select *from products where id = $1", [id])
 
-                if(show.rows.length === 0){
+                if (show.rows.length === 0) {
                     res.statusCode = 404
                     res.end("Not found")
                     return
@@ -43,7 +43,7 @@ const server = createServer(
                 res.setHeader("Content-Type", "application/json")
                 res.end(JSON.stringify(show.rows))
                 return
-            }else{
+            } else {
                 const show3 = await pool.query("select *from products")
                 res.setHeader("Content-Type", "application/json")
                 res.end(JSON.stringify(show3.rows))
@@ -51,7 +51,7 @@ const server = createServer(
             }
         }
 
-        if(req.method === "POST" && parts[1] === "book"){
+        if (req.method === "POST" && parts[1] === "book") {
             console.log("POST >> recieved")
             let body = ""
             req.on("data", (chunk) => {
@@ -60,41 +60,34 @@ const server = createServer(
             req.on("end", async () => {
                 let obj
                 console.log("Body: ", body)
-                try{
+                try {
                     obj = JSON.parse(body)
-                }catch(error){
+                } catch (error) {
                     res.end("Invalid JSON")
                     return
-                }    
-                if(!obj.name || !obj.price){
+                }
+                if (!obj.name || !obj.price) {
                     res.end("Invalid data")
                     return
                 }
-                if(typeof obj.name !== "string" || typeof obj.price !== "number"){
+                if (typeof obj.name !== "string" || typeof obj.price !== "number") {
                     res.end("Wrong type data")
                     return
                 }
-                if(obj.name === "" || obj.price <= 0){
+                if (obj.name === "" || obj.price <= 0) {
                     res.end("Please fill data or price more than 0")
                     return
                 }
-                /*let maxid = 0
-                for(let i=0; i<book.length;i++){
-                    const run2 = book[i]!
-                    if(run2.id > maxid){
-                        maxid = run2.id
-                    }
-                }
-                obj.id = maxid+1*/
-                try{
-                    const show1 = await pool.query(
-                    `insert into products(name, price, author, detail)
-                    values($1, $2, $3, $4) RETURNING*`, 
-                    [obj.name, obj.price, obj.author, obj.detail])
 
-                res.setHeader("Content-Type", "application/json")
-                res.end(JSON.stringify(show1.rows[0]))
-                }catch(error){
+                try {
+                    const show1 = await pool.query(
+                        `insert into products(name, price, author, detail)
+                    values($1, $2, $3, $4) RETURNING*`,
+                        [obj.name, obj.price, obj.author, obj.detail])
+
+                    res.setHeader("Content-Type", "application/json")
+                    res.end(JSON.stringify(show1.rows[0]))
+                } catch (error) {
                     console.error("DB Insert Error:", error)
                     res.statusCode = 500
                     res.end("Database error")
@@ -103,72 +96,83 @@ const server = createServer(
             return
         }
 
-        if(req.method === "PUT" && parts[1] === "book"){
-            if(!parts[2]){
+        if (req.method === "PUT" && parts[1] === "book") {
+            if (!parts[2]) {
                 res.end("Pls take more detail")
                 return
             }
             const id = Number(parts[2])
-            if(Number.isNaN(id)){
+            if (Number.isNaN(id)) {
                 res.end("Error type")
                 return
             }
             console.log("PUT >> recieved ID = ", id)
-            const show = book.find((book) => id === book.id)
-            if(!show){
-                res.statusCode = 404
-                res.end("No data")
-                return
-            }
 
-            let body =""
+
+
+            let body = ""
             req.on("data", (chunk) => {
                 body += chunk
             })
-            req.on("end", () => {
+            req.on("end", async () => {
                 console.log("Body = ", body)
                 let obj
-                try{
+                try {
                     obj = JSON.parse(body)
-                }catch{
+                } catch {
                     res.end("Invalid data")
                     return
                 }
-                if(!obj.name || !obj.price){
+                if (!obj.name || !obj.price) {
                     res.end("Pls fill detail")
                     return
                 }
-                if(typeof obj.name !== "string" || typeof obj.price !== "number"){
+                if (typeof obj.name !== "string" || typeof obj.price !== "number") {
                     res.end("Wrong type detail")
                     return
                 }
-                if(obj.price <=0){
+                if (obj.price <= 0) {
                     res.end("Pls take price more than 0")
                     return
                 }
-                show.name = obj.name
-                show.price = obj.price
+
+                const show = await pool.query(`update products
+                set name = $1,
+                    price = $2,
+                    author = $3,
+                    detail = $4
+                where id = $5
+                RETURNING*`,
+                    [obj.name, obj.price, obj.author, obj.detail, id]
+                )
+
+                if (show.rowCount === 0) {
+                    res.statusCode = 404
+                    res.end("No data")
+                    return
+                }
+
                 res.setHeader("Content-Type", "application/json")
-                res.end(JSON.stringify(show))
+                res.end(JSON.stringify(show.rows[0]))
                 return
             })
             return
         }
 
-        if(req.method === "DELETE" && parts[1] === "book"){
-            if(!parts[2]){
+        if (req.method === "DELETE" && parts[1] === "book") {
+            if (!parts[2]) {
                 res.end("No order")
                 return
             }
             const id = Number(parts[2])
-            if(Number.isNaN(id)){
+            if (Number.isNaN(id)) {
                 res.statusCode = 400
                 res.end("Invalid path")
                 return
             }
             const index = book.findIndex((book) => id === book.id)
-            if(index === -1){
-                res.statusCode=404
+            if (index === -1) {
+                res.statusCode = 404
                 res.end("Invalid index")
                 return
             }
@@ -177,7 +181,7 @@ const server = createServer(
             console.log("Index : ", index)
             const bb = {
                 id: id,
-                index : index
+                index: index
             }
             res.end(JSON.stringify(bb))
             return

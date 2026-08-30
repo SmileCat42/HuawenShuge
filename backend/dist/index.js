@@ -69,14 +69,6 @@ const server = createServer(async (req, res) => {
                 res.end("Please fill data or price more than 0");
                 return;
             }
-            /*let maxid = 0
-            for(let i=0; i<book.length;i++){
-                const run2 = book[i]!
-                if(run2.id > maxid){
-                    maxid = run2.id
-                }
-            }
-            obj.id = maxid+1*/
             try {
                 const show1 = await pool.query(`insert into products(name, price, author, detail)
                     values($1, $2, $3, $4) RETURNING*`, [obj.name, obj.price, obj.author, obj.detail]);
@@ -102,17 +94,11 @@ const server = createServer(async (req, res) => {
             return;
         }
         console.log("PUT >> recieved ID = ", id);
-        const show = book.find((book) => id === book.id);
-        if (!show) {
-            res.statusCode = 404;
-            res.end("No data");
-            return;
-        }
         let body = "";
         req.on("data", (chunk) => {
             body += chunk;
         });
-        req.on("end", () => {
+        req.on("end", async () => {
             console.log("Body = ", body);
             let obj;
             try {
@@ -134,10 +120,20 @@ const server = createServer(async (req, res) => {
                 res.end("Pls take price more than 0");
                 return;
             }
-            show.name = obj.name;
-            show.price = obj.price;
+            const show = await pool.query(`update products
+                set name = $1,
+                    price = $2,
+                    author = $3,
+                    detail = $4
+                where id = $5
+                RETURNING*`, [obj.name, obj.price, obj.author, obj.detail, id]);
+            if (show.rowCount === 0) {
+                res.statusCode = 404;
+                res.end("No data");
+                return;
+            }
             res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify(show));
+            res.end(JSON.stringify(show.rows[0]));
             return;
         });
         return;
