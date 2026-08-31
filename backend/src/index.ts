@@ -1,5 +1,6 @@
 import { createServer } from "http";
 import pool from "./db.js"
+import busboy from "busboy"
 
 const book = [
     { id: 1, name: "AAA", price: 200 },
@@ -170,12 +171,6 @@ const server = createServer(
                 res.end("Invalid path")
                 return
             }
-            /*const index = book.findIndex((book) => id === book.id)
-            if (index === -1) {
-                res.statusCode = 404
-                res.end("Invalid index")
-                return
-            }*/
             
             const show2 = await pool.query(`delete from products where id = $1`, [id])    
             if(show2.rowCount === 0){

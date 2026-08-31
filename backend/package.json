@@ -11,10 +11,16 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
+    "@types/busboy": "^1.5.4",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.2.0",
     "@types/pg": "^8.23.1",
     "typescript": "^7.0.2"
   },
   "dependencies": {
+    "busboy": "^1.6.0",
+    "express": "^5.2.1",
+    "multer": "^2.3.0",
     "pg": "^8.23.0"
   }
 }

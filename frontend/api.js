@@ -1,25 +1,32 @@
-export function postBook(data) {
-    return fetch("http://localhost:3000/book", {
+export function postBook(name, price, author, detail, image) {
+    const data = new FormData()
+    data.append("name", name)
+    data.append("price", price)
+    data.append("author", author)
+    data.append("detail", detail)
+    data.append("image", image)
+    return fetch("http://localhost:3001/book", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
+          body: data
         })
           .then((response) => {
             return response.json()
           })
 }
 
-export function editBook(id, name, price, author, detail) {
-  const data = {
-    name: name,
-    price: price,
-    author: author,
-    detail: detail
-  }
+export function editBook(id, name, price, author, detail, image) {
+  const data = new FormData()
+    data.append("name", name)
+    data.append("price", price)
+    data.append("author", author)
+    data.append("detail", detail)
+    data.append("image", image)
+    for (const item of data.entries()) {
+    console.log(item)
+}
   return fetch("http://localhost:3000/book/" + id, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+    body: data
   })
     .then((response) => {
       return response.json()

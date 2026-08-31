@@ -59,13 +59,13 @@ document.getElementById("bookForm")
     const input2 = document.querySelector('[name="price"]')
     const input3 = document.querySelector('[name="author"]')
     const input4 = document.querySelector('[name="detail"]')
-    const data = {
-      name: input1.value,
-      price: Number(input2.value),
-      author: input3.value,
-      detail: input4.value
-    }
-    postBook(data)
+    const input5 = document.querySelector('[name="image"]')
+    const image = input5 ? input5.files[0] : null
+    const  name = input1.value
+    const  price= Number(input2.value)
+    const  author= input3.value
+    const  detail= input4.value
+    postBook(name, price, author, detail, image)
       .then((data) => {
         console.log(data)
         return loadBooks()
@@ -79,18 +79,22 @@ document.getElementById("bookForm")
 document.getElementById("EditForm")
   .addEventListener("submit", (event) => {
     event.preventDefault()
+    console.log("Edit submit")
     const form = event.currentTarget
     const input1 = form.querySelector('[name="id"]')
     const input2 = form.querySelector('[name="name"]')
     const input3 = form.querySelector('[name="price"]')
     const input4 = form.querySelector('[name="author"]')
     const input5 = form.querySelector('[name="detail"]')
+    const input6 = form.querySelector('[name="image"]')
     const id = Number(input1.value)
     const name = input2.value
     const price = Number(input3.value)
     const author = input4.value
     const detail = input5.value
-    editBook(id, name, price, author, detail)
+    const image = input6 ? input6.files[0] : null
+    console.log(image)
+    editBook(id, name, price, author, detail,image)
       .then((data) => {
         console.log(data)
         return loadBooks()
