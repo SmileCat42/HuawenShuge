@@ -24,7 +24,6 @@ app.post("/book/", upload.single("image"), async (req, res) => {
     await pool.query("select *from products");
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(result.rows[0]));
-    res.send("OK");
 });
 app.listen(3001, () => {
     console.log("Running on 3001");

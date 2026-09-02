@@ -71,8 +71,8 @@ const server = createServer(async (req, res) => {
                 return;
             }
             try {
-                const show1 = await pool.query(`insert into products(name, price, author, detail)
-                    values($1, $2, $3, $4) RETURNING*`, [obj.name, obj.price, obj.author, obj.detail]);
+                const show1 = await pool.query(`insert into products(name, price, author, detail, image)
+                    values($1, $2, $3, $4, $5) RETURNING*`, [obj.name, obj.price, obj.author, obj.detail, "/images/default.png"]);
                 res.setHeader("Content-Type", "application/json");
                 res.end(JSON.stringify(show1.rows[0]));
             }

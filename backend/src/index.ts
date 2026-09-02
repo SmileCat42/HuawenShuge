@@ -25,6 +25,7 @@ const server = createServer(
 
 
         if (req.method === "GET" && parts[1] === "book") {
+
             if (parts[2]) {
                 console.log("GET >> ", parts[1], " ID: ", parts[2])
                 const id = Number(parts[2])
@@ -42,7 +43,7 @@ const server = createServer(
                 }
 
                 res.setHeader("Content-Type", "application/json")
-                res.end(JSON.stringify(show.rows))
+                res.end(JSON.stringify(show.rows[0]))
                 return
             } else {
                 const show3 = await pool.query("select *from products")
@@ -82,9 +83,9 @@ const server = createServer(
 
                 try {
                     const show1 = await pool.query(
-                        `insert into products(name, price, author, detail)
-                    values($1, $2, $3, $4) RETURNING*`,
-                        [obj.name, obj.price, obj.author, obj.detail])
+                        `insert into products(name, price, author, detail, image)
+                    values($1, $2, $3, $4, $5) RETURNING*`,
+                        [obj.name, obj.price, obj.author, obj.detail, "/images/default.png"])
 
                     res.setHeader("Content-Type", "application/json")
                     res.end(JSON.stringify(show1.rows[0]))

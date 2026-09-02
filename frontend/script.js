@@ -10,6 +10,7 @@ function showBooks(data) {
   data.forEach(book => {
     list.innerHTML += `
           <div>
+            <img src="${book.image}" alt="${book.name}" style="width:150px; height:auto;"/>
             <h3>Book name : ${book.name}</h3>
             <div>Price : ${book.price}</div>
             <div>Author : ${book.author}</div>
