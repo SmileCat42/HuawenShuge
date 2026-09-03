@@ -3,6 +3,10 @@ import { loadBooks } from "./api.js"
 import { editBook } from "./api.js"
 import { delBook } from "./api.js"
 
+
+const profileImage = document.getElementById("profileImage")
+profileImage.src = "http://localhost:3001/account/5001/profile-image"
+
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
 function showBooks(data) {
   const list = document.getElementById("booklist")

@@ -25,18 +25,18 @@ const server = createServer(async (req, res) => {
                 res.end("Invalid Book id :(");
                 return;
             }
-            const show = await pool.query("select *from products where id = $1", [id]);
+            const show = await pool.query("select *from Products where id = $1", [id]);
             if (show.rows.length === 0) {
                 res.statusCode = 404;
                 res.end("Not found");
                 return;
             }
             res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify(show.rows));
+            res.end(JSON.stringify(show.rows[0]));
             return;
         }
         else {
-            const show3 = await pool.query("select *from products");
+            const show3 = await pool.query("select *from Products");
             res.setHeader("Content-Type", "application/json");
             res.end(JSON.stringify(show3.rows));
             return;
@@ -71,7 +71,7 @@ const server = createServer(async (req, res) => {
                 return;
             }
             try {
-                const show1 = await pool.query(`insert into products(name, price, author, detail, image)
+                const show1 = await pool.query(`insert into Products(name, price, author, detail, image)
                     values($1, $2, $3, $4, $5) RETURNING*`, [obj.name, obj.price, obj.author, obj.detail, "/images/default.png"]);
                 res.setHeader("Content-Type", "application/json");
                 res.end(JSON.stringify(show1.rows[0]));
