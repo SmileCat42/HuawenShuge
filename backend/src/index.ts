@@ -53,6 +53,47 @@ const server = createServer(
             }
         }
 
+        if (req.method === "GET" && parts[1] === "order") {
+            console.log("++ GET Order ++")
+            if (parts[2]) {
+                const id = Number(parts[2])
+                if (Number.isNaN(id)) {
+                    res.end("Invalid path")
+                    return
+                }
+                const result = await pool.query(`
+                    SELECT
+                        o.id_order,
+                        o.id_cust,
+                        o.order_date,
+                        o.status,
+                        od.id_product,
+                        p.name,
+                        od.quantity,
+                        od.price,
+                        (od.quantity * od.price) AS subtotal
+                    FROM orders o
+                    JOIN order_detail od
+                        ON o.id_order = od.id_order
+                    JOIN products p
+                        ON od.id_product = p.id
+                    WHERE o.id_order = $1
+                    ORDER BY od.id_order_detail;`, [id]
+
+                )
+                if (result.rows.length === 0) {
+                    res.statusCode = 404
+                    res.end("No data")
+                    return
+                }
+                res.setHeader("Content-Type", "application/json")
+                res.end(JSON.stringify(result.rows))
+                return
+            }
+            // get all
+            return
+        }
+
         if (req.method === "POST" && parts[1] === "book") {
             console.log("POST >> recieved")
             let body = ""
@@ -172,9 +213,9 @@ const server = createServer(
                 res.end("Invalid path")
                 return
             }
-            
-            const show2 = await pool.query(`delete from products where id = $1`, [id])    
-            if(show2.rowCount === 0){
+
+            const show2 = await pool.query(`delete from products where id = $1`, [id])
+            if (show2.rowCount === 0) {
                 res.end("Delete fail")
                 return
             }
