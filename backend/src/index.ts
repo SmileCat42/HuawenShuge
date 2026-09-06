@@ -61,6 +61,7 @@ const server = createServer(
                     res.end("Invalid path")
                     return
                 }
+                console.log("++ Order query ++")
                 const result = await pool.query(`
                     SELECT
                         o.id_order,
@@ -81,13 +82,38 @@ const server = createServer(
                     ORDER BY od.id_order_detail;`, [id]
 
                 )
+                
                 if (result.rows.length === 0) {
                     res.statusCode = 404
                     res.end("No data")
                     return
                 }
+
+                const row = result.rows
+
+                const order = {
+                    id_order: row[0].id_order,
+                    id_customer: row[0].id_cust,
+                    order_date: row[0].date,
+                    status: row[0].status,
+
+                    item: row.map(row2 => ({
+                        id_product: row2.id,
+                        product_name: row2.name,
+                        price: row2.price,
+                        quantity: row2.quantity,
+                        subtotal: row2.subtotal
+                    })),
+
+                    total: row.reduce(
+                (sum, row) => sum + Number(row.subtotal),
+                0
+            )
+
+                }
+                console.log("++ Order >> ", result)
                 res.setHeader("Content-Type", "application/json")
-                res.end(JSON.stringify(result.rows))
+                res.end(JSON.stringify(order))
                 return
             }
             // get all
@@ -136,6 +162,29 @@ const server = createServer(
                     res.end("Database error")
                 }
             })
+            return
+        }
+
+        if(req.method === "POST" && parts[1] === "order"){
+            let body = ""
+            req.on("data", chunk => {
+                body += chunk
+            })
+            let obj
+            req.on("end", async () =>{
+                try{
+                    obj = JSON.parse(body)
+                    console.log(obj)
+                }catch(error){
+                    res.end("Invalid data")
+                    return
+                }
+                if(!obj.id_cust || !Array.isArray(obj.items) ||obj.item.length === 0){
+                    res.end("Invalid order data")
+                    return
+                }
+            })
+            
             return
         }
 
