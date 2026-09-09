@@ -37,6 +37,32 @@ app.get("/account/:id_acc/profile-image", async (req, res) => {
     res.setHeader("Content-Type", "image/jpeg");
     res.end(result.rows[0].image);
 });
+app.get("/order", async (req, res) => {
+    try {
+        const result = await pool.query(`SELECT
+                o.id_order,
+                o.id_cust,
+                o.order_date,
+                o.status,
+                SUM(od.quantity * od.price) AS total
+             FROM orders o
+             JOIN order_detail od
+                ON o.id_order = od.id_order
+             GROUP BY
+                o.id_order,
+                o.id_cust,
+                o.order_date,
+                o.status
+             ORDER BY o.id_order`);
+        res.json(result.rows);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to get orders"
+        });
+    }
+});
 app.get("/order/:id", async (req, res) => {
     const id = Number(req.params.id);
     if (Number.isNaN(id)) {

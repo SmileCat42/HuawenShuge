@@ -5,7 +5,7 @@ export function postBook(name, price, author, detail, image) {
     data.append("author", author)
     data.append("detail", detail)
     data.append("image", image)
-    return fetch("http://localhost:3001/book", {
+    return fetch("http://localhost:3000/book", {
           method: "POST",
           body: data
         })
@@ -48,5 +48,23 @@ export function loadBooks() {
   })
     .then((response) => {
       return response.json()
+    })
+}
+
+export function createOrder(data) {
+  return fetch("http://localhost:3000/order", {
+    method: "POST",
+    headers:  {
+            "Content-Type": "application/json"
+        },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+
+        if (!response.ok) {
+            throw new Error("Create order failed")
+        }
+
+        return response.json()
     })
 }
