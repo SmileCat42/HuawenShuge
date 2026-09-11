@@ -25,35 +25,7 @@ app.use(express.json());
 
 //++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++++++++++
 
-app.get("/account/:id_acc/profile-image", async (req, res) => {
 
-    const id_acc = Number(req.params.id_acc)
-
-    if (Number.isNaN(id_acc)) {
-        res.status(400).send("Invalid account id")
-        return
-    }
-
-    const result = await pool.query(
-        `SELECT image
-         FROM account
-         WHERE id_acc = $1`,
-        [id_acc]
-    )
-
-    if (result.rows.length === 0) {
-        res.status(404).send("Account not found")
-        return
-    }
-
-    if (!result.rows[0].image) {
-        res.status(404).send("Profile image not found")
-        return
-    }
-
-    res.setHeader("Content-Type", "image/jpeg")
-    res.end(result.rows[0].image)
-})
 
 app.get("/order", async (req, res) => {
 
