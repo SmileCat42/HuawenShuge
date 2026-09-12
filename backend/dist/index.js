@@ -108,7 +108,7 @@ app.get("/order/:id", async (req, res) => {
         const rows = result.rows;
         const order = {
             id_order: rows[0].id_order,
-            id_customer: rows[0].id_customer,
+            id_cust: rows[0].id_cust,
             order_date: rows[0].order_date,
             status: rows[0].status,
             items: rows.map(row => ({

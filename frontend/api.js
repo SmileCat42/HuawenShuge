@@ -68,3 +68,14 @@ export function createOrder(data) {
         return response.json()
     })
 }
+
+export function getOrder(id) {
+    return fetch(`http://localhost:3000/order/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Get order failed")
+            }
+
+            return response.json()
+        })
+}
