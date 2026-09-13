@@ -79,3 +79,83 @@ export function getOrder(id) {
             return response.json()
         })
 }
+
+export function getUnassignedOrders() {
+
+    return fetch("http://localhost:3000/order/unassigned")
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error("Get orders failed")
+            }
+
+            return response.json()
+        })
+}
+
+export function assignOrder(id_order, id_emp) {
+
+    return fetch(
+        `http://localhost:3000/order/${id_order}/assign`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                id_emp: id_emp
+            })
+        }
+    )
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error("Assign order failed")
+        }
+
+        return response.json()
+    })
+}
+
+export function updateOrderStatus(id_order, status) {
+
+    return fetch(
+        `http://localhost:3000/order/${id_order}/status`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                status: status
+            })
+        }
+    )
+    .then(async response => {
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(data.message)
+        }
+
+        return data
+    })
+}
+
+export function getEmployeeOrders(id_emp) {
+
+    return fetch(
+        `http://localhost:3000/order/employee/${id_emp}`
+    )
+        .then(async response => {
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.message)
+            }
+
+            return data
+        })
+}

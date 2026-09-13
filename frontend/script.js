@@ -4,10 +4,15 @@ import { editBook } from "./api.js"
 import { delBook } from "./api.js"
 import {
   createOrder,
-  getOrder
+  getOrder,
+  getUnassignedOrders,
+  assignOrder,
+  updateOrderStatus,
+  getEmployeeOrders
 } from "./api.js"
 
 let cart = []
+
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
 function showBooks(data) {
 
@@ -132,35 +137,36 @@ function showBooks(data) {
 
     })
   })
-}loadBooks()
+} loadBooks()
   .then((data) => {
     console.log(data)
     showBooks(data)
   })
 
-  function showCart() {
+function showCart() {
 
-    const cartList = document.getElementById("cartList")
+  const cartList = document.getElementById("cartList")
 
-    cartList.innerHTML = ""
+  cartList.innerHTML = ""
 
-    cart.forEach(item => {
+  cart.forEach(item => {
 
-        cartList.innerHTML += `
+    cartList.innerHTML += `
             <div>
                 Product ID: ${item.id_product}
                 <br>
                 Quantity: ${item.quantity}
             </div>
         `
-    })
+  })
 }
+
 function showOrder(order) {
 
-    const orderResult =
-        document.getElementById("orderResult")
-    console.log("Show order >>", order)
-    orderResult.innerHTML = `
+  const orderResult =
+    document.getElementById("orderResult")
+  console.log("Show order >>", order)
+  orderResult.innerHTML = `
         <h2>Order #${order.id_order}</h2>
 
         <div>Customer: ${order.id_cust}</div>
@@ -177,8 +183,136 @@ function showOrder(order) {
 
         <h3>Total: ${order.total} บาท</h3>
     `
-    
 }
+
+function showEmployeeOrders(data) {
+
+  const list =
+    document.getElementById("employeeOrderList")
+
+  list.innerHTML = ""
+
+  data.forEach(order => {
+
+    list.innerHTML += `
+      <div>
+
+        <h3>Order #${order.id_order}</h3>
+
+        <div>
+          Customer: ${order.id_cust}
+        </div>
+
+        <div>
+          Total: ${order.total} บาท
+        </div>
+
+        <div>
+          Status: ${order.status}
+        </div>
+
+        <button
+          class="assignOrderBtn"
+          data-id="${order.id_order}">
+          รับ Order
+        </button>
+
+        <button
+    class="statusBtn"
+    data-id="${order.id_order}"
+    data-status="SHIPPED">
+    Mark Shipped
+</button>
+
+      </div>
+    `
+  })
+
+  document
+    .querySelectorAll(".assignOrderBtn")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const id_order =
+          Number(button.dataset.id)
+
+        assignOrder(id_order, 3201)
+          .then(data => {
+
+            console.log("Assigned >>", data)
+
+            return Promise.all([
+              getUnassignedOrders(),
+              getEmployeeOrders(3201)
+            ])
+
+          })
+          .then(([unassigned, myOrders]) => {
+
+            showEmployeeOrders(unassigned)
+            showMyOrders(myOrders)
+
+          })
+      })
+    })
+}
+
+getUnassignedOrders()
+  .then(data => {
+    showEmployeeOrders(data)
+  })
+  .catch(error => {
+    console.error(error)
+  })
+
+function showMyOrders(data) {
+
+  const list =
+    document.getElementById("myOrderList")
+
+  list.innerHTML = ""
+
+  data.forEach(order => {
+
+    list.innerHTML += `
+            <div>
+
+                <h3>
+                    Order #${order.id_order}
+                </h3>
+
+                <div>
+                    Customer: ${order.id_cust}
+                </div>
+
+                <div>
+                    Total: ${order.total} บาท
+                </div>
+
+                <div>
+                    Status: ${order.status}
+                </div>
+
+            </div>
+        `
+  })
+}
+
+getEmployeeOrders(3201)
+  .then(data => {
+
+    console.log("My orders >>", data)
+
+    showMyOrders(data)
+
+  })
+  .catch(error => {
+
+    console.error(error)
+
+  })
+
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
 document.getElementById("bookForm")
   .addEventListener("submit", (event) => {
@@ -216,7 +350,7 @@ function addCart(id_product, quantity) {
       quantity: quantity
     })
   }
-  
+
   console.log("Add order in cart >> ", cart)
   showCart()
 }

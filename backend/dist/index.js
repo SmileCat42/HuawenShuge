@@ -8,6 +8,35 @@ app.use(cors({
 }));
 app.use(express.json());
 // +++++++++++++++++++++++++++++++++  GET  +++++++++++++++++++++++++++++++++++++
+app.get("/order/unassigned", async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT
+                o.id_order,
+                o.id_cust,
+                o.order_date,
+                o.status,
+                SUM(od.quantity * od.price) AS total
+            FROM orders o
+            JOIN order_detail od
+                ON o.id_order = od.id_order
+            WHERE o.id_emp IS NULL
+            GROUP BY
+                o.id_order,
+                o.id_cust,
+                o.order_date,
+                o.status
+            ORDER BY o.id_order
+            `);
+        res.json(result.rows);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to get unassigned orders"
+        });
+    }
+});
 app.get("/book", async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM products");
@@ -149,6 +178,57 @@ app.get("/account/:id_acc/profile-image", async (req, res) => {
     }
     res.setHeader("Content-Type", "image/jpeg");
     res.end(result.rows[0].image);
+});
+app.get("/order/employee/:id_emp", async (req, res) => {
+    const id_emp = Number(req.params.id_emp);
+    if (Number.isNaN(id_emp)) {
+        res.status(400).json({
+            message: "Invalid Employee id"
+        });
+        return;
+    }
+    try {
+        // ตรวจว่า Employee มีจริง
+        const employeeResult = await pool.query(`
+            SELECT id_emp
+            FROM employees
+            WHERE id_emp = $1
+            `, [id_emp]);
+        if (employeeResult.rows.length === 0) {
+            res.status(404).json({
+                message: "Employee not found"
+            });
+            return;
+        }
+        // ดึง Order ที่ Employee คนนี้รับผิดชอบ
+        const result = await pool.query(`
+            SELECT
+                o.id_order,
+                o.id_cust,
+                o.id_emp,
+                o.order_date,
+                o.status,
+                SUM(od.quantity * od.price) AS total
+            FROM orders o
+            JOIN order_detail od
+                ON o.id_order = od.id_order
+            WHERE o.id_emp = $1
+            GROUP BY
+                o.id_order,
+                o.id_cust,
+                o.id_emp,
+                o.order_date,
+                o.status
+            ORDER BY o.id_order
+            `, [id_emp]);
+        res.json(result.rows);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to get employee orders"
+        });
+    }
 });
 // +++++++++++++++++++++++++++++++++++++++++ POST  ++++++++++++++++++++++++++++++++
 app.post("/book", async (req, res) => {
@@ -355,7 +435,124 @@ app.delete("/book/:id", async (req, res) => {
         });
     }
 });
+//++++++++++++++++++++++++++++++++++++++++ ASSIGN ++++++++++++++++++++++++++++++++++++++++
+app.patch("/order/:id/assign", async (req, res) => {
+    console.log(">>> ASSIGN ORDER ROUTE <<<");
+    const id_order = Number(req.params.id);
+    const { id_emp } = req.body;
+    if (Number.isNaN(id_order)) {
+        res.status(400).json({
+            message: "Invalid Order id"
+        });
+        return;
+    }
+    if (!id_emp) {
+        res.status(400).json({
+            message: "Employee id is required"
+        });
+        return;
+    }
+    try {
+        // ตรวจว่า Employee มีจริง
+        const employeeResult = await pool.query(`
+            SELECT id_emp
+            FROM employees
+            WHERE id_emp = $1
+            `, [id_emp]);
+        if (employeeResult.rows.length === 0) {
+            res.status(404).json({
+                message: "Employee not found",
+                id_emp: id_emp
+            });
+            return;
+        }
+        // ตรวจว่า Order มีจริงและยังไม่มีคนรับ
+        const orderCheck = await pool.query(`
+            SELECT id_order, id_emp, status
+            FROM orders
+            WHERE id_order = $1
+            `, [id_order]);
+        if (orderCheck.rows.length === 0) {
+            res.status(404).json({
+                message: "Order not found"
+            });
+            return;
+        }
+        if (orderCheck.rows[0].id_emp !== null) {
+            res.status(409).json({
+                message: "Order already assigned"
+            });
+            return;
+        }
+        const result = await pool.query(`
+            UPDATE orders
+            SET id_emp = $1,
+                status = 'PROCESSING'
+            WHERE id_order = $2
+            RETURNING *
+            `, [id_emp, id_order]);
+        res.json(result.rows[0]);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to assign order"
+        });
+    }
+});
 app.listen(3000, () => {
     console.log("Running on 3000");
+});
+// +++++++++++++++++++++++++++++++++++++++++ Path ++++++++++++++++++++++++++++++++++++
+app.patch("/order/:id/status", async (req, res) => {
+    const id_order = Number(req.params.id);
+    const { status } = req.body;
+    if (Number.isNaN(id_order)) {
+        res.status(400).json({
+            message: "Invalid Order id"
+        });
+        return;
+    }
+    if (!status) {
+        res.status(400).json({
+            message: "Status is required"
+        });
+        return;
+    }
+    const allowedStatus = [
+        "PENDING",
+        "PROCESSING",
+        "PAID",
+        "SHIPPED",
+        "DELIVERED",
+        "CANCELLED"
+    ];
+    if (!allowedStatus.includes(status)) {
+        res.status(400).json({
+            message: "Invalid status"
+        });
+        return;
+    }
+    try {
+        const result = await pool.query(`
+            UPDATE orders
+            SET status = $1
+            WHERE id_order = $2
+            RETURNING *
+            `, [status, id_order]);
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                message: "Order not found"
+            });
+            return;
+        }
+        res.json(result.rows[0]);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to update order status"
+        });
+    }
 });
 //# sourceMappingURL=index.js.map
