@@ -268,14 +268,50 @@ getUnassignedOrders()
 
 function showMyOrders(data) {
 
-  const list =
-    document.getElementById("myOrderList")
+    const list =
+        document.getElementById("myOrderList")
 
-  list.innerHTML = ""
+    list.innerHTML = ""
 
-  data.forEach(order => {
+    data.forEach(order => {
 
-    list.innerHTML += `
+        let button = ""
+
+        if (order.status === "PROCESSING") {
+
+            button = `
+                <button
+                    class="statusBtn"
+                    data-id="${order.id_order}"
+                    data-status="PAID">
+                    Mark as PAID
+                </button>
+            `
+
+        } else if (order.status === "PAID") {
+
+            button = `
+                <button
+                    class="statusBtn"
+                    data-id="${order.id_order}"
+                    data-status="SHIPPED">
+                    Mark as SHIPPED
+                </button>
+            `
+
+        } else if (order.status === "SHIPPED") {
+
+            button = `
+                <button
+                    class="statusBtn"
+                    data-id="${order.id_order}"
+                    data-status="DELIVERED">
+                    Mark as DELIVERED
+                </button>
+            `
+        }
+
+        list.innerHTML += `
             <div>
 
                 <h3>
@@ -294,9 +330,51 @@ function showMyOrders(data) {
                     Status: ${order.status}
                 </div>
 
+                ${button}
+
             </div>
         `
-  })
+    })
+
+
+    document
+        .querySelectorAll(".statusBtn")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const id_order =
+                    Number(button.dataset.id)
+
+                const status =
+                    button.dataset.status
+
+                updateOrderStatus(
+                    id_order,
+                    status
+                )
+                    .then(data => {
+
+                        console.log(
+                            "Updated >>",
+                            data
+                        )
+
+                        return getEmployeeOrders(3201)
+                    })
+                    .then(data => {
+
+                        showMyOrders(data)
+
+                    })
+                    .catch(error => {
+
+                        console.error(error)
+
+                        alert(error.message)
+                    })
+            })
+        })
 }
 
 getEmployeeOrders(3201)

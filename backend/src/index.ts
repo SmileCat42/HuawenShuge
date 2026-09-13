@@ -706,15 +706,7 @@ app.patch("/order/:id/status", async (req, res) => {
         return
     }
 
-    if (!status) {
-        res.status(400).json({
-            message: "Status is required"
-        })
-        return
-    }
-
     const allowedStatus = [
-        "PENDING",
         "PROCESSING",
         "PAID",
         "SHIPPED",
@@ -731,6 +723,59 @@ app.patch("/order/:id/status", async (req, res) => {
 
     try {
 
+        const orderResult = await pool.query(
+            `
+            SELECT id_order, id_emp, status
+            FROM orders
+            WHERE id_order = $1
+            `,
+            [id_order]
+        )
+
+        if (orderResult.rows.length === 0) {
+            res.status(404).json({
+                message: "Order not found"
+            })
+            return
+        }
+
+        const order = orderResult.rows[0]
+
+        const currentStatus = order.status
+
+        // กำหนดสถานะถัดไป
+        const nextStatus = {
+            PENDING: "PROCESSING",
+            PROCESSING: "PAID",
+            PAID: "SHIPPED",
+            SHIPPED: "DELIVERED"
+        }
+
+        if (status === "CANCELLED") {
+
+            if (
+                currentStatus === "SHIPPED" ||
+                currentStatus === "DELIVERED"
+            ) {
+                res.status(409).json({
+                    message: "Cannot cancel this order"
+                })
+                return
+            }
+
+        } else {
+
+            if (nextStatus[currentStatus] !== status) {
+
+                res.status(409).json({
+                    message:
+                        `Cannot change status from ${currentStatus} to ${status}`
+                })
+
+                return
+            }
+        }
+
         const result = await pool.query(
             `
             UPDATE orders
@@ -740,13 +785,6 @@ app.patch("/order/:id/status", async (req, res) => {
             `,
             [status, id_order]
         )
-
-        if (result.rows.length === 0) {
-            res.status(404).json({
-                message: "Order not found"
-            })
-            return
-        }
 
         res.json(result.rows[0])
 
