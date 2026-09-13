@@ -154,6 +154,7 @@ app.get("/order/:id", async (req, res) => {
             `SELECT
         o.id_order,
         o.id_cust,
+        o.id_emp,
         o.order_date,
         o.status,
         od.id_product,
