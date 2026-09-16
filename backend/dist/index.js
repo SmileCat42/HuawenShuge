@@ -8,6 +8,55 @@ app.use(cors({
 }));
 app.use(express.json());
 // +++++++++++++++++++++++++++++++++  GET  +++++++++++++++++++++++++++++++++++++
+app.get("/order/customer/:id_cust", async (req, res) => {
+    const id_cust = Number(req.params.id_cust);
+    if (Number.isNaN(id_cust)) {
+        res.status(400).json({
+            message: "Invalid Customer id"
+        });
+        return;
+    }
+    try {
+        const customerResult = await pool.query(`
+            SELECT id_cust
+            FROM customer
+            WHERE id_cust = $1
+            `, [id_cust]);
+        if (customerResult.rows.length === 0) {
+            res.status(404).json({
+                message: "Customer not found"
+            });
+            return;
+        }
+        const result = await pool.query(`
+            SELECT
+                o.id_order,
+                o.id_cust,
+                o.id_emp,
+                o.order_date,
+                o.status,
+                SUM(od.quantity * od.price) AS total
+            FROM orders o
+            JOIN order_detail od
+                ON o.id_order = od.id_order
+            WHERE o.id_cust = $1
+            GROUP BY
+                o.id_order,
+                o.id_cust,
+                o.id_emp,
+                o.order_date,
+                o.status
+            ORDER BY o.id_order DESC
+            `, [id_cust]);
+        res.json(result.rows);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to get customer orders"
+        });
+    }
+});
 app.get("/order/unassigned", async (req, res) => {
     try {
         const result = await pool.query(`
@@ -113,6 +162,7 @@ app.get("/order/:id", async (req, res) => {
         const result = await pool.query(`SELECT
         o.id_order,
         o.id_cust,
+        o.id_emp,
         o.order_date,
         o.status,
         od.id_product,
@@ -503,24 +553,16 @@ app.patch("/order/:id/assign", async (req, res) => {
 app.listen(3000, () => {
     console.log("Running on 3000");
 });
-// +++++++++++++++++++++++++++++++++++++++++ Path ++++++++++++++++++++++++++++++++++++
 app.patch("/order/:id/status", async (req, res) => {
     const id_order = Number(req.params.id);
-    const { status } = req.body;
+    const status = req.body.status;
     if (Number.isNaN(id_order)) {
         res.status(400).json({
             message: "Invalid Order id"
         });
         return;
     }
-    if (!status) {
-        res.status(400).json({
-            message: "Status is required"
-        });
-        return;
-    }
     const allowedStatus = [
-        "PENDING",
         "PROCESSING",
         "PAID",
         "SHIPPED",
@@ -534,18 +576,49 @@ app.patch("/order/:id/status", async (req, res) => {
         return;
     }
     try {
+        const orderResult = await pool.query(`
+            SELECT id_order, id_emp, status
+            FROM orders
+            WHERE id_order = $1
+            `, [id_order]);
+        if (orderResult.rows.length === 0) {
+            res.status(404).json({
+                message: "Order not found"
+            });
+            return;
+        }
+        const order = orderResult.rows[0];
+        const currentStatus = order.status;
+        // กำหนดสถานะถัดไป
+        const nextStatus = {
+            PENDING: "PROCESSING",
+            PROCESSING: "PAID",
+            PAID: "SHIPPED",
+            SHIPPED: "DELIVERED"
+        };
+        if (status === "CANCELLED") {
+            if (currentStatus === "SHIPPED" ||
+                currentStatus === "DELIVERED") {
+                res.status(409).json({
+                    message: "Cannot cancel this order"
+                });
+                return;
+            }
+        }
+        else {
+            if (nextStatus[currentStatus] !== status) {
+                res.status(409).json({
+                    message: `Cannot change status from ${currentStatus} to ${status}`
+                });
+                return;
+            }
+        }
         const result = await pool.query(`
             UPDATE orders
             SET status = $1
             WHERE id_order = $2
             RETURNING *
             `, [status, id_order]);
-        if (result.rows.length === 0) {
-            res.status(404).json({
-                message: "Order not found"
-            });
-            return;
-        }
         res.json(result.rows[0]);
     }
     catch (error) {

@@ -13,6 +13,71 @@ app.use(express.json())
 
 // +++++++++++++++++++++++++++++++++  GET  +++++++++++++++++++++++++++++++++++++
 
+app.get("/order/customer/:id_cust", async (req, res) => {
+
+    const id_cust = Number(req.params.id_cust)
+
+    if (Number.isNaN(id_cust)) {
+        res.status(400).json({
+            message: "Invalid Customer id"
+        })
+        return
+    }
+
+    try {
+
+        const customerResult = await pool.query(
+            `
+            SELECT id_cust
+            FROM customer
+            WHERE id_cust = $1
+            `,
+            [id_cust]
+        )
+
+        if (customerResult.rows.length === 0) {
+            res.status(404).json({
+                message: "Customer not found"
+            })
+            return
+        }
+
+        const result = await pool.query(
+            `
+            SELECT
+                o.id_order,
+                o.id_cust,
+                o.id_emp,
+                o.order_date,
+                o.status,
+                SUM(od.quantity * od.price) AS total
+            FROM orders o
+            JOIN order_detail od
+                ON o.id_order = od.id_order
+            WHERE o.id_cust = $1
+            GROUP BY
+                o.id_order,
+                o.id_cust,
+                o.id_emp,
+                o.order_date,
+                o.status
+            ORDER BY o.id_order DESC
+            `,
+            [id_cust]
+        )
+
+        res.json(result.rows)
+
+    } catch (error) {
+
+        console.error(error)
+
+        res.status(500).json({
+            message: "Failed to get customer orders"
+        })
+    }
+})
+
 app.get("/order/unassigned", async (req, res) => {
 
     try {
@@ -695,10 +760,18 @@ app.listen(3000, () => {
 
 // +++++++++++++++++++++++++++++++++++++++++ Path ++++++++++++++++++++++++++++++++++++
 
+type OrderStatus =
+    | "PENDING"
+    | "PROCESSING"
+    | "PAID"
+    | "SHIPPED"
+    | "DELIVERED"
+    | "CANCELLED"
+
 app.patch("/order/:id/status", async (req, res) => {
 
     const id_order = Number(req.params.id)
-    const { status } = req.body
+    const status: OrderStatus = req.body.status
 
     if (Number.isNaN(id_order)) {
         res.status(400).json({
@@ -742,10 +815,10 @@ app.patch("/order/:id/status", async (req, res) => {
 
         const order = orderResult.rows[0]
 
-        const currentStatus = order.status
+        const currentStatus: OrderStatus = order.status
 
         // กำหนดสถานะถัดไป
-        const nextStatus = {
+        const nextStatus: Partial<Record<OrderStatus, OrderStatus>> = {
             PENDING: "PROCESSING",
             PROCESSING: "PAID",
             PAID: "SHIPPED",
