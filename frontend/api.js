@@ -159,3 +159,20 @@ export function getEmployeeOrders(id_emp) {
             return data
         })
 }
+
+export function getCustomerOrders(id_cust) {
+
+    return fetch(
+        `http://localhost:3000/order/customer/${id_cust}`
+    )
+        .then(async response => {
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.message)
+            }
+
+            return data
+        })
+}

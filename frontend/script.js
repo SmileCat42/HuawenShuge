@@ -8,7 +8,8 @@ import {
   getUnassignedOrders,
   assignOrder,
   updateOrderStatus,
-  getEmployeeOrders
+  getEmployeeOrders,
+  getCustomerOrders
 } from "./api.js"
 
 let cart = []
@@ -216,13 +217,6 @@ function showEmployeeOrders(data) {
           data-id="${order.id_order}">
           รับ Order
         </button>
-
-        <button
-    class="statusBtn"
-    data-id="${order.id_order}"
-    data-status="SHIPPED">
-    Mark Shipped
-</button>
 
       </div>
     `
@@ -481,7 +475,85 @@ getEmployeeOrders(3201)
   `
 }
 
+function showCustomerOrders(data) {
 
+    const list =
+        document.getElementById("customerOrderList")
+
+    list.innerHTML = ""
+
+    data.forEach(order => {
+
+        list.innerHTML += `
+            <div>
+
+                <h3>
+                    Order #${order.id_order}
+                </h3>
+
+                <div>
+                    Status: ${order.status}
+                </div>
+
+                <div>
+                    Total: ${order.total} บาท
+                </div>
+
+                <button
+                    class="customerViewOrderBtn"
+                    data-id="${order.id_order}">
+                    View Detail
+                </button>
+
+            </div>
+        `
+    })
+
+    document
+        .querySelectorAll(".customerViewOrderBtn")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const id_order =
+                    Number(button.dataset.id)
+
+                getOrder(id_order)
+                    .then(order => {
+
+                        console.log(
+                            "Customer order detail >>",
+                            order
+                        )
+
+                        showOrderDetail(order)
+
+                    })
+                    .catch(error => {
+
+                        console.error(error)
+
+                    })
+            })
+        })
+}
+
+getCustomerOrders(3101)
+    .then(data => {
+
+        console.log(
+            "Customer Orders >>",
+            data
+        )
+
+        showCustomerOrders(data)
+
+    })
+    .catch(error => {
+
+        console.error(error)
+
+    })
 
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
 document.getElementById("bookForm")
