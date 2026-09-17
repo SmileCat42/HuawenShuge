@@ -322,6 +322,64 @@ app.get("/order/employee/:id_emp", async (req, res) => {
     }
 });
 // +++++++++++++++++++++++++++++++++++++++++ POST  ++++++++++++++++++++++++++++++++
+app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+        res.status(400).json({
+            message: "Username and password are required"
+        });
+        return;
+    }
+    try {
+        const result = await pool.query(`
+            SELECT
+                a.id_acc,
+                a.id_person,
+                a.username,
+                a.password,
+                c.id_cust AS id_cust,
+                e.id_emp,
+                r.role_name
+            FROM account a
+            JOIN person p
+                ON a.id_person = p.id_person
+            LEFT JOIN customer c
+                ON a.id_person = c.id_person
+            LEFT JOIN employees e
+                ON a.id_person = e.id_person
+            LEFT JOIN roles r
+                ON e.id_role = r.id_role
+            WHERE a.username = $1
+            `, [username]);
+        if (result.rows.length === 0) {
+            res.status(401).json({
+                message: "Username or password is incorrect"
+            });
+            return;
+        }
+        const account = result.rows[0];
+        if (password !== account.password) {
+            res.status(401).json({
+                message: "Username or password is incorrect"
+            });
+            return;
+        }
+        res.json({
+            id_acc: account.id_acc,
+            id_person: account.id_person,
+            username: account.username,
+            id_cust: account.id_cust,
+            id_emp: account.id_emp,
+            role: account.role_name
+        });
+    }
+    catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({
+            message: "Login failed"
+        });
+    }
+});
 app.post("/book", async (req, res) => {
     const obj = req.body;
     if (!obj.name || !obj.price) {

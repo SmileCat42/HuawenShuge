@@ -10,7 +10,8 @@ import {
   updateOrderStatus,
   getEmployeeOrders,
   getCustomerOrders,
-  getAccount
+  getAccount,
+  login
 } from "./api.js"
 
 let cart = []
@@ -595,6 +596,61 @@ getCustomerOrders(3101)
     })
 
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
+
+document.getElementById("loginForm")
+    .addEventListener("submit", event => {
+
+        event.preventDefault()
+
+        const form = event.currentTarget
+
+        const username =
+            form.querySelector('[name="username"]').value
+
+        const password =
+            form.querySelector('[name="password"]').value
+
+        login(username, password)
+            .then(data => {
+
+                console.log("Login success >>", data)
+
+                document.getElementById("loginResult")
+                    .innerHTML = `
+                        <div>
+                            Login success
+                        </div>
+
+                        <div>
+                            User: ${data.username}
+                        </div>
+
+                        <div>
+                            Customer ID: ${data.id_cust ?? "-"}
+                        </div>
+
+                        <div>
+                            Employee ID: ${data.id_emp ?? "-"}
+                        </div>
+
+                        <div>
+                            Role: ${data.role ?? "-"}
+                        </div>
+                    `
+            })
+            .catch(error => {
+
+                console.error(error)
+
+                document.getElementById("loginResult")
+                    .innerHTML = `
+                        <div>
+                            ${error.message}
+                        </div>
+                    `
+            })
+    })
+    
 document.getElementById("bookForm")
   .addEventListener("submit", (event) => {
     event.preventDefault()
