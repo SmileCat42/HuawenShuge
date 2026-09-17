@@ -9,12 +9,51 @@ import {
   assignOrder,
   updateOrderStatus,
   getEmployeeOrders,
-  getCustomerOrders
+  getCustomerOrders,
+  getAccount
 } from "./api.js"
 
 let cart = []
 
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
+
+getAccount(5001)
+    .then(account => {
+
+        console.log("Account >>", account)
+
+        document.getElementById("profile").innerHTML = `
+            <div>
+                Username: ${account.username}
+            </div>
+
+            <div>
+                Name: ${account.fname} ${account.lname}
+            </div>
+
+            <div>
+                Birth Year: ${account.birthyear}
+            </div>
+
+            <div>
+                Address: ${account.address}
+            </div>
+        `
+
+        if (account.has_image) {
+
+            document.getElementById("profileImage").src =
+                `http://localhost:3000/account/${account.id_acc}/profile-image`
+
+        }
+
+    })
+    .catch(error => {
+
+        console.error(error)
+
+    })
+
 function showBooks(data) {
 
   const list = document.getElementById("booklist")

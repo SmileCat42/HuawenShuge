@@ -8,6 +8,47 @@ app.use(cors({
 }));
 app.use(express.json());
 // +++++++++++++++++++++++++++++++++  GET  +++++++++++++++++++++++++++++++++++++
+app.get("/account/:id_acc", async (req, res) => {
+    console.log("GET account");
+    const id_acc = Number(req.params.id_acc);
+    if (Number.isNaN(id_acc)) {
+        res.status(400).json({
+            message: "Invalid Account id"
+        });
+        return;
+    }
+    try {
+        const result = await pool.query(`
+            SELECT
+                a.id_acc,
+                a.id_person,
+                a.username,
+                p.fname,
+                p.lname,
+                p.birthyear,
+                p.address,
+                (a.image IS NOT NULL) AS has_image
+            FROM account a
+            JOIN person p
+                ON a.id_person = p.id_person
+            WHERE a.id_acc = $1
+            `, [id_acc]);
+        console.log("re sult >>", result);
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                message: "Account not found"
+            });
+            return;
+        }
+        res.json(result.rows[0]);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to get account"
+        });
+    }
+});
 app.get("/order/customer/:id_cust", async (req, res) => {
     const id_cust = Number(req.params.id_cust);
     if (Number.isNaN(id_cust)) {

@@ -176,3 +176,20 @@ export function getCustomerOrders(id_cust) {
             return data
         })
 }
+
+export function getAccount(id_acc) {
+
+    return fetch(
+        `http://localhost:3000/account/${id_acc}`
+    )
+        .then(async response => {
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.message)
+            }
+
+            return data
+        })
+}
