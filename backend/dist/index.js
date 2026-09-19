@@ -8,6 +8,39 @@ app.use(cors({
 }));
 app.use(express.json());
 // +++++++++++++++++++++++++++++++++  GET  +++++++++++++++++++++++++++++++++++++
+app.get("/wishlist/customer/:id_cust", async (req, res) => {
+    const id_cust = Number(req.params.id_cust);
+    if (Number.isNaN(id_cust)) {
+        res.status(400).json({
+            message: "Invalid Customer id"
+        });
+        return;
+    }
+    try {
+        const result = await pool.query(`
+            SELECT
+                w.id_wishlist,
+                w.id_cust,
+                p.id,
+                p.name,
+                p.price,
+                p.author,
+                p.image
+            FROM wishlist w
+            JOIN products p
+                ON w.id_product = p.id
+            WHERE w.id_cust = $1
+            ORDER BY w.id_wishlist DESC
+            `, [id_cust]);
+        res.json(result.rows);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to get wishlist"
+        });
+    }
+});
 app.get("/account/:id_acc", async (req, res) => {
     console.log("GET account");
     const id_acc = Number(req.params.id_acc);
@@ -322,6 +355,37 @@ app.get("/order/employee/:id_emp", async (req, res) => {
     }
 });
 // +++++++++++++++++++++++++++++++++++++++++ POST  ++++++++++++++++++++++++++++++++
+app.post("/wishlist", async (req, res) => {
+    const { id_cust, id_product } = req.body;
+    if (!id_cust || !id_product) {
+        res.status(400).json({
+            message: "Customer and product are required"
+        });
+        return;
+    }
+    try {
+        const result = await pool.query(`
+            INSERT INTO wishlist
+                (id_cust, id_product)
+            VALUES
+                ($1, $2)
+            RETURNING *
+            `, [id_cust, id_product]);
+        res.status(201).json(result.rows[0]);
+    }
+    catch (error) {
+        console.error(error);
+        if (error.code === "23505") {
+            res.status(409).json({
+                message: "Product already in wishlist"
+            });
+            return;
+        }
+        res.status(500).json({
+            message: "Failed to add wishlist"
+        });
+    }
+});
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -556,6 +620,38 @@ app.put("/book/:id", async (req, res) => {
     }
 });
 // ++++++++++++++++++++++++++++++++++++++ DELETE +++++++++++++++++++++++++++++
+app.delete("/wishlist/:id", async (req, res) => {
+    const id_wishlist = Number(req.params.id);
+    if (Number.isNaN(id_wishlist)) {
+        res.status(400).json({
+            message: "Invalid Wishlist id"
+        });
+        return;
+    }
+    try {
+        const result = await pool.query(`
+            DELETE FROM wishlist
+            WHERE id_wishlist = $1
+            RETURNING *
+            `, [id_wishlist]);
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                message: "Wishlist item not found"
+            });
+            return;
+        }
+        res.json({
+            message: "Removed from wishlist",
+            id_wishlist
+        });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to remove wishlist"
+        });
+    }
+});
 app.delete("/book/:id", async (req, res) => {
     const id = Number(req.params.id);
     if (Number.isNaN(id)) {

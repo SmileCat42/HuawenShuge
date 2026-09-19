@@ -217,3 +217,64 @@ export function login(username, password) {
             return data
         })
 }
+
+export function addWishlist(id_cust, id_product) {
+
+    return fetch("http://localhost:3000/wishlist", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id_cust: id_cust,
+            id_product: id_product
+        })
+    })
+    .then(async response => {
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(data.message)
+        }
+
+        return data
+    })
+}
+
+export function getWishlist(id_cust) {
+
+    return fetch(
+        `http://localhost:3000/wishlist/customer/${id_cust}`
+    )
+    .then(async response => {
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(data.message)
+        }
+
+        return data
+    })
+}
+
+export function deleteWishlist(id_wishlist) {
+
+    return fetch(
+        `http://localhost:3000/wishlist/${id_wishlist}`,
+        {
+            method: "DELETE"
+        }
+    )
+    .then(async response => {
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(data.message)
+        }
+
+        return data
+    })
+}

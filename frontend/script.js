@@ -11,19 +11,135 @@ import {
   getEmployeeOrders,
   getCustomerOrders,
   getAccount,
-  login
+  login,
+  addWishlist,
+  getWishlist,
+  deleteWishlist
 } from "./api.js"
 
 let cart = []
+let wishlist = []
 
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
 
+function updateWishlistButtons() {
+
+  document
+    .querySelectorAll(".wishlistBtn")
+    .forEach(button => {
+
+      const id_product =
+        Number(button.dataset.id)
+
+      const liked =
+        wishlist.some(item =>
+          Number(item.id_product) === id_product
+        )
+
+      if (liked) {
+
+        button.textContent = "♥"
+        button.classList.add("liked")
+
+      } else {
+
+        button.textContent = "♡"
+        button.classList.remove("liked")
+
+      }
+    })
+}
+
+function showWishlist(data) {
+
+  const list =
+    document.getElementById("wishlistList")
+
+  list.innerHTML = ""
+
+  data.forEach(item => {
+
+    list.innerHTML += `
+            <div>
+
+                <img
+                    src="${item.image}"
+                    alt="${item.name}"
+                    style="width:150px;"
+                >
+
+                <h3>
+                    ${item.name}
+                </h3>
+
+                <div>
+                    Price: ${item.price}
+                </div>
+
+                <div>
+                    Author: ${item.author}
+                </div>
+
+                <button
+                    class="removeWishlistBtn"
+                    data-id="${item.id_wishlist}">
+                    Remove
+                </button>
+
+            </div>
+        `
+  })
+
+  document
+    .querySelectorAll(".removeWishlistBtn")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const id =
+          Number(button.dataset.id)
+
+        deleteWishlist(id)
+          .then(() => {
+
+            return getWishlist(3101)
+
+          })
+          .then(data => {
+
+            wishlist = data
+
+            showWishlist(data)
+
+            updateWishlistButtons()
+
+          })
+      })
+    })
+}
+
+getWishlist(3101)
+  .then(data => {
+
+    console.log(
+      "My Wishlist >>",
+      data
+    )
+
+    wishlist = data
+
+    showWishlist(data)
+
+    updateWishlistButtons()
+
+  })
+
 getAccount(5001)
-    .then(account => {
+  .then(account => {
 
-        console.log("Account >>", account)
+    console.log("Account >>", account)
 
-        document.getElementById("profile").innerHTML = `
+    document.getElementById("profile").innerHTML = `
             <div>
                 Username: ${account.username}
             </div>
@@ -41,19 +157,19 @@ getAccount(5001)
             </div>
         `
 
-        if (account.has_image) {
+    if (account.has_image) {
 
-            document.getElementById("profileImage").src =
-                `http://localhost:3000/account/${account.id_acc}/profile-image`
+      document.getElementById("profileImage").src =
+        `http://localhost:3000/account/${account.id_acc}/profile-image`
 
-        }
+    }
 
-    })
-    .catch(error => {
+  })
+  .catch(error => {
 
-        console.error(error)
+    console.error(error)
 
-    })
+  })
 
 function showBooks(data) {
 
@@ -91,6 +207,13 @@ function showBooks(data) {
         >
 
         <button
+    class="wishlistBtn"
+    data-id="${book.id}"
+    title="Wishlist">
+    ♡
+</button>
+
+        <button
           class="addCartBtn"
           data-id="${book.id}">
           Add to Order
@@ -112,6 +235,58 @@ function showBooks(data) {
 
       </div>
     `
+  })
+
+  const wishlistButtons =
+    document.querySelectorAll(".wishlistBtn")
+  wishlistButtons.forEach(button => {
+
+    button.addEventListener("click", async () => {
+
+      const id_product =
+        Number(button.dataset.id)
+
+      const exist =
+        wishlist.find(item =>
+          Number(item.id_product) === id_product
+        )
+
+      try {
+
+        if (exist) {
+
+          // มีอยู่แล้ว -> ลบออก
+          await deleteWishlist(
+            exist.id_wishlist
+          )
+
+        } else {
+
+          // ยังไม่มี -> เพิ่ม
+          await addWishlist(
+            3101,
+            id_product
+          )
+
+        }
+
+        // โหลด Wishlist ใหม่จาก Database
+        wishlist =
+          await getWishlist(3101)
+
+        // แสดง Wishlist ใหม่
+        showWishlist(wishlist)
+
+        // เปลี่ยน icon ทุกปุ่ม
+        updateWishlistButtons()
+
+      } catch (error) {
+
+        console.error(error)
+
+        alert(error.message)
+      }
+    })
   })
 
   const buttonsDel = document.querySelectorAll(".delBtn")
@@ -379,31 +554,31 @@ function showMyOrders(data) {
   })
 
   document
-  .querySelectorAll(".viewOrderBtn")
-  .forEach(button => {
+    .querySelectorAll(".viewOrderBtn")
+    .forEach(button => {
 
-    button.addEventListener("click", () => {
+      button.addEventListener("click", () => {
 
-      const id_order =
-        Number(button.dataset.id)
+        const id_order =
+          Number(button.dataset.id)
 
-      getOrder(id_order)
-        .then(order => {
+        getOrder(id_order)
+          .then(order => {
 
-          console.log("Order detail >>", order)
+            console.log("Order detail >>", order)
 
-          showOrderDetail(order)
+            showOrderDetail(order)
 
-        })
-        .catch(error => {
+          })
+          .catch(error => {
 
-          console.error(error)
+            console.error(error)
 
-          alert("Cannot get order detail")
+            alert("Cannot get order detail")
 
-        })
+          })
+      })
     })
-  })
 
   document
     .querySelectorAll(".statusBtn")
@@ -459,8 +634,8 @@ getEmployeeOrders(3201)
 
   })
 
-  function showOrderDetail(order) {
-    console.log("show order detail >> ", order)
+function showOrderDetail(order) {
+  console.log("show order detail >> ", order)
   const detail =
     document.getElementById("employeeOrderDetail")
 
@@ -517,14 +692,14 @@ getEmployeeOrders(3201)
 
 function showCustomerOrders(data) {
 
-    const list =
-        document.getElementById("customerOrderList")
+  const list =
+    document.getElementById("customerOrderList")
 
-    list.innerHTML = ""
+  list.innerHTML = ""
 
-    data.forEach(order => {
+  data.forEach(order => {
 
-        list.innerHTML += `
+    list.innerHTML += `
             <div>
 
                 <h3>
@@ -547,76 +722,76 @@ function showCustomerOrders(data) {
 
             </div>
         `
+  })
+
+  document
+    .querySelectorAll(".customerViewOrderBtn")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const id_order =
+          Number(button.dataset.id)
+
+        getOrder(id_order)
+          .then(order => {
+
+            console.log(
+              "Customer order detail >>",
+              order
+            )
+
+            showOrderDetail(order)
+
+          })
+          .catch(error => {
+
+            console.error(error)
+
+          })
+      })
     })
-
-    document
-        .querySelectorAll(".customerViewOrderBtn")
-        .forEach(button => {
-
-            button.addEventListener("click", () => {
-
-                const id_order =
-                    Number(button.dataset.id)
-
-                getOrder(id_order)
-                    .then(order => {
-
-                        console.log(
-                            "Customer order detail >>",
-                            order
-                        )
-
-                        showOrderDetail(order)
-
-                    })
-                    .catch(error => {
-
-                        console.error(error)
-
-                    })
-            })
-        })
 }
 
 getCustomerOrders(3101)
-    .then(data => {
+  .then(data => {
 
-        console.log(
-            "Customer Orders >>",
-            data
-        )
+    console.log(
+      "Customer Orders >>",
+      data
+    )
 
-        showCustomerOrders(data)
+    showCustomerOrders(data)
 
-    })
-    .catch(error => {
+  })
+  .catch(error => {
 
-        console.error(error)
+    console.error(error)
 
-    })
+  })
 
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
 
 document.getElementById("loginForm")
-    .addEventListener("submit", event => {
+  .addEventListener("submit", event => {
 
-        event.preventDefault()
+    event.preventDefault()
 
-        const form = event.currentTarget
+    const form = event.currentTarget
 
-        const username =
-            form.querySelector('[name="username"]').value
+    const username =
+      form.querySelector('[name="username"]').value
 
-        const password =
-            form.querySelector('[name="password"]').value
+    const password =
+      form.querySelector('[name="password"]').value
 
-        login(username, password)
-            .then(data => {
+    login(username, password)
+      .then(data => {
 
-                console.log("Login success >>", data)
+        console.log("Login success >>", data)
 
-                document.getElementById("loginResult")
-                    .innerHTML = `
+        document.getElementById("loginResult")
+          .innerHTML = `
                         <div>
                             Login success
                         </div>
@@ -637,20 +812,20 @@ document.getElementById("loginForm")
                             Role: ${data.role ?? "-"}
                         </div>
                     `
-            })
-            .catch(error => {
+      })
+      .catch(error => {
 
-                console.error(error)
+        console.error(error)
 
-                document.getElementById("loginResult")
-                    .innerHTML = `
+        document.getElementById("loginResult")
+          .innerHTML = `
                         <div>
                             ${error.message}
                         </div>
                     `
-            })
-    })
-    
+      })
+  })
+
 document.getElementById("bookForm")
   .addEventListener("submit", (event) => {
     event.preventDefault()
@@ -767,6 +942,7 @@ document.getElementById("EditForm")
   })
 
 //+++++++++++++++++++++++++DELETE+++++++++++++++++++++++++++++++
+
 document.getElementById("delForm")
   .addEventListener("submit", (event) => {
     event.preventDefault()

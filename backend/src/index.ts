@@ -35,7 +35,7 @@ app.get("/wishlist/customer/:id_cust", async (req, res) => {
                 p.name,
                 p.price,
                 p.author,
-                p.image_path
+                p.image
             FROM wishlist w
             JOIN products p
                 ON w.id_product = p.id
