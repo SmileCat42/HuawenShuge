@@ -24,6 +24,8 @@ let wishlist = []
 
 function updateWishlistButtons() {
 
+  console.log("WISHLIST DATA >>", wishlist)
+
   document
     .querySelectorAll(".wishlistBtn")
     .forEach(button => {
@@ -31,10 +33,20 @@ function updateWishlistButtons() {
       const id_product =
         Number(button.dataset.id)
 
+      console.log(
+        "Button product ID >>",
+        id_product
+      )
+
       const liked =
         wishlist.some(item =>
-          Number(item.id_product) === id_product
+          Number(item.id) === id_product
         )
+
+      console.log(
+        "Liked >>",
+        liked
+      )
 
       if (liked) {
 
@@ -274,11 +286,11 @@ function showBooks(data) {
         wishlist =
           await getWishlist(3101)
 
-        // แสดง Wishlist ใหม่
-        showWishlist(wishlist)
+        // เปลี่ยนหัวใจทันที
+    updateWishlistButtons()
 
-        // เปลี่ยน icon ทุกปุ่ม
-        updateWishlistButtons()
+    // แสดง Wishlist
+    showWishlist(wishlist)
 
       } catch (error) {
 
@@ -357,6 +369,7 @@ function showBooks(data) {
   .then((data) => {
     console.log(data)
     showBooks(data)
+    updateWishlistButtons()
   })
 
 function showCart() {
