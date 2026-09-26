@@ -19,6 +19,8 @@ import {
 
 let cart = []
 let wishlist = []
+let currentUser =
+  JSON.parse(sessionStorage.getItem("currentUser")) || null
 
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
 
@@ -114,7 +116,7 @@ function showWishlist(data) {
         deleteWishlist(id)
           .then(() => {
 
-            return getWishlist(3101)
+            return getWishlist(currentUser.id_cust)
 
           })
           .then(data => {
@@ -130,7 +132,8 @@ function showWishlist(data) {
     })
 }
 
-getWishlist(3101)
+if (currentUser && currentUser.id_cust) {
+getWishlist(currentUser.id_cust)
   .then(data => {
 
     console.log(
@@ -139,14 +142,14 @@ getWishlist(3101)
     )
 
     wishlist = data
-
     showWishlist(data)
-
     updateWishlistButtons()
 
   })
+}
 
-getAccount(5001)
+if (currentUser && currentUser.id_acc) {
+getAccount(currentUser.id_acc)
   .then(account => {
 
     console.log("Account >>", account)
@@ -182,6 +185,7 @@ getAccount(5001)
     console.error(error)
 
   })
+}
 
 function showBooks(data) {
 
@@ -276,7 +280,7 @@ function showBooks(data) {
 
           // ยังไม่มี -> เพิ่ม
           await addWishlist(
-            3101,
+            currentUser.id_cust,
             id_product
           )
 
@@ -284,13 +288,13 @@ function showBooks(data) {
 
         // โหลด Wishlist ใหม่จาก Database
         wishlist =
-          await getWishlist(3101)
+          await getWishlist(currentUser.id_cust)
 
         // เปลี่ยนหัวใจทันที
-    updateWishlistButtons()
+        updateWishlistButtons()
 
-    // แสดง Wishlist
-    showWishlist(wishlist)
+        // แสดง Wishlist
+        showWishlist(wishlist)
 
       } catch (error) {
 
@@ -459,14 +463,14 @@ function showEmployeeOrders(data) {
         const id_order =
           Number(button.dataset.id)
 
-        assignOrder(id_order, 3201)
+        assignOrder(id_order, currentUser.id_emp)
           .then(data => {
 
             console.log("Assigned >>", data)
 
             return Promise.all([
               getUnassignedOrders(),
-              getEmployeeOrders(3201)
+              getEmployeeOrders(currentUser.id_emp)
             ])
 
           })
@@ -480,6 +484,7 @@ function showEmployeeOrders(data) {
     })
 }
 
+if (currentUser && currentUser.id_emp) {
 getUnassignedOrders()
   .then(data => {
     showEmployeeOrders(data)
@@ -616,7 +621,7 @@ function showMyOrders(data) {
               data
             )
 
-            return getEmployeeOrders(3201)
+            return getEmployeeOrders(currentUser.id_emp)
           })
           .then(data => {
 
@@ -633,7 +638,7 @@ function showMyOrders(data) {
     })
 }
 
-getEmployeeOrders(3201)
+getEmployeeOrders(currentUser.id_emp)
   .then(data => {
 
     console.log("My orders >>", data)
@@ -702,6 +707,7 @@ function showOrderDetail(order) {
     </div>
   `
 }
+}
 
 function showCustomerOrders(data) {
 
@@ -766,7 +772,7 @@ function showCustomerOrders(data) {
     })
 }
 
-getCustomerOrders(3101)
+getCustomerOrders(currentUser.id_cust)
   .then(data => {
 
     console.log(
@@ -802,6 +808,13 @@ document.getElementById("loginForm")
       .then(data => {
 
         console.log("Login success >>", data)
+
+        currentUser = data
+
+        sessionStorage.setItem(
+          "currentUser",
+          JSON.stringify(currentUser)
+        )
 
         document.getElementById("loginResult")
           .innerHTML = `
@@ -894,7 +907,7 @@ createOrderBtn.addEventListener("click", () => {
   }
 
   createOrder({
-    id_cust: 3101,
+    id_cust: currentUser.id_cust,
     items: cart
   })
     .then(data => {
