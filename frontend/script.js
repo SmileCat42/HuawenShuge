@@ -133,28 +133,28 @@ function showWishlist(data) {
 }
 
 if (currentUser && currentUser.id_cust) {
-getWishlist(currentUser.id_cust)
-  .then(data => {
+  getWishlist(currentUser.id_cust)
+    .then(data => {
 
-    console.log(
-      "My Wishlist >>",
-      data
-    )
+      console.log(
+        "My Wishlist >>",
+        data
+      )
 
-    wishlist = data
-    showWishlist(data)
-    updateWishlistButtons()
+      wishlist = data
+      showWishlist(data)
+      updateWishlistButtons()
 
-  })
+    })
 }
 
 if (currentUser && currentUser.id_acc) {
-getAccount(currentUser.id_acc)
-  .then(account => {
+  getAccount(currentUser.id_acc)
+    .then(account => {
 
-    console.log("Account >>", account)
+      console.log("Account >>", account)
 
-    document.getElementById("profile").innerHTML = `
+      document.getElementById("profile").innerHTML = `
             <div>
                 Username: ${account.username}
             </div>
@@ -172,19 +172,19 @@ getAccount(currentUser.id_acc)
             </div>
         `
 
-    if (account.has_image) {
+      if (account.has_image) {
 
-      document.getElementById("profileImage").src =
-        `http://localhost:3000/account/${account.id_acc}/profile-image`
+        document.getElementById("profileImage").src =
+          `http://localhost:3000/account/${account.id_acc}/profile-image`
 
-    }
+      }
 
-  })
-  .catch(error => {
+    })
+    .catch(error => {
 
-    console.error(error)
+      console.error(error)
 
-  })
+    })
 }
 
 function showBooks(data) {
@@ -485,28 +485,28 @@ function showEmployeeOrders(data) {
 }
 
 if (currentUser && currentUser.id_emp) {
-getUnassignedOrders()
-  .then(data => {
-    showEmployeeOrders(data)
-  })
-  .catch(error => {
-    console.error(error)
-  })
+  getUnassignedOrders()
+    .then(data => {
+      showEmployeeOrders(data)
+    })
+    .catch(error => {
+      console.error(error)
+    })
 
-function showMyOrders(data) {
+  function showMyOrders(data) {
 
-  const list =
-    document.getElementById("myOrderList")
+    const list =
+      document.getElementById("myOrderList")
 
-  list.innerHTML = ""
+    list.innerHTML = ""
 
-  data.forEach(order => {
+    data.forEach(order => {
 
-    let button = ""
+      let button = ""
 
-    if (order.status === "PROCESSING") {
+      if (order.status === "PROCESSING") {
 
-      button = `
+        button = `
                 <button
                     class="statusBtn"
                     data-id="${order.id_order}"
@@ -515,9 +515,9 @@ function showMyOrders(data) {
                 </button>
             `
 
-    } else if (order.status === "PAID") {
+      } else if (order.status === "PAID") {
 
-      button = `
+        button = `
                 <button
                     class="statusBtn"
                     data-id="${order.id_order}"
@@ -526,9 +526,9 @@ function showMyOrders(data) {
                 </button>
             `
 
-    } else if (order.status === "SHIPPED") {
+      } else if (order.status === "SHIPPED") {
 
-      button = `
+        button = `
                 <button
                     class="statusBtn"
                     data-id="${order.id_order}"
@@ -536,9 +536,9 @@ function showMyOrders(data) {
                     Mark as DELIVERED
                 </button>
             `
-    }
+      }
 
-    list.innerHTML += `
+      list.innerHTML += `
             <div>
 
                 <h3>
@@ -569,95 +569,95 @@ function showMyOrders(data) {
 
             </div>
         `
-  })
-
-  document
-    .querySelectorAll(".viewOrderBtn")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        const id_order =
-          Number(button.dataset.id)
-
-        getOrder(id_order)
-          .then(order => {
-
-            console.log("Order detail >>", order)
-
-            showOrderDetail(order)
-
-          })
-          .catch(error => {
-
-            console.error(error)
-
-            alert("Cannot get order detail")
-
-          })
-      })
     })
 
-  document
-    .querySelectorAll(".statusBtn")
-    .forEach(button => {
+    document
+      .querySelectorAll(".viewOrderBtn")
+      .forEach(button => {
 
-      button.addEventListener("click", () => {
+        button.addEventListener("click", () => {
 
-        const id_order =
-          Number(button.dataset.id)
+          const id_order =
+            Number(button.dataset.id)
 
-        const status =
-          button.dataset.status
+          getOrder(id_order)
+            .then(order => {
 
-        updateOrderStatus(
-          id_order,
-          status
-        )
-          .then(data => {
+              console.log("Order detail >>", order)
 
-            console.log(
-              "Updated >>",
-              data
-            )
+              showOrderDetail(order)
 
-            return getEmployeeOrders(currentUser.id_emp)
-          })
-          .then(data => {
+            })
+            .catch(error => {
 
-            showMyOrders(data)
+              console.error(error)
 
-          })
-          .catch(error => {
+              alert("Cannot get order detail")
 
-            console.error(error)
-
-            alert(error.message)
-          })
+            })
+        })
       })
+
+    document
+      .querySelectorAll(".statusBtn")
+      .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+          const id_order =
+            Number(button.dataset.id)
+
+          const status =
+            button.dataset.status
+
+          updateOrderStatus(
+            id_order,
+            status
+          )
+            .then(data => {
+
+              console.log(
+                "Updated >>",
+                data
+              )
+
+              return getEmployeeOrders(currentUser.id_emp)
+            })
+            .then(data => {
+
+              showMyOrders(data)
+
+            })
+            .catch(error => {
+
+              console.error(error)
+
+              alert(error.message)
+            })
+        })
+      })
+    }
+  getEmployeeOrders(currentUser.id_emp)
+    .then(data => {
+
+      console.log("My orders >>", data)
+
+      showMyOrders(data)
+
     })
-}
+    .catch(error => {
 
-getEmployeeOrders(currentUser.id_emp)
-  .then(data => {
+      console.error(error)
 
-    console.log("My orders >>", data)
+    })
+  
 
-    showMyOrders(data)
+  function showOrderDetail(order) {
+    console.log("show order detail >> ", order)
+    const detail =
+      document.getElementById("employeeOrderDetail")
 
-  })
-  .catch(error => {
-
-    console.error(error)
-
-  })
-
-function showOrderDetail(order) {
-  console.log("show order detail >> ", order)
-  const detail =
-    document.getElementById("employeeOrderDetail")
-
-  detail.innerHTML = `
+    detail.innerHTML = `
     <div>
 
       <h2>
@@ -706,7 +706,7 @@ function showOrderDetail(order) {
 
     </div>
   `
-}
+  }
 }
 
 function showCustomerOrders(data) {
@@ -771,24 +771,24 @@ function showCustomerOrders(data) {
       })
     })
 }
+if (currentUser && currentUser.id_cust) {
+  getCustomerOrders(currentUser.id_cust)
+    .then(data => {
 
-getCustomerOrders(currentUser.id_cust)
-  .then(data => {
+      console.log(
+        "Customer Orders >>",
+        data
+      )
 
-    console.log(
-      "Customer Orders >>",
-      data
-    )
+      showCustomerOrders(data)
 
-    showCustomerOrders(data)
+    })
+    .catch(error => {
 
-  })
-  .catch(error => {
+      console.error(error)
 
-    console.error(error)
-
-  })
-
+    })
+}
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
 
 document.getElementById("loginForm")
