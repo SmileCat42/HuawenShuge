@@ -22,6 +22,119 @@ let wishlist = []
 let currentUser =
   JSON.parse(sessionStorage.getItem("currentUser")) || null
 
+async function loadUserData() {
+
+  if (!currentUser) {
+    return
+  }
+
+  // ---------- Account ----------
+  if (currentUser.id_acc) {
+
+    try {
+
+      const account =
+        await getAccount(currentUser.id_acc)
+
+      console.log("Account >>", account)
+
+      document.getElementById("profile").innerHTML = `
+        <div>
+          Username: ${account.username}
+        </div>
+
+        <div>
+          Name: ${account.fname} ${account.lname}
+        </div>
+
+        <div>
+          Birth Year: ${account.birthyear}
+        </div>
+
+        <div>
+          Address: ${account.address}
+        </div>
+      `
+
+      if (account.has_image) {
+
+        document.getElementById("profileImage").src =
+          `http://localhost:3000/account/${account.id_acc}/profile-image`
+      }
+
+    } catch (error) {
+
+      console.error(error)
+
+    }
+  }
+
+
+  // ---------- Customer ----------
+  if (currentUser.id_cust) {
+
+    try {
+
+      const [wishlistData, orderData] =
+        await Promise.all([
+
+          getWishlist(currentUser.id_cust),
+
+          getCustomerOrders(
+            currentUser.id_cust
+          )
+
+        ])
+
+      wishlist = wishlistData
+
+      showWishlist(wishlistData)
+      updateWishlistButtons()
+
+      showCustomerOrders(orderData)
+
+    } catch (error) {
+
+      console.error(error)
+
+    }
+  }
+
+
+  // ---------- Employee ----------
+  if (currentUser.id_emp) {
+
+    try {
+
+      const [
+        unassignedOrders,
+        myOrders
+      ] = await Promise.all([
+
+        getUnassignedOrders(),
+
+        getEmployeeOrders(
+          currentUser.id_emp
+        )
+
+      ])
+
+      showEmployeeOrders(
+        unassignedOrders
+      )
+
+      showMyOrders(
+        myOrders
+      )
+
+    } catch (error) {
+
+      console.error(error)
+
+    }
+  }
+}
+
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
 
 function updateWishlistButtons() {
@@ -35,20 +148,10 @@ function updateWishlistButtons() {
       const id_product =
         Number(button.dataset.id)
 
-      console.log(
-        "Button product ID >>",
-        id_product
-      )
-
       const liked =
         wishlist.some(item =>
           Number(item.id) === id_product
         )
-
-      console.log(
-        "Liked >>",
-        liked
-      )
 
       if (liked) {
 
@@ -144,45 +247,6 @@ if (currentUser && currentUser.id_cust) {
       wishlist = data
       showWishlist(data)
       updateWishlistButtons()
-
-    })
-}
-
-if (currentUser && currentUser.id_acc) {
-  getAccount(currentUser.id_acc)
-    .then(account => {
-
-      console.log("Account >>", account)
-
-      document.getElementById("profile").innerHTML = `
-            <div>
-                Username: ${account.username}
-            </div>
-
-            <div>
-                Name: ${account.fname} ${account.lname}
-            </div>
-
-            <div>
-                Birth Year: ${account.birthyear}
-            </div>
-
-            <div>
-                Address: ${account.address}
-            </div>
-        `
-
-      if (account.has_image) {
-
-        document.getElementById("profileImage").src =
-          `http://localhost:3000/account/${account.id_acc}/profile-image`
-
-      }
-
-    })
-    .catch(error => {
-
-      console.error(error)
 
     })
 }
@@ -484,15 +548,6 @@ function showEmployeeOrders(data) {
     })
 }
 
-if (currentUser && currentUser.id_emp) {
-  getUnassignedOrders()
-    .then(data => {
-      showEmployeeOrders(data)
-    })
-    .catch(error => {
-      console.error(error)
-    })
-
   function showMyOrders(data) {
 
     const list =
@@ -637,19 +692,6 @@ if (currentUser && currentUser.id_emp) {
         })
       })
     }
-  getEmployeeOrders(currentUser.id_emp)
-    .then(data => {
-
-      console.log("My orders >>", data)
-
-      showMyOrders(data)
-
-    })
-    .catch(error => {
-
-      console.error(error)
-
-    })
   
 
   function showOrderDetail(order) {
@@ -707,7 +749,6 @@ if (currentUser && currentUser.id_emp) {
     </div>
   `
   }
-}
 
 function showCustomerOrders(data) {
 
@@ -771,24 +812,9 @@ function showCustomerOrders(data) {
       })
     })
 }
-if (currentUser && currentUser.id_cust) {
-  getCustomerOrders(currentUser.id_cust)
-    .then(data => {
 
-      console.log(
-        "Customer Orders >>",
-        data
-      )
+loadUserData()
 
-      showCustomerOrders(data)
-
-    })
-    .catch(error => {
-
-      console.error(error)
-
-    })
-}
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
 
 document.getElementById("loginForm")
@@ -805,40 +831,42 @@ document.getElementById("loginForm")
       form.querySelector('[name="password"]').value
 
     login(username, password)
-      .then(data => {
+  .then(async data => {
 
-        console.log("Login success >>", data)
+    console.log("Login success >>", data)
 
-        currentUser = data
+    currentUser = data
 
-        sessionStorage.setItem(
-          "currentUser",
-          JSON.stringify(currentUser)
-        )
+    sessionStorage.setItem(
+      "currentUser",
+      JSON.stringify(currentUser)
+    )
 
-        document.getElementById("loginResult")
-          .innerHTML = `
-                        <div>
-                            Login success
-                        </div>
+    await loadUserData()
 
-                        <div>
-                            User: ${data.username}
-                        </div>
+    document.getElementById("loginResult")
+      .innerHTML = `
+        <div>
+          Login success
+        </div>
 
-                        <div>
-                            Customer ID: ${data.id_cust ?? "-"}
-                        </div>
+        <div>
+          User: ${data.username}
+        </div>
 
-                        <div>
-                            Employee ID: ${data.id_emp ?? "-"}
-                        </div>
+        <div>
+          Customer ID: ${data.id_cust ?? "-"}
+        </div>
 
-                        <div>
-                            Role: ${data.role ?? "-"}
-                        </div>
-                    `
-      })
+        <div>
+          Employee ID: ${data.id_emp ?? "-"}
+        </div>
+
+        <div>
+          Role: ${data.role ?? "-"}
+        </div>
+      `
+  })
       .catch(error => {
 
         console.error(error)
