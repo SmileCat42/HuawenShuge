@@ -813,7 +813,35 @@ function showCustomerOrders(data) {
     })
 }
 
+function updateRoleBasedUI() {
+
+    const isCustomer =
+        !!currentUser?.id_cust
+
+    const isEmployee =
+        !!currentUser?.id_emp
+
+    document
+        .querySelectorAll('[data-role="customer"]')
+        .forEach(element => {
+
+            element.hidden = !isCustomer
+        })
+
+    document
+        .querySelectorAll('[data-role="employee"]')
+        .forEach(element => {
+
+            element.hidden = !isEmployee
+        })
+}
+
 loadUserData()
+    .then(() => {
+
+        updateRoleBasedUI()
+
+    })
 
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
 
@@ -1012,3 +1040,12 @@ document.getElementById("delForm")
         showBooks(data)
       })
   })
+
+  document.getElementById(
+    "editProfileBtn"
+).addEventListener("click", () => {
+
+    document.getElementById(
+        "editProfileFormContainer"
+    ).hidden = false
+})

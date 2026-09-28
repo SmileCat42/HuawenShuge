@@ -38,6 +38,47 @@
 
 <div id="profile"></div>
 
+<button id="editProfileBtn">
+    Edit Profile
+</button>
+<div id="editProfileFormContainer">
+
+    <h3>Edit Profile</h3>
+
+    <form id="editProfileForm">
+
+        <input
+            type="text"
+            name="fname"
+            placeholder="First name"
+        >
+
+        <input
+            type="text"
+            name="lname"
+            placeholder="Last name"
+        >
+
+        <input
+            type="number"
+            name="birthyear"
+            placeholder="Birth year"
+        >
+
+        <input
+            type="text"
+            name="address"
+            placeholder="Address"
+        >
+
+        <button type="submit">
+            Save
+        </button>
+
+    </form>
+
+</div>
+
 <img
     id="profileImage"
     alt="Profile"
@@ -49,34 +90,37 @@
   </div>
   </br></br>
 
-  <h2>My Wishlist</h2>
+  <section data-role="customer">
 
-<div id="wishlistList"></div>
+    <h3>WishList</h3>
+    <div id="wishlistList"></div>
 
-  <h2>Cart</h2>
+    <h2>Cart</h2>
+    <div id="cartList"></div>
 
-<div id="cartList"></div>
+    <button id="createOrderBtn">
+        Create Order
+    </button>
 
-<button id="createOrderBtn">
-    Create Order
-</button>
+    <div id="orderResult"></div>
 
-<div id="orderResult"></div>
+    <h2>My Orders</h2>
+    <div id="customerOrderList"></div>
 
-<h2>Employee - Order Management</h2>
-<div id="employeeOrderList"></div>
+</section>
 
-<h2>My Orders</h2>
+<section data-role="employee">
 
-<div id="myOrderList"></div>
+    <h2>Employee - Order Management</h2>
+    <div id="employeeOrderList"></div>
 
-<h2>Order Detail</h2>
+    <h2>My Orders</h2>
+    <div id="myOrderList"></div>
 
-<div id="employeeOrderDetail"></div>
+    <h2>Order Detail</h2>
+    <div id="employeeOrderDetail"></div>
 
-<h2>My Orders</h2>
-
-<div id="customerOrderList"></div>
+</section>
 
   </br></br>
   </br></br>
