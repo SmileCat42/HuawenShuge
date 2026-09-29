@@ -278,3 +278,44 @@ export function deleteWishlist(id_wishlist) {
         return data
     })
 }
+
+export function updateAccount(
+    id_acc,
+    fname,
+    lname,
+    birthyear,
+    address
+) {
+
+    return fetch(
+        `http://localhost:3000/account/${id_acc}`,
+        {
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                fname: fname,
+                lname: lname,
+                birthyear: birthyear,
+                address: address
+            })
+        }
+    )
+    .then(async response => {
+
+        const data =
+            await response.json()
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message || "Update failed"
+            )
+        }
+
+        return data
+    })
+}

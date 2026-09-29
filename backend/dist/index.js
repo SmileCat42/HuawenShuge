@@ -619,6 +619,67 @@ app.put("/book/:id", async (req, res) => {
         });
     }
 });
+app.put("/account/:id_acc", async (req, res) => {
+    const id_acc = Number(req.params.id_acc);
+    if (Number.isNaN(id_acc)) {
+        res.status(400).json({
+            message: "Invalid account id"
+        });
+        return;
+    }
+    const { fname, lname, birthyear, address } = req.body;
+    if (!fname ||
+        !lname ||
+        !birthyear ||
+        !address) {
+        res.status(400).json({
+            message: "Please fill all fields"
+        });
+        return;
+    }
+    try {
+        const result = await pool.query(`
+            UPDATE person p
+            SET
+                fname = $1,
+                lname = $2,
+                birthyear = $3,
+                address = $4
+            FROM account a
+            WHERE
+                a.id_acc = $5
+                AND p.id_person = a.id_person
+            RETURNING
+                p.id_person,
+                p.fname,
+                p.lname,
+                p.birthyear,
+                p.address
+            `, [
+            fname,
+            lname,
+            birthyear,
+            address,
+            id_acc
+        ]);
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                message: "Account not found"
+            });
+            return;
+        }
+        res.json({
+            message: "Profile updated successfully",
+            person: result.rows[0]
+        });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to update profile"
+        });
+    }
+});
 // ++++++++++++++++++++++++++++++++++++++ DELETE +++++++++++++++++++++++++++++
 app.delete("/wishlist/:id", async (req, res) => {
     const id_wishlist = Number(req.params.id);
