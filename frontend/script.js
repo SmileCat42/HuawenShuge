@@ -55,21 +55,28 @@ async function loadUserData() {
         <div>
           Address: ${account.address}
         </div>
+
+        <div>
+        Tel: ${account.tel}
+    </div>
       `
       const form =
-    document.getElementById("editProfileForm")
+        document.getElementById("editProfileForm")
 
-  form.querySelector('[name="fname"]').value =
-    account.fname
+      form.querySelector('[name="fname"]').value =
+        account.fname
 
-  form.querySelector('[name="lname"]').value =
-    account.lname
+      form.querySelector('[name="lname"]').value =
+        account.lname
 
-  form.querySelector('[name="birthyear"]').value =
-    account.birthyear
+      form.querySelector('[name="birthyear"]').value =
+        account.birthyear
 
-  form.querySelector('[name="address"]').value =
-    account.address
+      form.querySelector('[name="address"]').value =
+        account.address
+
+      form.querySelector('[name="tel"]').value =
+        account.tel
 
       if (account.has_image) {
 
@@ -165,7 +172,7 @@ function updateWishlistButtons() {
 
       const liked =
         wishlist.some(item =>
-          Number(item.id) === id_product
+          Number(item.id_product) === id_product
         )
 
       if (liked) {
@@ -1038,74 +1045,80 @@ document.getElementById("EditForm")
       })
   })
 
-  document
-    .getElementById("editProfileForm")
-    .addEventListener("submit", async event => {
+document
+  .getElementById("editProfileForm")
+  .addEventListener("submit", async event => {
 
-        event.preventDefault()
+    event.preventDefault()
 
-        if (!currentUser) {
+    if (!currentUser) {
 
-            alert("Please login first")
-            return
-        }
+      alert("Please login first")
+      return
+    }
 
-        const form =
-            event.currentTarget
+    const form =
+      event.currentTarget
 
-        const fname =
-            form.querySelector(
-                '[name="fname"]'
-            ).value
+    const fname =
+      form.querySelector(
+        '[name="fname"]'
+      ).value
 
-        const lname =
-            form.querySelector(
-                '[name="lname"]'
-            ).value
+    const lname =
+      form.querySelector(
+        '[name="lname"]'
+      ).value
 
-        const birthyear =
-            Number(
-                form.querySelector(
-                    '[name="birthyear"]'
-                ).value
-            )
+    const birthyear =
+      Number(
+        form.querySelector(
+          '[name="birthyear"]'
+        ).value
+      )
 
-        const address =
-            form.querySelector(
-                '[name="address"]'
-            ).value
+    const address =
+      form.querySelector(
+        '[name="address"]'
+      ).value
 
-        try {
+      const tel =
+    form.querySelector(
+        '[name="tel"]'
+    ).value
 
-            const data =
-                await updateAccount(
-                    currentUser.id_acc,
-                    fname,
-                    lname,
-                    birthyear,
-                    address
-                )
+    try {
 
-            console.log(
-                "Update profile >>",
-                data
-            )
+      const data =
+        await updateAccount(
+          currentUser.id_acc,
+          fname,
+          lname,
+          birthyear,
+          address,
+          tel
+        )
 
-            alert("Profile updated")
+      console.log(
+        "Update profile >>",
+        data
+      )
 
-            await loadUserData()
+      alert("Profile updated")
 
-            document.getElementById(
-                "editProfileFormContainer"
-            ).hidden = true
+      await loadUserData()
 
-        } catch (error) {
+      document.getElementById(
+        "editProfileFormContainer"
+      ).hidden = true
 
-            console.error(error)
+    } catch (error) {
 
-            alert(error.message)
-        }
-    })
+      console.error(error)
+
+      alert(error.message)
+    }
+  })
 
 //+++++++++++++++++++++++++DELETE+++++++++++++++++++++++++++++++
 

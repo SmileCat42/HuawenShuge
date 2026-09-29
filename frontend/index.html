@@ -2,161 +2,136 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HuawenShuge</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HuawenShuge</title>
 </head>
 
 <body>
 
-  <h2>Login</h2>
+    <h2>Login</h2>
 
-<form id="loginForm">
+    <form id="loginForm">
 
-    <input
-        type="text"
-        name="username"
-        placeholder="Username"
-    >
+        <input type="text" name="username" placeholder="Username">
 
-    <input
-        type="password"
-        name="password"
-        placeholder="Password"
-    >
-
-    <button type="submit">
-        Login
-    </button>
-
-</form>
-
-<div id="loginResult"></div>
-
-  <h2>Account Profile</h2>
-
-<div id="profile"></div>
-
-<button id="editProfileBtn">
-    Edit Profile
-</button>
-<div id="editProfileFormContainer" hidden>
-
-    <h3>Edit Profile</h3>
-
-    <form id="editProfileForm">
-
-        <input
-            type="text"
-            name="fname"
-            placeholder="First name"
-        >
-
-        <input
-            type="text"
-            name="lname"
-            placeholder="Last name"
-        >
-
-        <input
-            type="number"
-            name="birthyear"
-            placeholder="Birth year"
-        >
-
-        <input
-            type="text"
-            name="address"
-            placeholder="Address"
-        >
+        <input type="password" name="password" placeholder="Password">
 
         <button type="submit">
-            Save
+            Login
         </button>
 
     </form>
 
-</div>
+    <div id="loginResult"></div>
 
-<img
-    id="profileImage"
-    alt="Profile"
-    style="width:150px;"
->
-  <div id="booklist">
+    <h2>Account Profile</h2>
 
+    <div id="profile"></div>
 
-  </div>
-  </br></br>
-
-  <section data-role="customer">
-
-    <h3>WishList</h3>
-    <div id="wishlistList"></div>
-
-    <h2>Cart</h2>
-    <div id="cartList"></div>
-
-    <button id="createOrderBtn">
-        Create Order
+    <button id="editProfileBtn">
+        Edit Profile
     </button>
+    <div id="editProfileFormContainer" hidden>
 
-    <div id="orderResult"></div>
+        <h3>Edit Profile</h3>
 
-    <h2>My Orders</h2>
-    <div id="customerOrderList"></div>
+        <form id="editProfileForm">
 
-</section>
+            <input type="text" name="fname" placeholder="First name">
 
-<section data-role="employee">
+            <input type="text" name="lname" placeholder="Last name">
 
-    <h2>Employee - Order Management</h2>
-    <div id="employeeOrderList"></div>
+            <input type="number" name="birthyear" placeholder="Birth year">
 
-    <h2>My Orders</h2>
-    <div id="myOrderList"></div>
+            <input type="text" name="address" placeholder="Address">
 
-    <h2>Order Detail</h2>
-    <div id="employeeOrderDetail"></div>
+            <input type="text" name="tel" placeholder="Telephone">
 
-</section>
+            <button type="submit">
+                Save
+            </button>
 
-  </br></br>
-  </br></br>
-  <form id="bookForm">
-    <label>Name: </label>
-    <input name="name">
-    <label>Price: </label>
-    <input name="price">
-    <label>Author : </label>
-    <input name="author">
-    <label>Detail : </label>
-    <input name="detail">
-    <input type="file" name="image">
-    <button type="submit">Add Book</button>
-  </form>
-  </br></br>
-  <form id="EditForm">
-    <label>ID : </label>
-    <input name="id"></br>
-    <label>Name : </label>
-    <input name="name"></br>
-    <label>Price : </label>
-    <input name="price"></br>
-    <label>Author : </label>
-    <input name="author"></br>
-    <label>Detail : </label>
-    <input name="detail"></br>
-    <input type="file" name="image">
-    <button type="submit">Edit</button>
-  </form>
-  </br></br>
-  <form id="delForm">
-    <label>ID : </label>
-    <input name="id"></br>
-    <button type="submit">Delete</button>
-  </form>
-  <script type = "module" src="./script.js"></script>
+        </form>
+
+    </div>
+
+    <img id="profileImage" alt="Profile" style="width:150px;">
+    <div id="booklist">
+
+
+    </div>
+    </br></br>
+
+    <section data-role="customer">
+
+        <h3>WishList</h3>
+        <div id="wishlistList"></div>
+
+        <h2>Cart</h2>
+        <div id="cartList"></div>
+
+        <button id="createOrderBtn">
+            Create Order
+        </button>
+
+        <div id="orderResult"></div>
+
+        <h2>My Orders</h2>
+        <div id="customerOrderList"></div>
+
+    </section>
+
+    <section data-role="employee">
+
+        <h2>Employee - Order Management</h2>
+        <div id="employeeOrderList"></div>
+
+        <h2>My Orders</h2>
+        <div id="myOrderList"></div>
+
+        <h2>Order Detail</h2>
+        <div id="employeeOrderDetail"></div>
+
+    </section>
+
+    </br></br>
+    </br></br>
+    <form id="bookForm">
+        <label>Name: </label>
+        <input name="name">
+        <label>Price: </label>
+        <input name="price">
+        <label>Author : </label>
+        <input name="author">
+        <label>Detail : </label>
+        <input name="detail">
+        <input type="file" name="image">
+        <button type="submit">Add Book</button>
+    </form>
+    </br></br>
+    <form id="EditForm">
+        <label>ID : </label>
+        <input name="id"></br>
+        <label>Name : </label>
+        <input name="name"></br>
+        <label>Price : </label>
+        <input name="price"></br>
+        <label>Author : </label>
+        <input name="author"></br>
+        <label>Detail : </label>
+        <input name="detail"></br>
+        <input type="file" name="image">
+        <button type="submit">Edit</button>
+    </form>
+    </br></br>
+    <form id="delForm">
+        <label>ID : </label>
+        <input name="id"></br>
+        <button type="submit">Delete</button>
+    </form>
+    <script type="module" src="./script.js"></script>
 </body>
+
 </html>

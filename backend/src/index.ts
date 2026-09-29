@@ -80,6 +80,7 @@ app.get("/account/:id_acc", async (req, res) => {
                 p.lname,
                 p.birthyear,
                 p.address,
+                p.tel,
                 (a.image IS NOT NULL) AS has_image
             FROM account a
             JOIN person p
@@ -757,7 +758,118 @@ app.post("/order", async (req, res) => {
     }
 })
 
+app.post("/register", async (req, res) => {
 
+    const {
+        fname,
+        lname,
+        birthyear,
+        address,
+        tel,
+        username,
+        password
+    } = req.body
+
+    if (
+        !fname ||
+        !lname ||
+        !birthyear ||
+        !address ||
+        !tel ||
+        !username ||
+        !password
+    ) {
+        res.status(400).json({
+            message: "Please fill all fields"
+        })
+        return
+    }
+
+    const client = await pool.connect()
+
+    try {
+
+        await client.query("BEGIN")
+
+        // 1. Create Person
+        const personResult = await client.query(
+            `
+            INSERT INTO person
+                (fname, lname, birthyear, address, tel)
+            VALUES
+                ($1, $2, $3, $4, $5)
+            RETURNING id_person
+            `,
+            [
+                fname,
+                lname,
+                birthyear,
+                address,
+                tel
+            ]
+        )
+
+        const id_person =
+            personResult.rows[0].id_person
+
+
+        // 2. Create Customer
+        const customerResult = await client.query(
+            `
+            INSERT INTO customer
+                (id_person)
+            VALUES
+                ($1)
+            RETURNING id_cust
+            `,
+            [id_person]
+        )
+
+        const id_cust =
+            customerResult.rows[0].id_cust
+
+
+        // 3. Create Account
+        const accountResult = await client.query(
+            `
+            INSERT INTO account
+                (id_person, username, password_hash)
+            VALUES
+                ($1, $2, $3)
+            RETURNING id_acc, username
+            `,
+            [
+                id_person,
+                username,
+                password
+            ]
+        )
+
+
+        await client.query("COMMIT")
+
+        res.status(201).json({
+            message: "Register successful",
+            id_person: id_person,
+            id_cust: id_cust,
+            account: accountResult.rows[0]
+        })
+
+    } catch (error) {
+
+        await client.query("ROLLBACK")
+
+        console.error(error)
+
+        res.status(500).json({
+            message: "Register failed"
+        })
+
+    } finally {
+
+        client.release()
+    }
+})
 
 // +++++++++++++++++++++++++++++++ PUT ++++++++++++++++++++++++++++++
 
@@ -838,15 +950,12 @@ app.put("/book/:id", async (req, res) => {
 
 app.put("/account/:id_acc", async (req, res) => {
 
-    const id_acc =
-        Number(req.params.id_acc)
+    const id_acc = Number(req.params.id_acc)
 
     if (Number.isNaN(id_acc)) {
-
         res.status(400).json({
             message: "Invalid account id"
         })
-
         return
     }
 
@@ -854,20 +963,20 @@ app.put("/account/:id_acc", async (req, res) => {
         fname,
         lname,
         birthyear,
-        address
+        address,
+        tel
     } = req.body
 
     if (
         !fname ||
         !lname ||
         !birthyear ||
-        !address
+        !address ||
+        !tel
     ) {
-
         res.status(400).json({
             message: "Please fill all fields"
         })
-
         return
     }
 
@@ -880,33 +989,34 @@ app.put("/account/:id_acc", async (req, res) => {
                 fname = $1,
                 lname = $2,
                 birthyear = $3,
-                address = $4
+                address = $4,
+                tel = $5
             FROM account a
             WHERE
-                a.id_acc = $5
+                a.id_acc = $6
                 AND p.id_person = a.id_person
             RETURNING
                 p.id_person,
                 p.fname,
                 p.lname,
                 p.birthyear,
-                p.address
+                p.address,
+                p.tel
             `,
             [
                 fname,
                 lname,
                 birthyear,
                 address,
+                tel,
                 id_acc
             ]
         )
 
         if (result.rows.length === 0) {
-
             res.status(404).json({
                 message: "Account not found"
             })
-
             return
         }
 

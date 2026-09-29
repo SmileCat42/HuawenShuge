@@ -284,7 +284,8 @@ export function updateAccount(
     fname,
     lname,
     birthyear,
-    address
+    address,
+    tel
 ) {
 
     return fetch(
@@ -300,7 +301,8 @@ export function updateAccount(
                 fname: fname,
                 lname: lname,
                 birthyear: birthyear,
-                address: address
+                address: address,
+                tel: tel
             })
         }
     )
