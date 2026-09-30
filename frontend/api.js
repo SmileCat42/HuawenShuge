@@ -321,3 +321,48 @@ export function updateAccount(
         return data
     })
 }
+
+export function register(
+    fname,
+    lname,
+    birthyear,
+    address,
+    tel,
+    username,
+    password
+) {
+
+    return fetch(
+        "http://localhost:3000/register",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                fname: fname,
+                lname: lname,
+                birthyear: birthyear,
+                address: address,
+                tel: tel,
+                username: username,
+                password: password
+            })
+        }
+    )
+        .then(async response => {
+
+            const data =
+                await response.json()
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Register failed"
+                )
+            }
+
+            return data
+        })
+}

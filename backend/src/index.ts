@@ -833,7 +833,7 @@ app.post("/register", async (req, res) => {
         const accountResult = await client.query(
             `
             INSERT INTO account
-                (id_person, username, password_hash)
+                (id_person, username, password)
             VALUES
                 ($1, $2, $3)
             RETURNING id_acc, username

@@ -15,7 +15,8 @@ import {
   addWishlist,
   getWishlist,
   deleteWishlist,
-  updateAccount
+  updateAccount,
+  register
 } from "./api.js"
 
 let cart = []
@@ -866,6 +867,102 @@ loadUserData()
   })
 
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
+
+document
+  .getElementById("registerForm")
+  .addEventListener("submit", async event => {
+
+    event.preventDefault()
+
+    const form =
+      event.currentTarget
+
+    const fname =
+      form.querySelector(
+        '[name="fname"]'
+      ).value
+
+    const lname =
+      form.querySelector(
+        '[name="lname"]'
+      ).value
+
+    const birthyear =
+      Number(
+        form.querySelector(
+          '[name="birthyear"]'
+        ).value
+      )
+
+    const address =
+      form.querySelector(
+        '[name="address"]'
+      ).value
+
+    const tel =
+      form.querySelector(
+        '[name="tel"]'
+      ).value
+
+    const username =
+      form.querySelector(
+        '[name="username"]'
+      ).value
+
+    const password =
+      form.querySelector(
+        '[name="password"]'
+      ).value
+
+    try {
+
+      const data =
+        await register(
+          fname,
+          lname,
+          birthyear,
+          address,
+          tel,
+          username,
+          password
+        )
+
+      console.log(
+        "Register success >>",
+        data
+      )
+
+      document.getElementById(
+        "registerResult"
+      ).innerHTML = `
+        <div>
+          Register successful
+        </div>
+
+        <div>
+          Customer ID: ${data.id_cust}
+        </div>
+
+        <div>
+          Username: ${data.account.username}
+        </div>
+      `
+
+      form.reset()
+
+    } catch (error) {
+
+      console.error(error)
+
+      document.getElementById(
+        "registerResult"
+      ).innerHTML = `
+        <div>
+          ${error.message}
+        </div>
+      `
+    }
+  })
 
 document.getElementById("loginForm")
   .addEventListener("submit", event => {
