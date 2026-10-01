@@ -782,6 +782,23 @@ function showCustomerOrders(data) {
 
   data.forEach(order => {
 
+      let cancelButton = ""
+
+  if (
+    order.status === "Pending" ||
+    order.status === "Processing" ||
+    order.status === "Paid"
+  ) {
+
+    cancelButton = `
+        <button
+            class="cancelOrderBtn"
+            data-id="${order.id_order}">
+            Cancel Order
+        </button>
+    `
+  }
+
     list.innerHTML += `
             <div>
 
@@ -802,6 +819,8 @@ function showCustomerOrders(data) {
                     data-id="${order.id_order}">
                     View Detail
                 </button>
+
+                ${cancelButton}
 
             </div>
         `
@@ -832,6 +851,50 @@ function showCustomerOrders(data) {
             console.error(error)
 
           })
+      })
+    })
+
+  document
+    .querySelectorAll(".cancelOrderBtn")
+    .forEach(button => {
+
+      button.addEventListener("click", async () => {
+
+        const id_order =
+          Number(button.dataset.id)
+
+        const confirmCancel =
+          confirm(
+            `Cancel Order #${id_order}?`
+          )
+
+        if (!confirmCancel) {
+          return
+        }
+
+        try {
+
+          await updateOrderStatus(
+            id_order,
+            "CANCELLED"
+          )
+
+          const data =
+            await getCustomerOrders(
+              currentUser.id_cust
+            )
+
+          showCustomerOrders(data)
+
+          alert("Order cancelled")
+
+        } catch (error) {
+
+          console.error(error)
+
+          alert(error.message)
+
+        }
       })
     })
 }
@@ -990,6 +1053,8 @@ document.getElementById("loginForm")
         )
 
         await loadUserData()
+
+        updateRoleBasedUI()
 
         document.getElementById("loginResult")
           .innerHTML = `
@@ -1179,10 +1244,10 @@ document
         '[name="address"]'
       ).value
 
-      const tel =
-    form.querySelector(
+    const tel =
+      form.querySelector(
         '[name="tel"]'
-    ).value
+      ).value
 
     try {
 
@@ -1243,3 +1308,33 @@ document.getElementById(
     "editProfileFormContainer"
   ).hidden = false
 })
+
+document
+  .getElementById("logoutBtn")
+  .addEventListener("click", () => {
+
+    sessionStorage.removeItem("currentUser")
+
+    currentUser = null
+
+    cart = []
+    wishlist = []
+
+    updateRoleBasedUI()
+
+    document.getElementById("profile").innerHTML = ""
+
+    document.getElementById("wishlistList").innerHTML = ""
+
+    document.getElementById("customerOrderList").innerHTML = ""
+
+    document.getElementById("employeeOrderList").innerHTML = ""
+
+    document.getElementById("myOrderList").innerHTML = ""
+
+    document.getElementById("employeeOrderDetail").innerHTML = ""
+
+    document.getElementById("loginResult").innerHTML = ""
+
+    alert("Logout successful")
+  })

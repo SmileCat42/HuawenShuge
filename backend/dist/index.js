@@ -626,6 +626,15 @@ app.post("/register", async (req, res) => {
     catch (error) {
         await client.query("ROLLBACK");
         console.error(error);
+        if (error &&
+            typeof error === "object" &&
+            "code" in error &&
+            error.code === "23505") {
+            res.status(409).json({
+                message: "Username already exists"
+            });
+            return;
+        }
         res.status(500).json({
             message: "Register failed"
         });
