@@ -20,6 +20,7 @@ import {
 } from "./api.js"
 
 let cart = []
+let books = []
 let wishlist = []
 let currentUser =
   JSON.parse(sessionStorage.getItem("currentUser")) || null
@@ -459,26 +460,173 @@ function showBooks(data) {
 } loadBooks()
   .then((data) => {
     console.log(data)
+    books = data
     showBooks(data)
     updateWishlistButtons()
   })
 
 function showCart() {
 
-  const cartList = document.getElementById("cartList")
+  const cartList =
+    document.getElementById("cartList")
 
   cartList.innerHTML = ""
 
+  let total = 0
+
   cart.forEach(item => {
 
+    const book =
+      books.find(
+        book =>
+          Number(book.id) === Number(item.id_product)
+      )
+
+    if (!book) {
+      return
+    }
+
+    const subtotal =
+      Number(book.price) * item.quantity
+
+    total += subtotal
+
     cartList.innerHTML += `
-            <div>
-                Product ID: ${item.id_product}
-                <br>
-                Quantity: ${item.quantity}
-            </div>
-        `
+      <div>
+
+        <h3>
+          ${book.name}
+        </h3>
+
+        <div>
+          Price: ${book.price} บาท
+        </div>
+
+        <div>
+
+          Quantity:
+
+          <button
+            class="minusCartBtn"
+            data-id="${item.id_product}">
+            -
+          </button>
+
+          ${item.quantity}
+
+          <button
+            class="plusCartBtn"
+            data-id="${item.id_product}">
+            +
+          </button>
+
+        </div>
+
+        <div>
+          Subtotal: ${subtotal} บาท
+        </div>
+
+        <button
+          class="removeCartBtn"
+          data-id="${item.id_product}">
+          Remove
+        </button>
+
+      </div>
+
+      <hr>
+    `
   })
+
+  cartList.innerHTML += `
+    <h3>
+      Total: ${total} บาท
+    </h3>
+  `
+
+
+  // ---------- Plus ----------
+
+  document
+    .querySelectorAll(".plusCartBtn")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const id_product =
+          Number(button.dataset.id)
+
+        const item =
+          cart.find(
+            item =>
+              item.id_product === id_product
+          )
+
+        if (item) {
+          item.quantity += 1
+        }
+
+        showCart()
+      })
+    })
+
+
+  // ---------- Minus ----------
+
+  document
+    .querySelectorAll(".minusCartBtn")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const id_product =
+          Number(button.dataset.id)
+
+        const item =
+          cart.find(
+            item =>
+              item.id_product === id_product
+          )
+
+        if (item) {
+
+          item.quantity -= 1
+
+          if (item.quantity <= 0) {
+
+            cart =
+              cart.filter(
+                item =>
+                  item.id_product !== id_product
+              )
+          }
+        }
+
+        showCart()
+      })
+    })
+
+
+  // ---------- Remove ----------
+
+  document
+    .querySelectorAll(".removeCartBtn")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const id_product =
+          Number(button.dataset.id)
+
+        cart =
+          cart.filter(
+            item =>
+              item.id_product !== id_product
+          )
+
+        showCart()
+      })
+    })
 }
 
 function showOrder(order) {
@@ -495,7 +643,7 @@ function showOrder(order) {
   
         ${order.items.map(item => `
             <div>
-                ${item.product_name}
+                ${item.name}
                 × ${item.quantity}
                 = ${item.subtotal} บาท
             </div>
