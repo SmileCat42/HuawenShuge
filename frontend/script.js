@@ -325,7 +325,8 @@ function showBooks(data) {
 
         <button
           data-id="${book.id}"
-          class="delBtn">
+          class="delBtn"
+          data-role="employee">
           Delete
         </button>
 
@@ -333,7 +334,8 @@ function showBooks(data) {
           data-id="${book.id}"
           data-name="${book.name}"
           data-price="${book.price}"
-          class="editBtn">
+          class="editBtn"
+          data-role="employee">>
           Edit
         </button>
 
@@ -853,6 +855,8 @@ function showMyOrders(data) {
 
             showMyOrders(data)
 
+
+
           })
           .catch(error => {
 
@@ -930,22 +934,22 @@ function showCustomerOrders(data) {
 
   data.forEach(order => {
 
-      let cancelButton = ""
+    let cancelButton = ""
 
-  if (
-    order.status === "Pending" ||
-    order.status === "Processing" ||
-    order.status === "Paid"
-  ) {
+    if (
+      order.status === "Pending" ||
+      order.status === "Processing" ||
+      order.status === "Paid"
+    ) {
 
-    cancelButton = `
+      cancelButton = `
         <button
             class="cancelOrderBtn"
             data-id="${order.id_order}">
             Cancel Order
         </button>
     `
-  }
+    }
 
     list.innerHTML += `
             <div>
@@ -1202,6 +1206,10 @@ document.getElementById("loginForm")
 
         await loadUserData()
 
+        const booksData = await loadBooks()
+
+        showBooks(booksData)
+
         updateRoleBasedUI()
 
         document.getElementById("loginResult")
@@ -1316,6 +1324,7 @@ createOrderBtn.addEventListener("click", () => {
       showCart()
 
       showOrder(order)
+
 
     })
     .catch(error => {
