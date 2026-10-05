@@ -366,3 +366,39 @@ export function register(
             return data
         })
 }
+
+export function uploadPaymentSlip(
+    id_order,
+    file
+) {
+
+    const formData =
+        new FormData()
+
+    formData.append(
+        "slip",
+        file
+    )
+
+    return fetch(
+        `http://localhost:3000/order/${id_order}/slip`,
+        {
+            method: "POST",
+            body: formData
+        }
+    )
+        .then(async response => {
+
+            const data =
+                await response.json()
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message ||
+                    "Upload failed"
+                )
+            }
+
+            return data
+        })
+}

@@ -37,8 +37,7 @@ app.get(
                 await pool.query(
                     `
                     SELECT
-                        payment_slip,
-                        slip_type
+                        payment_slip
                     FROM orders
                     WHERE id_order = $1
                     `,
@@ -64,7 +63,7 @@ app.get(
 
             res.setHeader(
                 "Content-Type",
-                row.slip_type || "image/jpeg"
+                "image/jpeg"
             )
 
             res.end(row.payment_slip)
@@ -538,73 +537,58 @@ app.get("/order/employee/:id_emp", async (req, res) => {
 
 // +++++++++++++++++++++++++++++++++++++++++ POST  ++++++++++++++++++++++++++++++++
 
-app.post(
-    "/order/:id_order/slip",
-    upload.single("slip"),
-    async (req, res) => {
+app.post("/order/:id_order/slip", upload.single("slip"), async (req, res) => {
+    const id_order = Number(req.params.id_order);
 
-        const id_order =
-            Number(req.params.id_order)
-
-        if (Number.isNaN(id_order)) {
-            res.status(400).json({
-                message: "Invalid order id"
-            })
-            return
-        }
-
-        if (!req.file) {
-            res.status(400).json({
-                message: "Payment slip is required"
-            })
-            return
-        }
-
-        try {
-
-            const result = await pool.query(
-                `
-                UPDATE orders
-                SET
-                    payment_slip = $1,
-                    slip_type = $2,
-                    slip_uploaded_at = NOW()
-                WHERE id_order = $3
-                RETURNING
-                    id_order,
-                    status,
-                    slip_type,
-                    slip_uploaded_at
-                `,
-                [
-                    req.file.buffer,
-                    req.file.mimetype,
-                    id_order
-                ]
-            )
-
-            if (result.rows.length === 0) {
-                res.status(404).json({
-                    message: "Order not found"
-                })
-                return
-            }
-
-            res.json({
-                message: "Payment slip uploaded successfully",
-                order: result.rows[0]
-            })
-
-        } catch (error) {
-
-            console.error(error)
-
-            res.status(500).json({
-                message: "Failed to upload payment slip"
-            })
-        }
+    if (Number.isNaN(id_order)) {
+        res.status(400).json({
+            message: "Invalid order id"
+        });
+        return;
     }
-)
+
+    if (!req.file) {
+        res.status(400).json({
+            message: "Payment slip is required"
+        });
+        return;
+    }
+
+    try {
+        const result = await pool.query(`
+            UPDATE orders
+            SET
+                payment_slip = $1,
+                slip_uploaded_at = NOW()
+            WHERE id_order = $2
+            RETURNING
+                id_order,
+                status,
+                slip_uploaded_at
+        `, [
+            req.file.buffer,
+            id_order
+        ]);
+
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                message: "Order not found"
+            });
+            return;
+        }
+
+        res.json({
+            message: "Payment slip uploaded successfully",
+            order: result.rows[0]
+        });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to upload payment slip"
+        });
+    }
+});
 
 app.post("/wishlist", async (req, res) => {
 
@@ -1424,6 +1408,37 @@ app.patch("/order/:id/status", async (req, res) => {
             PAID: "SHIPPED",
             SHIPPED: "DELIVERED"
         }
+
+        if (status === "PAID") {
+
+    const slipResult =
+        await pool.query(
+            `
+            SELECT payment_slip
+            FROM orders
+            WHERE id_order = $1
+            `,
+            [id_order]
+        )
+
+    if (
+        slipResult.rows.length === 0
+    ) {
+        res.status(404).json({
+            message: "Order not found"
+        })
+        return
+    }
+
+    if (
+        !slipResult.rows[0].payment_slip
+    ) {
+        res.status(400).json({
+            message: "Payment slip not uploaded"
+        })
+        return
+    }
+}
 
         if (status === "CANCELLED") {
 

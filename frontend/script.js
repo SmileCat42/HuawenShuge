@@ -16,7 +16,8 @@ import {
   getWishlist,
   deleteWishlist,
   updateAccount,
-  register
+  register,
+  uploadPaymentSlip
 } from "./api.js"
 
 let cart = []
@@ -932,9 +933,12 @@ function showCustomerOrders(data) {
 
   list.innerHTML = ""
 
+
+
   data.forEach(order => {
 
     let cancelButton = ""
+    let paymentButton = ""
 
     if (
       order.status === "Pending" ||
@@ -951,31 +955,54 @@ function showCustomerOrders(data) {
     `
     }
 
+    if (
+      order.status === "Pending" ||
+      order.status === "Processing"
+    ) {
+
+      paymentButton = `
+        <input
+            type="file"
+            class="slipInput"
+            data-id="${order.id_order}"
+            accept="image/*"
+        >
+
+        <button
+            class="uploadSlipBtn"
+            data-id="${order.id_order}">
+            Upload Slip
+        </button>
+    `
+    }
+
     list.innerHTML += `
-            <div>
+    <div>
 
-                <h3>
-                    Order #${order.id_order}
-                </h3>
+        <h3>
+            Order #${order.id_order}
+        </h3>
 
-                <div>
-                    Status: ${order.status}
-                </div>
+        <div>
+            Status: ${order.status}
+        </div>
 
-                <div>
-                    Total: ${order.total} บาท
-                </div>
+        <div>
+            Total: ${order.total} บาท
+        </div>
 
-                <button
-                    class="customerViewOrderBtn"
-                    data-id="${order.id_order}">
-                    View Detail
-                </button>
+        <button
+            class="customerViewOrderBtn"
+            data-id="${order.id_order}">
+            View Detail
+        </button>
 
-                ${cancelButton}
+        ${paymentButton}
 
-            </div>
-        `
+        ${cancelButton}
+
+    </div>
+`
   })
 
   document
@@ -1005,6 +1032,68 @@ function showCustomerOrders(data) {
           })
       })
     })
+
+    document
+  .querySelectorAll(".uploadSlipBtn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      async () => {
+
+        const id_order =
+          Number(button.dataset.id)
+
+        const input =
+          document.querySelector(
+            `.slipInput[data-id="${id_order}"]`
+          )
+
+        const file =
+          input.files[0]
+
+        if (!file) {
+          alert(
+            "Please select payment slip"
+          )
+          return
+        }
+
+        try {
+
+          const data =
+            await uploadPaymentSlip(
+              id_order,
+              file
+            )
+
+          console.log(
+            "Upload slip >>",
+            data
+          )
+
+          alert(
+            "Payment slip uploaded"
+          )
+
+          const orders =
+            await getCustomerOrders(
+              currentUser.id_cust
+            )
+
+          showCustomerOrders(
+            orders
+          )
+
+        } catch (error) {
+
+          console.error(error)
+
+          alert(error.message)
+        }
+      }
+    )
+  })
 
   document
     .querySelectorAll(".cancelOrderBtn")
@@ -1080,6 +1169,24 @@ loadUserData()
     updateRoleBasedUI()
 
   })
+
+  document.getElementById(
+    "paymentArea"
+).innerHTML = `
+    <h3>
+        Scan QR to Pay
+    </h3>
+
+    <img
+        src="./images/qr.png"
+        alt="Payment QR"
+        style="width:200px;"
+    >
+
+    <p>
+        Amount: 1,190 บาท
+    </p>
+`
 
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
 
