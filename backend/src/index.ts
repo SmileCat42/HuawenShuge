@@ -11,7 +11,74 @@ app.use(cors({
 
 app.use(express.json())
 
+const upload = multer({
+    storage: multer.memoryStorage()
+})
+
 // +++++++++++++++++++++++++++++++++  GET  +++++++++++++++++++++++++++++++++++++
+
+app.get(
+    "/order/:id_order/slip",
+    async (req, res) => {
+
+        const id_order =
+            Number(req.params.id_order)
+
+        if (Number.isNaN(id_order)) {
+            res.status(400).send(
+                "Invalid order id"
+            )
+            return
+        }
+
+        try {
+
+            const result =
+                await pool.query(
+                    `
+                    SELECT
+                        payment_slip,
+                        slip_type
+                    FROM orders
+                    WHERE id_order = $1
+                    `,
+                    [id_order]
+                )
+
+            if (result.rows.length === 0) {
+                res.status(404).send(
+                    "Order not found"
+                )
+                return
+            }
+
+            const row =
+                result.rows[0]
+
+            if (!row.payment_slip) {
+                res.status(404).send(
+                    "Payment slip not found"
+                )
+                return
+            }
+
+            res.setHeader(
+                "Content-Type",
+                row.slip_type || "image/jpeg"
+            )
+
+            res.end(row.payment_slip)
+
+        } catch (error) {
+
+            console.error(error)
+
+            res.status(500).send(
+                "Failed to get payment slip"
+            )
+        }
+    }
+)
 
 app.get("/wishlist/customer/:id_cust", async (req, res) => {
 
@@ -470,6 +537,74 @@ app.get("/order/employee/:id_emp", async (req, res) => {
 
 
 // +++++++++++++++++++++++++++++++++++++++++ POST  ++++++++++++++++++++++++++++++++
+
+app.post(
+    "/order/:id_order/slip",
+    upload.single("slip"),
+    async (req, res) => {
+
+        const id_order =
+            Number(req.params.id_order)
+
+        if (Number.isNaN(id_order)) {
+            res.status(400).json({
+                message: "Invalid order id"
+            })
+            return
+        }
+
+        if (!req.file) {
+            res.status(400).json({
+                message: "Payment slip is required"
+            })
+            return
+        }
+
+        try {
+
+            const result = await pool.query(
+                `
+                UPDATE orders
+                SET
+                    payment_slip = $1,
+                    slip_type = $2,
+                    slip_uploaded_at = NOW()
+                WHERE id_order = $3
+                RETURNING
+                    id_order,
+                    status,
+                    slip_type,
+                    slip_uploaded_at
+                `,
+                [
+                    req.file.buffer,
+                    req.file.mimetype,
+                    id_order
+                ]
+            )
+
+            if (result.rows.length === 0) {
+                res.status(404).json({
+                    message: "Order not found"
+                })
+                return
+            }
+
+            res.json({
+                message: "Payment slip uploaded successfully",
+                order: result.rows[0]
+            })
+
+        } catch (error) {
+
+            console.error(error)
+
+            res.status(500).json({
+                message: "Failed to upload payment slip"
+            })
+        }
+    }
+)
 
 app.post("/wishlist", async (req, res) => {
 
