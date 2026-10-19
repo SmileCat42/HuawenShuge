@@ -731,6 +731,18 @@ function showMyOrders(data) {
 
   data.forEach(order => {
 
+    let slipButton = ""
+
+if (order.has_slip) {
+    slipButton = `
+        <button
+            class="viewSlipBtn"
+            data-id="${order.id_order}">
+            View Slip
+        </button>
+    `
+}
+
     let button = ""
 
     if (order.status === "PROCESSING") {
@@ -792,6 +804,8 @@ function showMyOrders(data) {
   View Detail
 </button>
 
+                ${slipButton}
+
                 ${button}
 
                 
@@ -825,6 +839,19 @@ function showMyOrders(data) {
 
           })
       })
+    })
+
+    document
+    .querySelectorAll(".viewSlipBtn")
+    .forEach(button => {
+        button.addEventListener("click", () => {
+            const id_order = Number(button.dataset.id)
+
+            window.open(
+                `http://localhost:3000/order/${id_order}/slip`,
+                "_blank"
+            )
+        })
     })
 
   document

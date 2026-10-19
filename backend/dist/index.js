@@ -366,7 +366,8 @@ app.get("/order/employee/:id_emp", async (req, res) => {
                 o.id_emp,
                 o.order_date,
                 o.status,
-                SUM(od.quantity * od.price) AS total
+                SUM(od.quantity * od.price) AS total,
+                BOOL_OR(o.payment_slip IS NOT NULL) AS has_slip
             FROM orders o
             JOIN order_detail od
                 ON o.id_order = od.id_order
