@@ -1251,6 +1251,197 @@ app.delete("/book/:id", async (req, res) => {
         })
     }
 })
+//++++++++++++++++++++++++++++++++++++++++ PROMOTE +++++++++++++++++++++++++++++++++++++++
+
+// GET: Customers who can be promoted to STAFF
+app.get("/manager/:id_emp/eligible-customers", async (req, res) => {
+    const id_emp = Number(req.params.id_emp)
+
+    if (!Number.isInteger(id_emp) || id_emp <= 0) {
+        res.status(400).json({
+            message: "Invalid manager id"
+        })
+        return
+    }
+
+    try {
+        // ตรวจสอบว่า Employee คนนี้เป็น Manager จริงในฐานข้อมูล
+        const managerCheck = await pool.query(
+            `
+            SELECT e.id_emp
+            FROM employees e
+            JOIN roles r
+                ON e.id_role = r.id_role
+            WHERE e.id_emp = $1
+              AND r.role_name = 'manager'
+            `,
+            [id_emp]
+        )
+
+        if (managerCheck.rows.length === 0) {
+            res.status(403).json({
+                message: "Only Manager can manage employee roles"
+            })
+            return
+        }
+
+        // แสดงลูกค้าที่มีบัญชี แต่ยังไม่ได้เป็นพนักงาน
+        const result = await pool.query(
+            `
+            SELECT
+                c.id_cust,
+                c.id_person,
+                a.id_acc,
+                a.username,
+                p.fname,
+                p.lname
+            FROM customer c
+            JOIN person p
+                ON c.id_person = p.id_person
+            JOIN account a
+                ON a.id_person = p.id_person
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM employees e
+                WHERE e.id_person = c.id_person
+            )
+            ORDER BY c.id_cust
+            `
+        )
+
+        res.json(result.rows)
+
+    } catch (error) {
+        console.error(error)
+
+        res.status(500).json({
+            message: "Failed to get eligible customers"
+        })
+    }
+})
+
+// POST: Promote a Customer to STAFF
+app.post(
+    "/manager/:id_emp/promote/:id_cust",
+    async (req, res) => {
+        const manager_id_emp = Number(req.params.id_emp)
+        const id_cust = Number(req.params.id_cust)
+
+        if (
+            !Number.isInteger(manager_id_emp) ||
+            manager_id_emp <= 0 ||
+            !Number.isInteger(id_cust) ||
+            id_cust <= 0
+        ) {
+            res.status(400).json({
+                message: "Invalid id"
+            })
+            return
+        }
+
+        try {
+            // 1. ตรวจสอบผู้แต่งตั้งว่าเป็น Manager
+            const managerCheck = await pool.query(
+                `
+                SELECT e.id_emp
+                FROM employees e
+                JOIN roles r
+                    ON e.id_role = r.id_role
+                WHERE e.id_emp = $1
+                  AND r.role_name = 'manager'
+                `,
+                [manager_id_emp]
+            )
+
+            if (managerCheck.rows.length === 0) {
+                res.status(403).json({
+                    message: "Only Manager can promote customers"
+                })
+                return
+            }
+
+            // 2. ตรวจสอบว่ามี Customer จริง
+            const customerResult = await pool.query(
+                `
+                SELECT id_cust, id_person
+                FROM customer
+                WHERE id_cust = $1
+                `,
+                [id_cust]
+            )
+
+            if (customerResult.rows.length === 0) {
+                res.status(404).json({
+                    message: "Customer not found"
+                })
+                return
+            }
+
+            const id_person =
+                customerResult.rows[0].id_person
+
+            // 3. ห้ามแต่งตั้งซ้ำ หากเป็น Employee อยู่แล้ว
+            const employeeCheck = await pool.query(
+                `
+                SELECT id_emp
+                FROM employees
+                WHERE id_person = $1
+                `,
+                [id_person]
+            )
+
+            if (employeeCheck.rows.length > 0) {
+                res.status(409).json({
+                    message: "This person is already an employee"
+                })
+                return
+            }
+
+            // 4. ค้นหา Role STAFF
+            const staffRole = await pool.query(
+                `
+                SELECT id_role
+                FROM roles
+                WHERE role_name = 'staff'
+                `
+            )
+
+            if (staffRole.rows.length === 0) {
+                res.status(500).json({
+                    message: "Staff role not found"
+                })
+                return
+            }
+
+            // 5. สร้าง Employee โดยยังคงข้อมูล Customer ไว้
+            const result = await pool.query(
+                `
+                INSERT INTO employees (id_person, id_role)
+                VALUES ($1, $2)
+                RETURNING id_emp, id_person, id_role
+                `,
+                [
+                    id_person,
+                    staffRole.rows[0].id_role
+                ]
+            )
+
+            res.status(201).json({
+                message: "Customer promoted to STAFF successfully",
+                employee: result.rows[0]
+            })
+
+        } catch (error) {
+            console.error(error)
+
+            res.status(500).json({
+                message: "Failed to promote customer"
+            })
+        }
+    }
+)
+
+
 //++++++++++++++++++++++++++++++++++++++++ ASSIGN ++++++++++++++++++++++++++++++++++++++++
 
 app.patch("/order/:id/assign", async (req, res) => {

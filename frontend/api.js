@@ -402,3 +402,43 @@ export function uploadPaymentSlip(
             return data
         })
 }
+
+// GET: แสดงรายชื่อลูกค้าที่สามารถแต่งตั้งเป็น Staff ได้
+export function getEligibleCustomers(id_emp) {
+    return fetch(
+        `http://localhost:3000/manager/${id_emp}/eligible-customers`
+    )
+        .then(async response => {
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Failed to load customers"
+                )
+            }
+
+            return data
+        })
+}
+
+
+// POST: แต่งตั้ง Customer เป็น Staff
+export function promoteCustomerToStaff(id_emp, id_cust) {
+    return fetch(
+        `http://localhost:3000/manager/${id_emp}/promote/${id_cust}`,
+        {
+            method: "POST"
+        }
+    )
+        .then(async response => {
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Failed to promote customer"
+                )
+            }
+
+            return data
+        })
+}

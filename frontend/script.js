@@ -17,7 +17,9 @@ import {
   deleteWishlist,
   updateAccount,
   register,
-  uploadPaymentSlip
+  uploadPaymentSlip,
+  getEligibleCustomers,
+  promoteCustomerToStaff
 } from "./api.js"
 
 let cart = []
@@ -158,6 +160,96 @@ async function loadUserData() {
 
     }
   }
+
+  // ---------- Manager ----------
+const managerList = document.getElementById(
+    "eligibleCustomerList"
+)
+
+if (currentUser.role === "manager" && currentUser.id_emp) {
+    await loadEligibleCustomers()
+} else if (managerList) {
+    managerList.replaceChildren()
+}
+}
+
+async function loadEligibleCustomers() {
+    const list = document.getElementById(
+        "eligibleCustomerList"
+    )
+
+    if (!list) return
+
+    try {
+        const customers = await getEligibleCustomers(
+            currentUser.id_emp
+        )
+
+        showEligibleCustomers(customers)
+
+    } catch (error) {
+        console.error(error)
+        list.textContent = error.message
+    }
+}
+
+function showEligibleCustomers(customers) {
+    const list = document.getElementById(
+        "eligibleCustomerList"
+    )
+
+    if (!list) return
+
+    list.replaceChildren()
+
+    if (customers.length === 0) {
+        list.textContent =
+            "No customers available for promotion."
+        return
+    }
+
+    customers.forEach(customer => {
+        const card = document.createElement("div")
+
+        const heading = document.createElement("h3")
+        heading.textContent =
+            `${customer.fname} ${customer.lname}`
+
+        const info = document.createElement("p")
+        info.textContent =
+            `Username: ${customer.username} | Customer ID: ${customer.id_cust}`
+
+        const button = document.createElement("button")
+        button.textContent = "Promote to STAFF"
+        button.dataset.id = customer.id_cust
+
+        button.addEventListener("click", async () => {
+            const confirmed = confirm(
+                `Promote ${customer.fname} ${customer.lname} to STAFF?`
+            )
+
+            if (!confirmed) return
+
+            try {
+                const result = await promoteCustomerToStaff(
+                    currentUser.id_emp,
+                    customer.id_cust
+                )
+
+                alert(result.message)
+
+                // โหลดรายชื่อใหม่หลังแต่งตั้งสำเร็จ
+                await loadEligibleCustomers()
+
+            } catch (error) {
+                console.error(error)
+                alert(error.message)
+            }
+        })
+
+        card.append(heading, info, button)
+        list.append(card)
+    })
 }
 
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
@@ -1187,6 +1279,14 @@ function updateRoleBasedUI() {
     .forEach(element => {
 
       element.hidden = !isEmployee
+    })
+
+  const isManager = currentUser?.role === "manager"
+
+  document
+    .querySelectorAll('[data-role="manager"]')
+    .forEach(element => {
+        element.hidden = !isManager
     })
 }
 
