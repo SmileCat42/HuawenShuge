@@ -261,7 +261,7 @@ function updateWishlistButtons() {
       const id_product = Number(button.dataset.id)
 
       const liked = wishlist.some(item =>
-        Number(item.id_product) === id_product
+        Number(item.id) === id_product
       )
 
       if (liked) {
@@ -477,7 +477,7 @@ function showBooks(data) {
 
       const exist =
         wishlist.find(item =>
-          Number(item.id_product) === id_product
+          Number(item.id) === id_product
         )
 
       try {
