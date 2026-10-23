@@ -162,94 +162,94 @@ async function loadUserData() {
   }
 
   // ---------- Manager ----------
-const managerList = document.getElementById(
+  const managerList = document.getElementById(
     "eligibleCustomerList"
-)
+  )
 
-if (currentUser.role === "manager" && currentUser.id_emp) {
+  if (currentUser.role === "manager" && currentUser.id_emp) {
     await loadEligibleCustomers()
-} else if (managerList) {
+  } else if (managerList) {
     managerList.replaceChildren()
-}
+  }
 }
 
 async function loadEligibleCustomers() {
-    const list = document.getElementById(
-        "eligibleCustomerList"
+  const list = document.getElementById(
+    "eligibleCustomerList"
+  )
+
+  if (!list) return
+
+  try {
+    const customers = await getEligibleCustomers(
+      currentUser.id_emp
     )
 
-    if (!list) return
+    showEligibleCustomers(customers)
 
-    try {
-        const customers = await getEligibleCustomers(
-            currentUser.id_emp
-        )
-
-        showEligibleCustomers(customers)
-
-    } catch (error) {
-        console.error(error)
-        list.textContent = error.message
-    }
+  } catch (error) {
+    console.error(error)
+    list.textContent = error.message
+  }
 }
 
 function showEligibleCustomers(customers) {
-    const list = document.getElementById(
-        "eligibleCustomerList"
-    )
+  const list = document.getElementById(
+    "eligibleCustomerList"
+  )
 
-    if (!list) return
+  if (!list) return
 
-    list.replaceChildren()
+  list.replaceChildren()
 
-    if (customers.length === 0) {
-        list.textContent =
-            "No customers available for promotion."
-        return
-    }
+  if (customers.length === 0) {
+    list.textContent =
+      "No customers available for promotion."
+    return
+  }
 
-    customers.forEach(customer => {
-        const card = document.createElement("div")
+  customers.forEach(customer => {
+    const card = document.createElement("div")
 
-        const heading = document.createElement("h3")
-        heading.textContent =
-            `${customer.fname} ${customer.lname}`
+    const heading = document.createElement("h3")
+    heading.textContent =
+      `${customer.fname} ${customer.lname}`
 
-        const info = document.createElement("p")
-        info.textContent =
-            `Username: ${customer.username} | Customer ID: ${customer.id_cust}`
+    const info = document.createElement("p")
+    info.textContent =
+      `Username: ${customer.username} | Customer ID: ${customer.id_cust}`
 
-        const button = document.createElement("button")
-        button.textContent = "Promote to STAFF"
-        button.dataset.id = customer.id_cust
+    const button = document.createElement("button")
+    button.textContent = "Promote to STAFF"
+    button.dataset.id = customer.id_cust
 
-        button.addEventListener("click", async () => {
-            const confirmed = confirm(
-                `Promote ${customer.fname} ${customer.lname} to STAFF?`
-            )
+    button.addEventListener("click", async () => {
+      const confirmed = confirm(
+        `Promote ${customer.fname} ${customer.lname} to STAFF?`
+      )
 
-            if (!confirmed) return
+      if (!confirmed) return
 
-            try {
-                const result = await promoteCustomerToStaff(
-                    currentUser.id_emp,
-                    customer.id_cust
-                )
+      try {
+        const result = await promoteCustomerToStaff(
+          currentUser.id_emp,
+          customer.id_cust
+        )
 
-                alert(result.message)
+        alert(result.message)
 
-                // โหลดรายชื่อใหม่หลังแต่งตั้งสำเร็จ
-                await loadEligibleCustomers()
+        // โหลดรายชื่อใหม่หลังแต่งตั้งสำเร็จ
+        await loadEligibleCustomers()
 
-            } catch (error) {
-                console.error(error)
-                alert(error.message)
-            }
-        })
-
-        card.append(heading, info, button)
-        list.append(card)
+      } catch (error) {
+        console.error(error)
+        alert(error.message)
+      }
     })
+
+    card.append(heading, info, button)
+    list.append(card)
+  })
 }
 
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
@@ -271,15 +271,19 @@ function updateWishlistButtons() {
         )
 
       if (liked) {
-
         button.textContent = "♥"
-        button.classList.add("liked")
-
+        button.classList.add(
+          "text-red-600",
+          "bg-rose-50"
+        )
+        button.classList.remove("text-rose-600")
       } else {
-
         button.textContent = "♡"
-        button.classList.remove("liked")
-
+        button.classList.remove(
+          "text-red-600",
+          "bg-rose-50"
+        )
+        button.classList.add("text-rose-600")
       }
     })
 }
@@ -368,71 +372,111 @@ if (currentUser && currentUser.id_cust) {
     })
 }
 
+function updateBookActionButtons() {
+  const isEmployee =
+    currentUser?.role === "employee"
+
+  document
+    .querySelectorAll(
+      '.delBtn[data-role="employee"], .editBtn[data-role="employee"]'
+    )
+    .forEach(button => {
+      button.classList.toggle("hidden", !isEmployee)
+    })
+}
+
 function showBooks(data) {
 
   const list = document.getElementById("booklist")
+
+  list.className =
+    "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
 
   list.innerHTML = ""
 
   data.forEach(book => {
 
     list.innerHTML += `
-      <div>
+      
+  <div class="group flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
 
-        <img
-          src="${book.image}"
-          alt="${book.name}"
-          style="width:150px; height:auto;"
-        />
+    <div class="flex h-64 items-center justify-center overflow-hidden bg-stone-100">
+      <img
+        src="${book.image}"
+        alt="${book.name}"
+        class="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-105"
+      />
+    </div>
 
-        <h3>Book name : ${book.name}</h3>
+    <div class="flex flex-1 flex-col p-5">
 
-        <div>Price : ${book.price}</div>
+      <h3 class="mb-2 text-lg font-semibold text-stone-800">
+        ${book.name}
+      </h3>
 
-        <div>Author : ${book.author}</div>
+      <p class="mb-1 text-sm text-stone-500">
+        ผู้เขียน: ${book.author}
+      </p>
 
-        <div>Detail : ${book.detail}</div>
+      <p class="mb-4 flex-1 text-sm leading-6 text-stone-600">
+        ${book.detail}
+      </p>
 
-        <br>
+      <p class="mb-4 text-xl font-bold text-amber-900">
+        ${Number(book.price).toLocaleString("th-TH")} บาท
+      </p>
 
+      <div class="mb-4 flex items-center gap-2">
+        <label class="text-sm text-stone-600">จำนวน</label>
         <input
           type="number"
           min="1"
           value="1"
-          class="qtyInput"
+          class="qtyInput w-20 rounded-lg border border-stone-300 px-3 py-2 text-center outline-none focus:border-amber-800 focus:ring-2 focus:ring-amber-100"
           data-id="${book.id}"
+        />
+      </div>
+
+      <div class="mb-3 flex gap-2">
+        <button
+          class="wishlistBtn flex-1 rounded-lg border border-rose-200 px-3 py-2 text-lg text-rose-600 transition hover:bg-rose-50"
+          data-id="${book.id}"
+          title="Wishlist"
+          aria-label="เพิ่มหนังสือในรายการโปรด"
         >
-
-        <button
-    class="wishlistBtn"
-    data-id="${book.id}"
-    title="Wishlist">
-    ♡
-</button>
-
-        <button
-          class="addCartBtn"
-          data-id="${book.id}">
-          Add to Order
+          ♡
         </button>
 
         <button
+          class="addCartBtn flex-[3] rounded-lg bg-amber-900 px-4 py-2 font-medium text-white transition hover:bg-amber-950"
           data-id="${book.id}"
-          class="delBtn"
-          data-role="employee">
-          Delete
+        >
+          เพิ่มลงตะกร้า
+        </button>
+      </div>
+
+      <div class="flex gap-2 border-t border-stone-100 pt-3">
+        <button
+          data-id="${book.id}"
+          class="delBtn hidden flex-1 rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50"
+          data-role="employee"
+        >
+          ลบหนังสือ
         </button>
 
         <button
           data-id="${book.id}"
           data-name="${book.name}"
           data-price="${book.price}"
-          class="editBtn"
-          data-role="employee">>
-          Edit
+          class="editBtn hidden flex-1 rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700 hover:bg-stone-100"
+          data-role="employee"
+        >
+          แก้ไข
         </button>
-
       </div>
+
+    </div>
+  </div>
     `
   })
 
@@ -558,6 +602,7 @@ function showBooks(data) {
     books = data
     showBooks(data)
     updateWishlistButtons()
+    updateBookActionButtons()
   })
 
 function showCart() {
@@ -825,15 +870,15 @@ function showMyOrders(data) {
 
     let slipButton = ""
 
-if (order.has_slip) {
-    slipButton = `
+    if (order.has_slip) {
+      slipButton = `
         <button
             class="viewSlipBtn"
             data-id="${order.id_order}">
             View Slip
         </button>
     `
-}
+    }
 
     let button = ""
 
@@ -933,17 +978,17 @@ if (order.has_slip) {
       })
     })
 
-    document
+  document
     .querySelectorAll(".viewSlipBtn")
     .forEach(button => {
-        button.addEventListener("click", () => {
-            const id_order = Number(button.dataset.id)
+      button.addEventListener("click", () => {
+        const id_order = Number(button.dataset.id)
 
-            window.open(
-                `http://localhost:3000/order/${id_order}/slip`,
-                "_blank"
-            )
-        })
+        window.open(
+          `http://localhost:3000/order/${id_order}/slip`,
+          "_blank"
+        )
+      })
     })
 
   document
@@ -1152,67 +1197,67 @@ function showCustomerOrders(data) {
       })
     })
 
-    document
-  .querySelectorAll(".uploadSlipBtn")
-  .forEach(button => {
+  document
+    .querySelectorAll(".uploadSlipBtn")
+    .forEach(button => {
 
-    button.addEventListener(
-      "click",
-      async () => {
+      button.addEventListener(
+        "click",
+        async () => {
 
-        const id_order =
-          Number(button.dataset.id)
+          const id_order =
+            Number(button.dataset.id)
 
-        const input =
-          document.querySelector(
-            `.slipInput[data-id="${id_order}"]`
-          )
-
-        const file =
-          input.files[0]
-
-        if (!file) {
-          alert(
-            "Please select payment slip"
-          )
-          return
-        }
-
-        try {
-
-          const data =
-            await uploadPaymentSlip(
-              id_order,
-              file
+          const input =
+            document.querySelector(
+              `.slipInput[data-id="${id_order}"]`
             )
 
-          console.log(
-            "Upload slip >>",
-            data
-          )
+          const file =
+            input.files[0]
 
-          alert(
-            "Payment slip uploaded"
-          )
+          if (!file) {
+            alert(
+              "Please select payment slip"
+            )
+            return
+          }
 
-          const orders =
-            await getCustomerOrders(
-              currentUser.id_cust
+          try {
+
+            const data =
+              await uploadPaymentSlip(
+                id_order,
+                file
+              )
+
+            console.log(
+              "Upload slip >>",
+              data
             )
 
-          showCustomerOrders(
-            orders
-          )
+            alert(
+              "Payment slip uploaded"
+            )
 
-        } catch (error) {
+            const orders =
+              await getCustomerOrders(
+                currentUser.id_cust
+              )
 
-          console.error(error)
+            showCustomerOrders(
+              orders
+            )
 
-          alert(error.message)
+          } catch (error) {
+
+            console.error(error)
+
+            alert(error.message)
+          }
         }
-      }
-    )
-  })
+      )
+    })
 
   document
     .querySelectorAll(".cancelOrderBtn")
@@ -1286,8 +1331,10 @@ function updateRoleBasedUI() {
   document
     .querySelectorAll('[data-role="manager"]')
     .forEach(element => {
-        element.hidden = !isManager
+      element.hidden = !isManager
     })
+
+  updateBookActionButtons()
 }
 
 loadUserData()
@@ -1297,8 +1344,8 @@ loadUserData()
 
   })
 
-  document.getElementById(
-    "paymentArea"
+document.getElementById(
+  "paymentArea"
 ).innerHTML = `
     <h3>
         Scan QR to Pay
