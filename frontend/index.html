@@ -6,23 +6,29 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HuawenShuge</title>
-    
-<script src="https://cdn.tailwindcss.com"></script>
 
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          cream: "#F7F1E5",
-          ivory: "#FFFDF8",
-          walnut: "#80513D",
-          olive: "#72765A",
-        },
-      },
-    },
-  };
-</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: "#F7F1E5",
+                        ivory: "#FFFDF8",
+                        walnut: "#80513D",
+                        olive: "#72765A",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        .wishlistBtn.liked {
+            color: #dc2626 !important;
+            background-color: #fff1f2 !important;
+        }
+    </style>
 
 </head>
 
@@ -88,7 +94,7 @@
 
     <div id="paymentArea"></div>
     </br></br>
-    
+
     <section data-role="customer">
 
         <h3>WishList</h3>
@@ -123,12 +129,12 @@
 
     </br></br>
     <section data-role="manager" hidden>
-    <h2>Manage Employee</h2>
+        <h2>Manage Employee</h2>
 
-    <div id="eligibleCustomerList"></div>
-</section>
+        <div id="eligibleCustomerList"></div>
+    </section>
     </br></br>
-    
+
 
     <section id="registerSection">
 
@@ -162,40 +168,40 @@
 
     </br></br>
     </br></br>
-<section data-role="employee">
-    <form id="bookForm">
-        <label>Name: </label>
-        <input name="name">
-        <label>Price: </label>
-        <input name="price">
-        <label>Author : </label>
-        <input name="author">
-        <label>Detail : </label>
-        <input name="detail">
-        <input type="file" name="image">
-        <button type="submit">Add Book</button>
-    </form>
-    </br></br>
-    <form id="EditForm">
-        <label>ID : </label>
-        <input name="id"></br>
-        <label>Name : </label>
-        <input name="name"></br>
-        <label>Price : </label>
-        <input name="price"></br>
-        <label>Author : </label>
-        <input name="author"></br>
-        <label>Detail : </label>
-        <input name="detail"></br>
-        <input type="file" name="image">
-        <button type="submit">Edit</button>
-    </form>
-    </br></br>
-    <form id="delForm">
-        <label>ID : </label>
-        <input name="id"></br>
-        <button type="submit">Delete</button>
-    </form>
+    <section data-role="employee">
+        <form id="bookForm">
+            <label>Name: </label>
+            <input name="name">
+            <label>Price: </label>
+            <input name="price">
+            <label>Author : </label>
+            <input name="author">
+            <label>Detail : </label>
+            <input name="detail">
+            <input type="file" name="image">
+            <button type="submit">Add Book</button>
+        </form>
+        </br></br>
+        <form id="EditForm">
+            <label>ID : </label>
+            <input name="id"></br>
+            <label>Name : </label>
+            <input name="name"></br>
+            <label>Price : </label>
+            <input name="price"></br>
+            <label>Author : </label>
+            <input name="author"></br>
+            <label>Detail : </label>
+            <input name="detail"></br>
+            <input type="file" name="image">
+            <button type="submit">Edit</button>
+        </form>
+        </br></br>
+        <form id="delForm">
+            <label>ID : </label>
+            <input name="id"></br>
+            <button type="submit">Delete</button>
+        </form>
     </section>
     <script type="module" src="./script.js"></script>
 </body>

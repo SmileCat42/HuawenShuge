@@ -255,35 +255,21 @@ function showEligibleCustomers(customers) {
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
 
 function updateWishlistButtons() {
-
-  console.log("WISHLIST DATA >>", wishlist)
-
   document
     .querySelectorAll(".wishlistBtn")
     .forEach(button => {
+      const id_product = Number(button.dataset.id)
 
-      const id_product =
-        Number(button.dataset.id)
-
-      const liked =
-        wishlist.some(item =>
-          Number(item.id_product) === id_product
-        )
+      const liked = wishlist.some(item =>
+        Number(item.id_product) === id_product
+      )
 
       if (liked) {
         button.textContent = "♥"
-        button.classList.add(
-          "text-red-600",
-          "bg-rose-50"
-        )
-        button.classList.remove("text-rose-600")
+        button.classList.add("liked")
       } else {
         button.textContent = "♡"
-        button.classList.remove(
-          "text-red-600",
-          "bg-rose-50"
-        )
-        button.classList.add("text-rose-600")
+        button.classList.remove("liked")
       }
     })
 }
@@ -605,102 +591,128 @@ function showBooks(data) {
     updateBookActionButtons()
   })
 
-function showCart() {
 
-  const cartList =
-    document.getElementById("cartList")
+function showCart() {
+  const cartList = document.getElementById("cartList")
 
   cartList.innerHTML = ""
 
   let total = 0
 
+  if (cart.length === 0) {
+    cartList.innerHTML = `
+      <div class="rounded-2xl border border-stone-200
+                  bg-white p-8 text-center">
+        <div class="mb-3 text-4xl">🛒</div>
+        <h3 class="text-lg font-semibold text-stone-800">
+          ตะกร้าของคุณยังว่างอยู่
+        </h3>
+        <p class="mt-2 text-sm text-stone-500">
+          เลือกหนังสือที่สนใจแล้วเพิ่มลงตะกร้าได้เลย
+        </p>
+      </div>
+    `
+  }
+
   cart.forEach(item => {
+    const book = books.find(
+      book => Number(book.id) === Number(item.id_product)
+    )
 
-    const book =
-      books.find(
-        book =>
-          Number(book.id) === Number(item.id_product)
-      )
+    if (!book) return
 
-    if (!book) {
-      return
-    }
-
-    const subtotal =
-      Number(book.price) * item.quantity
+    const price = Number(book.price)
+    const subtotal = price * item.quantity
 
     total += subtotal
 
     cartList.innerHTML += `
-      <div>
+      <div class="mb-4 flex flex-col gap-4 rounded-2xl
+                  border border-stone-200 bg-white p-4
+                  shadow-sm sm:flex-row sm:items-center">
 
-        <h3>
-          ${book.name}
-        </h3>
+        <img
+          src="${book.image}"
+          alt="${book.name}"
+          class="h-28 w-24 rounded-lg bg-stone-100
+                 object-contain p-2"
+        />
 
-        <div>
-          Price: ${book.price} บาท
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold text-stone-800">
+            ${book.name}
+          </h3>
+
+          <p class="mt-1 text-sm text-stone-500">
+            ราคาต่อเล่ม:
+            ${price.toLocaleString("th-TH")} บาท
+          </p>
+
+          <div class="mt-3 flex items-center gap-3">
+            <span class="text-sm text-stone-600">
+              จำนวน
+            </span>
+
+            <button
+              class="minusCartBtn rounded-lg border
+                     border-stone-300 px-3 py-1
+                     hover:bg-stone-100"
+              data-id="${item.id_product}">
+              −
+            </button>
+
+            <span class="min-w-6 text-center font-medium">
+              ${item.quantity}
+            </span>
+
+            <button
+              class="plusCartBtn rounded-lg border
+                     border-stone-300 px-3 py-1
+                     hover:bg-stone-100"
+              data-id="${item.id_product}">
+              +
+            </button>
+          </div>
         </div>
 
-        <div>
-
-          Quantity:
+        <div class="sm:text-right">
+          <p class="font-bold text-amber-900">
+            ${subtotal.toLocaleString("th-TH")} บาท
+          </p>
 
           <button
-            class="minusCartBtn"
+            class="removeCartBtn mt-3 text-sm
+                   text-red-600 hover:text-red-800"
             data-id="${item.id_product}">
-            -
+            ลบออกจากตะกร้า
           </button>
-
-          ${item.quantity}
-
-          <button
-            class="plusCartBtn"
-            data-id="${item.id_product}">
-            +
-          </button>
-
         </div>
-
-        <div>
-          Subtotal: ${subtotal} บาท
-        </div>
-
-        <button
-          class="removeCartBtn"
-          data-id="${item.id_product}">
-          Remove
-        </button>
-
       </div>
-
-      <hr>
     `
   })
 
   cartList.innerHTML += `
-    <h3>
-      Total: ${total} บาท
-    </h3>
+    <div class="rounded-2xl bg-amber-50 p-5
+                text-right">
+      <p class="text-sm text-stone-600">
+        ยอดรวมทั้งหมด
+      </p>
+
+      <p class="mt-1 text-2xl font-bold text-amber-900">
+        ${total.toLocaleString("th-TH")} บาท
+      </p>
+    </div>
   `
 
-
-  // ---------- Plus ----------
-
-  document
-    .querySelectorAll(".plusCartBtn")
+  // เพิ่มจำนวนสินค้า
+  document.querySelectorAll(".plusCartBtn")
     .forEach(button => {
-
       button.addEventListener("click", () => {
+        const id = Number(button.dataset.id)
 
-        const id_product =
-          Number(button.dataset.id)
-
-        const item =
-          cart.find(
-            item =>
-              item.id_product === id_product
-          )
+        const item = cart.find(
+          item => Number(item.id_product) === id
+        )
 
         if (item) {
           item.quantity += 1
@@ -710,35 +722,23 @@ function showCart() {
       })
     })
 
-
-  // ---------- Minus ----------
-
-  document
-    .querySelectorAll(".minusCartBtn")
+  // ลดจำนวนสินค้า
+  document.querySelectorAll(".minusCartBtn")
     .forEach(button => {
-
       button.addEventListener("click", () => {
+        const id = Number(button.dataset.id)
 
-        const id_product =
-          Number(button.dataset.id)
-
-        const item =
-          cart.find(
-            item =>
-              item.id_product === id_product
-          )
+        const item = cart.find(
+          item => Number(item.id_product) === id
+        )
 
         if (item) {
-
           item.quantity -= 1
 
           if (item.quantity <= 0) {
-
-            cart =
-              cart.filter(
-                item =>
-                  item.id_product !== id_product
-              )
+            cart = cart.filter(
+              item => Number(item.id_product) !== id
+            )
           }
         }
 
@@ -746,28 +746,21 @@ function showCart() {
       })
     })
 
-
-  // ---------- Remove ----------
-
-  document
-    .querySelectorAll(".removeCartBtn")
+  // ลบสินค้าออกจากตะกร้า
+  document.querySelectorAll(".removeCartBtn")
     .forEach(button => {
-
       button.addEventListener("click", () => {
+        const id = Number(button.dataset.id)
 
-        const id_product =
-          Number(button.dataset.id)
-
-        cart =
-          cart.filter(
-            item =>
-              item.id_product !== id_product
-          )
+        cart = cart.filter(
+          item => Number(item.id_product) !== id
+        )
 
         showCart()
       })
     })
 }
+
 
 function showOrder(order) {
 
