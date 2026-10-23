@@ -284,33 +284,40 @@ function showWishlist(data) {
   data.forEach(item => {
 
     list.innerHTML += `
-            <div>
+            
+<div class="flex flex-col gap-4 rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-4 shadow-sm transition hover:shadow-md sm:flex-row">
 
-                <img
-                    src="${item.image}"
-                    alt="${item.name}"
-                    style="width:150px;"
-                >
+  <img
+    src="${item.image}"
+    alt="${item.name}"
+    class="h-40 w-28 rounded-lg object-cover"
+  >
 
-                <h3>
-                    ${item.name}
-                </h3>
+  <div class="flex flex-1 flex-col">
 
-                <div>
-                    Price: ${item.price}
-                </div>
+    <h3 class="text-lg font-bold text-[#80513D]">
+      ${item.name}
+    </h3>
 
-                <div>
-                    Author: ${item.author}
-                </div>
+    <p class="mt-1 text-sm text-[#806D5D]">
+      ผู้เขียน: ${item.author || "ไม่ระบุ"}
+    </p>
 
-                <button
-                    class="removeWishlistBtn"
-                    data-id="${item.id_wishlist}">
-                    Remove
-                </button>
+    <p class="mt-2 font-semibold text-[#72765A]">
+      ${Number(item.price).toLocaleString("th-TH")} บาท
+    </p>
 
-            </div>
+    <div class="mt-auto pt-4">
+      <button
+        class="removeWishlistBtn rounded-lg border border-rose-200 px-4 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-50"
+        data-id="${item.id_wishlist}">
+        remove
+      </button>
+    </div>
+
+  </div>
+</div>
+
         `
   })
 
@@ -384,85 +391,65 @@ function showBooks(data) {
 
     list.innerHTML += `
       
-  <div class="group flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+  <div class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+  <div class="relative flex h-64 items-center justify-center overflow-hidden bg-[#F7F1E5] p-4">
+    <img
+      src="${book.image}"
+      alt="${book.name}"
+      class="h-full w-auto max-w-full object-contain transition duration-300 group-hover:scale-105"
+    >
+    <button
+      class="wishlistBtn absolute right-3 top-3 rounded-full bg-white/90 px-3 py-2 text-xl text-rose-600 shadow-sm transition hover:bg-rose-50"
+      data-id="${book.id}"
+      title="เพิ่มในรายการโปรด"
+    >♡</button>
+  </div>
 
-    <div class="flex h-64 items-center justify-center overflow-hidden bg-stone-100">
-      <img
-        src="${book.image}"
-        alt="${book.name}"
-        class="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-105"
-      />
-    </div>
+  <div class="flex flex-1 flex-col p-4">
+    <h3 class="line-clamp-2 text-lg font-bold leading-snug text-[#80513D]">
+      ${book.name}
+    </h3>
+    <p class="mt-2 text-sm text-[#806D5D]">ผู้เขียน: ${book.author || "ไม่ระบุ"}</p>
+    <p class="mt-3 text-xl font-bold text-[#72765A]">
+      ${Number(book.price).toLocaleString("th-TH")} บาท
+    </p>
+    <p class="mt-3 line-clamp-3 text-sm leading-relaxed text-stone-600">
+      ${book.detail || "ไม่มีรายละเอียดหนังสือ"}
+    </p>
 
-    <div class="flex flex-1 flex-col p-5">
+    <div class="mt-auto pt-4">
+      <label class="mb-1 block text-sm text-[#806D5D]">จำนวน</label>
+      <input
+        type="number"
+        min="1"
+        value="1"
+        class="qtyInput w-20 rounded-lg border border-[#DCCAB6] bg-white px-3 py-2 text-center outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20"
+        data-id="${book.id}"
+      >
 
-      <h3 class="mb-2 text-lg font-semibold text-stone-800">
-        ${book.name}
-      </h3>
+      <button
+        class="addCartBtn mt-3 w-full rounded-xl bg-[#80513D] px-4 py-3 font-semibold text-white transition hover:bg-[#633A29]"
+        data-id="${book.id}"
+      >เพิ่มลงตะกร้า</button>
 
-      <p class="mb-1 text-sm text-stone-500">
-        ผู้เขียน: ${book.author}
-      </p>
-
-      <p class="mb-4 flex-1 text-sm leading-6 text-stone-600">
-        ${book.detail}
-      </p>
-
-      <p class="mb-4 text-xl font-bold text-amber-900">
-        ${Number(book.price).toLocaleString("th-TH")} บาท
-      </p>
-
-      <div class="mb-4 flex items-center gap-2">
-        <label class="text-sm text-stone-600">จำนวน</label>
-        <input
-          type="number"
-          min="1"
-          value="1"
-          class="qtyInput w-20 rounded-lg border border-stone-300 px-3 py-2 text-center outline-none focus:border-amber-800 focus:ring-2 focus:ring-amber-100"
-          data-id="${book.id}"
-        />
-      </div>
-
-      <div class="mb-3 flex gap-2">
+      <div class="mt-2 flex gap-2">
         <button
-          class="wishlistBtn flex-1 rounded-lg border border-rose-200 px-3 py-2 text-lg text-rose-600 transition hover:bg-rose-50"
-          data-id="${book.id}"
-          title="Wishlist"
-          aria-label="เพิ่มหนังสือในรายการโปรด"
-        >
-          ♡
-        </button>
-
-        <button
-          class="addCartBtn flex-[3] rounded-lg bg-amber-900 px-4 py-2 font-medium text-white transition hover:bg-amber-950"
-          data-id="${book.id}"
-        >
-          เพิ่มลงตะกร้า
-        </button>
-      </div>
-
-      <div class="flex gap-2 border-t border-stone-100 pt-3">
-        <button
-          data-id="${book.id}"
-          class="delBtn hidden flex-1 rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50"
-          data-role="employee"
-        >
-          ลบหนังสือ
-        </button>
-
-        <button
+          class="editBtn hidden flex-1 rounded-lg border border-[#DCCAB6] px-3 py-2 text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]"
           data-id="${book.id}"
           data-name="${book.name}"
           data-price="${book.price}"
-          class="editBtn hidden flex-1 rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700 hover:bg-stone-100"
           data-role="employee"
-        >
-          แก้ไข
-        </button>
-      </div>
+        >แก้ไข</button>
 
+        <button
+          class="delBtn hidden flex-1 rounded-lg border border-rose-200 px-3 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-50"
+          data-id="${book.id}"
+          data-role="employee"
+        >ลบ</button>
+      </div>
     </div>
   </div>
+</div>
     `
   })
 
@@ -1105,7 +1092,7 @@ function showCustomerOrders(data) {
 
       cancelButton = `
         <button
-            class="cancelOrderBtn"
+            class="cancelOrderBtn rounded-lg border border-rose-200 px-4 py-2 text-sm font-medium text-rose-700 hover:bg-rose-50"
             data-id="${order.id_order}">
             Cancel Order
         </button>
@@ -1126,40 +1113,88 @@ function showCustomerOrders(data) {
         >
 
         <button
-            class="uploadSlipBtn"
+            class="uploadSlipBtn rounded-lg bg-[#72765A] px-4 py-2 text-sm font-medium text-white hover:bg-[#5C6047]"
             data-id="${order.id_order}">
             Upload Slip
         </button>
     `
     }
 
+
+    const statusStyle = {
+      Pending: "bg-amber-100 text-amber-800",
+      Processing: "bg-blue-100 text-blue-800",
+      Paid: "bg-emerald-100 text-emerald-800",
+      SHIPPED: "bg-indigo-100 text-indigo-800",
+      Shipped: "bg-indigo-100 text-indigo-800",
+      DELIVERED: "bg-green-100 text-green-800",
+      Delivered: "bg-green-100 text-green-800",
+      CANCELLED: "bg-rose-100 text-rose-800",
+      Cancelled: "bg-rose-100 text-rose-800"
+    };
+
     list.innerHTML += `
-    <div>
+      <article class="rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
 
-        <h3>
-            Order #${order.id_order}
-        </h3>
+        <div class="flex flex-wrap items-start justify-between gap-3">
 
-        <div>
-            Status: ${order.status}
+          <div>
+            <p class="text-xs font-medium uppercase tracking-widest text-[#9A806C]">
+              Order Number
+            </p>
+
+            <h3 class="mt-1 text-xl font-bold text-[#80513D]">
+              #${order.id_order}
+            </h3>
+          </div>
+
+          <span class="rounded-full px-3 py-1 text-xs font-semibold ${statusStyle[order.status] || "bg-gray-100 text-gray-700"
+      }">
+            ${order.status}
+          </span>
+
         </div>
 
-        <div>
-            Total: ${order.total} บาท
+        <div class="my-4 border-t border-dashed border-[#E8D9C8]"></div>
+
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-sm text-[#806D5D]">
+            ยอดรวม
+          </span>
+
+          <span class="text-lg font-bold text-[#80513D]">
+            ${Number(order.total).toLocaleString("th-TH")} บาท
+          </span>
         </div>
 
-        <button
-            class="customerViewOrderBtn"
+        <div class="mt-5 flex flex-wrap gap-2">
+
+          <button
+            class="customerViewOrderBtn rounded-lg bg-[#80513D] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#633A29]"
             data-id="${order.id_order}">
-            View Detail
-        </button>
+            ดูรายละเอียด
+          </button>
 
-        ${paymentButton}
+          ${paymentButton ? `
+            <div class="w-full space-y-2 rounded-xl bg-[#F7F1E5] p-3">
+              <label class="block text-sm font-medium text-[#80513D]">
+                แนบหลักฐานการชำระเงิน
+              </label>
+              ${paymentButton}
+            </div>
+          ` : ""}
 
-        ${cancelButton}
+          ${cancelButton ? `
+            <div class="ml-auto">
+              ${cancelButton}
+            </div>
+          ` : ""}
 
-    </div>
-`
+        </div>
+
+      </article>
+    `;
+
   })
 
   document
