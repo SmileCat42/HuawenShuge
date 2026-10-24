@@ -1,37 +1,56 @@
+
 export function postBook(name, price, author, detail, image) {
-    const data = new FormData()
-    data.append("name", name)
-    data.append("price", price)
-    data.append("author", author)
-    data.append("detail", detail)
-    data.append("image", image)
-    return fetch("http://localhost:3000/book", {
-          method: "POST",
-          body: data
-        })
-          .then((response) => {
-            return response.json()
-          })
+  const data = {
+    name,
+    price,
+    author,
+    detail,
+    image: "/images/newbook.png"
+  }
+
+  return fetch("http://localhost:3000/book", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`)
+    }
+    return response.json()
+  })
 }
 
+
+
 export function editBook(id, name, price, author, detail, image) {
-  const data = new FormData()
-    data.append("name", name)
-    data.append("price", price)
-    data.append("author", author)
-    data.append("detail", detail)
-    data.append("image", image)
-    for (const item of data.entries()) {
-    console.log(item)
-}
+  const data = {
+    name,
+    price,
+    author,
+    detail,
+    image
+  }
+
   return fetch("http://localhost:3000/book/" + id, {
     method: "PUT",
-    body: data
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
   })
-    .then((response) => {
-      return response.json()
+    .then(async (response) => {
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || "แก้ไขหนังสือไม่สำเร็จ")
+      }
+
+      return result
     })
 }
+
 
 export function delBook(id) {
   return fetch("http://localhost:3000/book/" + id, {

@@ -366,13 +366,10 @@ if (currentUser && currentUser.id_cust) {
 }
 
 function updateBookActionButtons() {
-  const isEmployee =
-    currentUser?.role === "employee"
+  const isEmployee = Boolean(currentUser?.id_emp)
 
   document
-    .querySelectorAll(
-      '.delBtn[data-role="employee"], .editBtn[data-role="employee"]'
-    )
+    .querySelectorAll("#booklist .editBtn, #booklist .delBtn")
     .forEach(button => {
       button.classList.toggle("hidden", !isEmployee)
     })
@@ -534,41 +531,63 @@ function showBooks(data) {
     })
   })
 
-
   buttonsDel.forEach(button => {
-
-    button.addEventListener("click", () => {
-
+    button.addEventListener("click", async () => {
       const id = Number(button.dataset.id)
 
-      delBook(id)
+      const confirmed = confirm(
+        "ยืนยันที่จะลบหนังสือเล่มนี้หรือไม่?"
+      )
 
+      if (!confirmed) {
+        return
+      }
+
+      try {
+        await delBook(id)
+
+        const data = await loadBooks()
+        books = data
+        showBooks(data)
+        updateWishlistButtons()
+        updateBookActionButtons()
+
+        alert("ลบหนังสือเรียบร้อยแล้ว")
+      } catch (error) {
+        console.error(error)
+        alert("ลบหนังสือไม่สำเร็จ")
+      }
     })
   })
+
 
 
   buttonEdit.forEach(button => {
+  button.addEventListener("click", () => {
 
-    button.addEventListener("click", () => {
+    const id = Number(button.dataset.id)
 
-      const id = Number(button.dataset.id)
-      const name = button.dataset.name
-      const price = Number(button.dataset.price)
+    const book = books.find(
+      book => Number(book.id) === id
+    )
 
-      console.log("Data >> ", id, name, price)
+    if (!book) {
+      alert("ไม่พบข้อมูลหนังสือ")
+      return
+    }
 
-      const form = document.getElementById("EditForm")
+    const form = document.getElementById("EditForm")
 
-      const edit1 = form.querySelector('[name="id"]')
-      const edit2 = form.querySelector('[name="name"]')
-      const edit3 = form.querySelector('[name="price"]')
+    form.querySelector('[name="id"]').value = book.id
+    form.querySelector('[name="name"]').value = book.name
+    form.querySelector('[name="price"]').value = book.price
+    form.querySelector('[name="author"]').value = book.author
+    form.querySelector('[name="detail"]').value = book.detail
 
-      edit1.value = id
-      edit2.value = name
-      edit3.value = price
+    console.log("Book to edit >>", book)
 
-    })
   })
+})
 } loadBooks()
   .then((data) => {
     console.log(data)
@@ -1348,10 +1367,9 @@ function updateRoleBasedUI() {
     })
 
   document
-    .querySelectorAll('[data-role="employee"]')
+    .querySelectorAll("#booklist .editBtn, #booklist .delBtn")
     .forEach(element => {
-
-      element.hidden = !isEmployee
+      element.classList.toggle("hidden", !isEmployee)
     })
 
   const isManager = currentUser?.role === "manager"
@@ -1488,97 +1506,74 @@ document
     }
   })
 
-document.getElementById("loginForm")
-  .addEventListener("submit", event => {
 
+document.getElementById("EditForm")
+  .addEventListener("submit", async (event) => {
     event.preventDefault()
 
     const form = event.currentTarget
 
-    const username =
-      form.querySelector('[name="username"]').value
+    const id = Number(form.querySelector('[name="id"]').value)
+    const name = form.querySelector('[name="name"]').value
+    const price = Number(form.querySelector('[name="price"]').value)
+    const author = form.querySelector('[name="author"]').value
+    const detail = form.querySelector('[name="detail"]').value
+    const image = form.querySelector('[name="image"]').value
 
-    const password =
-      form.querySelector('[name="password"]').value
+    try {
+      await editBook(id, name, price, author, detail, image)
 
-    login(username, password)
-      .then(async data => {
+      const data = await loadBooks()
 
-        console.log("Login success >>", data)
+      books = data
+      showBooks(data)
+      updateBookActionButtons()
 
-        currentUser = data
+      alert("แก้ไขหนังสือสำเร็จแล้ว")
 
-        sessionStorage.setItem(
-          "currentUser",
-          JSON.stringify(currentUser)
-        )
-
-        await loadUserData()
-
-        const booksData = await loadBooks()
-
-        showBooks(booksData)
-
-        updateRoleBasedUI()
-
-        document.getElementById("loginResult")
-          .innerHTML = `
-        <div>
-          Login success
-        </div>
-
-        <div>
-          User: ${data.username}
-        </div>
-
-        <div>
-          Customer ID: ${data.id_cust ?? "-"}
-        </div>
-
-        <div>
-          Employee ID: ${data.id_emp ?? "-"}
-        </div>
-
-        <div>
-          Role: ${data.role ?? "-"}
-        </div>
-      `
-      })
-      .catch(error => {
-
-        console.error(error)
-
-        document.getElementById("loginResult")
-          .innerHTML = `
-                        <div>
-                            ${error.message}
-                        </div>
-                    `
-      })
+    } catch (error) {
+      console.error("Edit book error:", error)
+      alert("แก้ไขหนังสือไม่สำเร็จ: " + error.message)
+    }
   })
 
+
+
 document.getElementById("bookForm")
-  .addEventListener("submit", (event) => {
+  .addEventListener("submit", async (event) => {
     event.preventDefault()
+
+    const form = event.currentTarget
     const input1 = document.querySelector('[name="name"]')
     const input2 = document.querySelector('[name="price"]')
     const input3 = document.querySelector('[name="author"]')
     const input4 = document.querySelector('[name="detail"]')
-    const input5 = document.querySelector('[name="image"]')
-    const image = input5 ? input5.files[0] : null
+
+    const image = "/images/newbook.png"
     const name = input1.value
     const price = Number(input2.value)
     const author = input3.value
     const detail = input4.value
-    postBook(name, price, author, detail, image)
-      .then((data) => {
-        console.log(data)
-        return loadBooks()
-      })
-      .then((data) => {
-        showBooks(data)
-      })
+
+    try {
+      await postBook(name, price, author, detail, image)
+
+      const data = await loadBooks()
+
+      books = data
+      showBooks(data)
+      updateBookActionButtons()
+
+      alert("เพิ่มหนังสือสำเร็จแล้ว")
+
+      form.reset()
+
+    } catch (error) {
+      console.error("Add book error:", error)
+      alert("เพิ่มหนังสือไม่สำเร็จ: " + error.message)
+    }
   })
+
 
 function addCart(id_product, quantity) {
   console.log("addCart work on >>", cart)
@@ -1661,7 +1656,7 @@ document.getElementById("EditForm")
     const price = Number(input3.value)
     const author = input4.value
     const detail = input5.value
-    const image = input6 ? input6.files[0] : null
+    const image = input6.value
     console.log(image)
     editBook(id, name, price, author, detail, image)
       .then((data) => {

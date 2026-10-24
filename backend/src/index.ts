@@ -155,7 +155,6 @@ app.get("/account/:id_acc", async (req, res) => {
             `,
             [id_acc]
         )
-        console.log("re sult >>", result)
 
         if (result.rows.length === 0) {
             res.status(404).json({
@@ -738,7 +737,7 @@ app.post("/book", async (req, res) => {
 
         const result = await pool.query(
             `INSERT INTO products
-             (name, price, author, detail, image_path)
+             (name, price, author, detail, image)
              VALUES ($1, $2, $3, $4, $5)
              RETURNING *`,
             [
@@ -746,7 +745,7 @@ app.post("/book", async (req, res) => {
                 obj.price,
                 obj.author,
                 obj.detail,
-                obj.image_path ?? "/images/default.png"
+                obj.image ?? "/images/newbook.png"
             ]
         )
 
@@ -1043,22 +1042,29 @@ app.put("/book/:id", async (req, res) => {
 
     try {
 
+
         const result = await pool.query(
             `UPDATE products
-             SET name = $1,
-                 price = $2,
-                 author = $3,
-                 detail = $4
-             WHERE id = $5
-             RETURNING *`,
+     SET name = $1,
+         price = $2,
+         author = $3,
+         detail = $4,
+         image = CASE
+             WHEN $5 = '' THEN image
+             ELSE $5
+         END
+     WHERE id = $6
+     RETURNING *`,
             [
                 obj.name,
                 obj.price,
                 obj.author,
                 obj.detail,
+                obj.image ?? "",
                 id
             ]
         )
+
 
         if (result.rowCount === 0) {
             res.status(404).json({
@@ -1603,34 +1609,34 @@ app.patch("/order/:id/status", async (req, res) => {
 
         if (status === "PAID") {
 
-    const slipResult =
-        await pool.query(
-            `
+            const slipResult =
+                await pool.query(
+                    `
             SELECT payment_slip
             FROM orders
             WHERE id_order = $1
             `,
-            [id_order]
-        )
+                    [id_order]
+                )
 
-    if (
-        slipResult.rows.length === 0
-    ) {
-        res.status(404).json({
-            message: "Order not found"
-        })
-        return
-    }
+            if (
+                slipResult.rows.length === 0
+            ) {
+                res.status(404).json({
+                    message: "Order not found"
+                })
+                return
+            }
 
-    if (
-        !slipResult.rows[0].payment_slip
-    ) {
-        res.status(400).json({
-            message: "Payment slip not uploaded"
-        })
-        return
-    }
-}
+            if (
+                !slipResult.rows[0].payment_slip
+            ) {
+                res.status(400).json({
+                    message: "Payment slip not uploaded"
+                })
+                return
+            }
+        }
 
         if (status === "CANCELLED") {
 

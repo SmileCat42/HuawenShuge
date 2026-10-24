@@ -340,41 +340,121 @@
 
     </br></br>
     </br></br>
-    <section data-role="employee">
-        <form id="bookForm">
-            <label>Name: </label>
-            <input name="name">
-            <label>Price: </label>
-            <input name="price">
-            <label>Author : </label>
-            <input name="author">
-            <label>Detail : </label>
-            <input name="detail">
-            <input type="file" name="image">
-            <button type="submit">Add Book</button>
-        </form>
-        </br></br>
-        <form id="EditForm">
-            <label>ID : </label>
-            <input name="id"></br>
-            <label>Name : </label>
-            <input name="name"></br>
-            <label>Price : </label>
-            <input name="price"></br>
-            <label>Author : </label>
-            <input name="author"></br>
-            <label>Detail : </label>
-            <input name="detail"></br>
-            <input type="file" name="image">
-            <button type="submit">Edit</button>
-        </form>
-        </br></br>
-        <form id="delForm">
-            <label>ID : </label>
-            <input name="id"></br>
-            <button type="submit">Delete</button>
-        </form>
+    ```html
+    ```html
+    <section data-role="employee" class="mx-auto my-10 max-w-5xl px-4">
+        <div class="mb-6">
+            <p class="text-xs tracking-[0.2em] text-[#9A806C]">STAFF WORKSPACE</p>
+            <h2 class="mt-1 text-2xl font-bold text-[#80513D]">จัดการหนังสือ</h2>
+            <p class="mt-2 text-sm text-[#806D5D]">
+                เพิ่ม แก้ไข และนำหนังสือออกจากรายการของร้าน
+            </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2">
+
+            <!-- Add Book -->
+            <div class="rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm">
+                <h3 class="mb-5 text-lg font-bold text-[#80513D]">
+                    เพิ่มหนังสือ
+                </h3>
+
+                <form id="bookForm" class="space-y-4">
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#806D5D]">ชื่อหนังสือ</label>
+                        <input name="name" type="text"
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#806D5D]">ราคา</label>
+                        <input name="price" type="number"
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#806D5D]">ผู้เขียน</label>
+                        <input name="author" type="text"
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#806D5D]">รายละเอียด</label>
+                        <textarea name="detail" rows="3"
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20"></textarea>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full rounded-xl bg-[#80513D] px-4 py-3 font-semibold text-white transition hover:bg-[#633A29]">
+                        เพิ่มหนังสือ
+                    </button>
+                </form>
+            </div>
+
+            <!-- Edit and Delete Book -->
+            <div class="space-y-6">
+
+                <div class="rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm">
+                    <h3 class="mb-5 text-lg font-bold text-[#80513D]">
+                        แก้ไขหนังสือ
+                    </h3>
+
+                    <form id="EditForm" class="space-y-4">
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#806D5D]">รหัสหนังสือ</label>
+                            <input name="id" type="number"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#806D5D]">ชื่อหนังสือ</label>
+                            <input name="name" type="text"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#806D5D]">ราคา</label>
+                            <input name="price" type="number"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#806D5D]">ผู้เขียน</label>
+                            <input name="author" type="text"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#806D5D]">รายละเอียด</label>
+                            <textarea name="detail" rows="3"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20"></textarea>
+                        </div>
+
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#806D5D]">
+                                เปลี่ยนรูปหนังสือ (ถ้ามี)
+                            </label>
+                            <select name="image"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                                <option value="">ใช้รูปเดิม</option>
+                                <option value="/images/newbook.png">รูปเริ่มต้น</option>
+                                <option value="/images/01.jpg">book1.jpg</option>
+                                <option value="/images/02.jpg">book2.jpg</option>
+                                <option value="/images/03.jpg">book3.jpg</option>
+                            </select>
+                        </div>
+
+
+                        <button type="submit"
+                            class="w-full rounded-xl border border-[#80513D] px-4 py-3 font-semibold text-[#80513D] transition hover:bg-[#F7F1E5]">
+                            บันทึกการแก้ไข
+                        </button>
+                    </form>
+                </div>
+            </div>
     </section>
+
     <script type="module" src="./script.js"></script>
 </body>
 

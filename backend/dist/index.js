@@ -549,14 +549,14 @@ app.post("/book", async (req, res) => {
     }
     try {
         const result = await pool.query(`INSERT INTO products
-             (name, price, author, detail, image_path)
+             (name, price, author, detail, image)
              VALUES ($1, $2, $3, $4, $5)
              RETURNING *`, [
             obj.name,
             obj.price,
             obj.author,
             obj.detail,
-            obj.image_path ?? "/images/default.png"
+            obj.image ?? "/images/newbook.png"
         ]);
         res.status(201).json(result.rows[0]);
     }
@@ -755,16 +755,21 @@ app.put("/book/:id", async (req, res) => {
     }
     try {
         const result = await pool.query(`UPDATE products
-             SET name = $1,
-                 price = $2,
-                 author = $3,
-                 detail = $4
-             WHERE id = $5
-             RETURNING *`, [
+     SET name = $1,
+         price = $2,
+         author = $3,
+         detail = $4,
+         image = CASE
+             WHEN $5 = '' THEN image
+             ELSE $5
+         END
+     WHERE id = $6
+     RETURNING *`, [
             obj.name,
             obj.price,
             obj.author,
             obj.detail,
+            obj.image ?? "",
             id
         ]);
         if (result.rowCount === 0) {
