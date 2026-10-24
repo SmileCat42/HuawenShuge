@@ -36,42 +36,36 @@
 <body class="min-h-screen bg-cream text-stone-800">
 
     <!-- Header -->
-    
 
-<header class="relative isolate border-b border-[#E8D9C8] text-walnut shadow-md">
 
-    <!-- Background: อยู่ภายใน Header เท่านั้น -->
-    <div
-        aria-hidden="true"
-        class="pointer-events-none absolute inset-0 hidden bg-center bg-no-repeat opacity-70 sm:block"
-        style="
+    <header class="relative isolate border-b border-[#E8D9C8] text-walnut shadow-md">
+
+        <!-- Background: อยู่ภายใน Header เท่านั้น -->
+        <div aria-hidden="true"
+            class="pointer-events-none absolute inset-0 hidden bg-center bg-no-repeat opacity-70 sm:block" style="
             background-image: url('/images/wall5.png');
             background-size: 100% 100%;
-        "
-    ></div>
+        "></div>
 
-    <!-- Header content: อยู่เหนือภาพพื้นหลัง -->
-    <div class="relative z-10 mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5">
+        <!-- Header content: อยู่เหนือภาพพื้นหลัง -->
+        <div class="relative z-10 mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5">
 
-        <img
-            src="/images/book558.png"
-            alt="HuawenShuge Logo"
-            class="h-auto w-64 shrink-0 object-contain"
-        />
+            <img src="/images/book558.png" alt="HuawenShuge Logo" class="h-auto w-64 shrink-0 object-contain" />
 
-        <p class="shrink-0 text-sm text-walnut">
-            ค้นพบเรื่องราวผ่านหนังสือจีน
-        </p>
+            <p class="shrink-0 text-sm text-walnut">
+                ค้นพบเรื่องราวผ่านหนังสือจีน
+            </p>
 
-    </div>
-</header>
+        </div>
+    </header>
 
 
 
     <!-- Navigation -->
     <nav class="sticky top-0 z-40 border-b border-[#E8D9C8] bg-walnut/95 shadow-sm">
         <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-5 py-3">
-            <a href="#booklist" class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
+            <a href="#booklist"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
                 หนังสือทั้งหมด
             </a>
 
@@ -80,7 +74,8 @@
                 รายการโปรด
             </a>
 
-            <a href="#cartList" class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
+            <a href="#cartList"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
                 ตะกร้าสินค้า
             </a>
 
@@ -96,48 +91,40 @@
         </div>
     </nav>
 
-    
-<section class="mx-auto my-8 max-w-md rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm">
-    <div class="mb-5 text-center">
-        <p class="text-sm tracking-[0.2em] text-[#9A806C]">WELCOME BACK</p>
-        <h2 class="mt-2 text-2xl font-bold text-[#80513D]">เข้าสู่ระบบ</h2>
-        <p class="mt-2 text-sm text-[#806D5D]">ยินดีต้อนรับกลับสู่ร้านหนังสือของเรา</p>
-    </div>
 
-    <form id="loginForm" class="space-y-4">
-        <div>
-            <label class="mb-1 block text-sm font-medium text-[#80513D]">ชื่อผู้ใช้</label>
-            <input
-                type="text"
-                name="username"
-                placeholder="กรอกชื่อผู้ใช้"
-                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20"
-            >
+    <section class="mx-auto my-8 max-w-md rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm">
+        <div class="mb-5 text-center">
+            <p class="text-sm tracking-[0.2em] text-[#9A806C]">WELCOME BACK</p>
+            <h2 class="mt-2 text-2xl font-bold text-[#80513D]">เข้าสู่ระบบ</h2>
+            <p class="mt-2 text-sm text-[#806D5D]">ยินดีต้อนรับกลับสู่ร้านหนังสือของเรา</p>
         </div>
 
-        <div>
-            <label class="mb-1 block text-sm font-medium text-[#80513D]">รหัสผ่าน</label>
-            <input
-                type="password"
-                name="password"
-                placeholder="กรอกรหัสผ่าน"
-                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20"
-            >
-        </div>
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label class="mb-1 block text-sm font-medium text-[#80513D]">ชื่อผู้ใช้</label>
+                <input type="text" name="username" placeholder="กรอกชื่อผู้ใช้"
+                    class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+            </div>
 
-        <button type="submit"
-            class="w-full rounded-xl bg-[#80513D] px-4 py-3 font-semibold text-white transition hover:bg-[#633A29]">
-            เข้าสู่ระบบ
+            <div>
+                <label class="mb-1 block text-sm font-medium text-[#80513D]">รหัสผ่าน</label>
+                <input type="password" name="password" placeholder="กรอกรหัสผ่าน"
+                    class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+            </div>
+
+            <button type="submit"
+                class="w-full rounded-xl bg-[#80513D] px-4 py-3 font-semibold text-white transition hover:bg-[#633A29]">
+                เข้าสู่ระบบ
+            </button>
+        </form>
+
+        <button id="logoutBtn"
+            class="mt-3 w-full rounded-xl border border-[#DCCAB6] px-4 py-2 text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]">
+            ออกจากระบบ
         </button>
-    </form>
 
-    <button id="logoutBtn"
-        class="mt-3 w-full rounded-xl border border-[#DCCAB6] px-4 py-2 text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]">
-        ออกจากระบบ
-    </button>
-
-    <div id="loginResult" class="mt-3 text-center text-sm text-[#806D5D]"></div>
-</section>
+        <div id="loginResult" class="mt-3 text-center text-sm text-[#806D5D]"></div>
+    </section>
 
 
     <button id="logoutBtn">
@@ -148,92 +135,85 @@
 
     <h2>Account Profile</h2>
 
-    
-<section class="mx-auto my-8 max-w-3xl px-4">
-    <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
 
-        <div class="bg-[#80513D] px-6 py-5">
-            <p class="text-xs tracking-[0.2em] text-[#F2E3D0]">MY ACCOUNT</p>
-            <h2 class="mt-1 text-2xl font-bold text-white">ข้อมูลบัญชี</h2>
-        </div>
+    <section class="mx-auto my-8 max-w-3xl px-4">
+        <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
 
-        <div class="p-6">
-            <div class="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
-
-                <img
-                    id="profileImage"
-                    alt="Profile"
-                    class="h-32 w-32 rounded-full border-4 border-[#F7F1E5] bg-white object-cover shadow-sm"
-                >
-
-                <div class="min-w-0 flex-1">
-                    <h3 class="mb-3 text-lg font-semibold text-[#80513D]">
-                        ข้อมูลส่วนตัว
-                    </h3>
-
-                    <div id="profile" class="space-y-2 text-sm leading-relaxed text-[#806D5D]"></div>
-
-                    <button
-                        id="editProfileBtn"
-                        type="button"
-                        class="mt-5 rounded-xl bg-[#80513D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#633A29]"
-                    >
-                        แก้ไขโปรไฟล์
-                    </button>
-                </div>
+            <div class="bg-[#80513D] px-6 py-5">
+                <p class="text-xs tracking-[0.2em] text-[#F2E3D0]">MY ACCOUNT</p>
+                <h2 class="mt-1 text-2xl font-bold text-white">ข้อมูลบัญชี</h2>
             </div>
 
-            <div id="editProfileFormContainer" hidden
-                class="mt-6 border-t border-[#E8D9C8] pt-6">
+            <div class="p-6">
+                <div class="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
 
-                <h3 class="mb-4 text-lg font-bold text-[#80513D]">
-                    แก้ไขข้อมูลส่วนตัว
-                </h3>
+                    <img id="profileImage" alt="Profile"
+                        class="h-32 w-32 rounded-full border-4 border-[#F7F1E5] bg-white object-cover shadow-sm">
 
-                <form id="editProfileForm" class="grid gap-4 sm:grid-cols-2">
+                    <div class="min-w-0 flex-1">
+                        <h3 class="mb-3 text-lg font-semibold text-[#80513D]">
+                            ข้อมูลส่วนตัว
+                        </h3>
 
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ชื่อ</label>
-                        <input type="text" name="fname" placeholder="ชื่อ"
-                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
-                    </div>
+                        <div id="profile" class="space-y-2 text-sm leading-relaxed text-[#806D5D]"></div>
 
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-[#80513D]">นามสกุล</label>
-                        <input type="text" name="lname" placeholder="นามสกุล"
-                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
-                    </div>
-
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ปีเกิด</label>
-                        <input type="number" name="birthyear" placeholder="ปีเกิด"
-                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
-                    </div>
-
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-[#80513D]">เบอร์โทรศัพท์</label>
-                        <input type="text" name="tel" placeholder="เบอร์โทรศัพท์"
-                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ที่อยู่</label>
-                        <input type="text" name="address" placeholder="ที่อยู่"
-                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 sm:col-span-2">
-                        <button type="submit"
-                            class="rounded-xl bg-[#80513D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#633A29]">
-                            บันทึกข้อมูล
+                        <button id="editProfileBtn" type="button"
+                            class="mt-5 rounded-xl bg-[#80513D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#633A29]">
+                            แก้ไขโปรไฟล์
                         </button>
                     </div>
+                </div>
 
-                </form>
+                <div id="editProfileFormContainer" hidden class="mt-6 border-t border-[#E8D9C8] pt-6">
+
+                    <h3 class="mb-4 text-lg font-bold text-[#80513D]">
+                        แก้ไขข้อมูลส่วนตัว
+                    </h3>
+
+                    <form id="editProfileForm" class="grid gap-4 sm:grid-cols-2">
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">ชื่อ</label>
+                            <input type="text" name="fname" placeholder="ชื่อ"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">นามสกุล</label>
+                            <input type="text" name="lname" placeholder="นามสกุล"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">ปีเกิด</label>
+                            <input type="number" name="birthyear" placeholder="ปีเกิด"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">เบอร์โทรศัพท์</label>
+                            <input type="text" name="tel" placeholder="เบอร์โทรศัพท์"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">ที่อยู่</label>
+                            <input type="text" name="address" placeholder="ที่อยู่"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 sm:col-span-2">
+                            <button type="submit"
+                                class="rounded-xl bg-[#80513D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#633A29]">
+                                บันทึกข้อมูล
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <div id="booklist">
 
@@ -285,35 +265,78 @@
     </br></br>
 
 
-    <section id="registerSection">
 
-        <h2>Register</h2>
+    <section id="registerSection" class="mx-auto my-10 max-w-2xl px-4">
 
-        <form id="registerForm">
+        <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
 
-            <input type="text" name="fname" placeholder="First name" required>
+            <div class="bg-[#80513D] px-6 py-5">
+                <p class="text-xs tracking-[0.2em] text-[#F2E3D0]">JOIN OUR BOOKSTORE</p>
+                <h2 class="mt-1 text-2xl font-bold text-white">สมัครสมาชิก</h2>
+                <p class="mt-2 text-sm text-[#F2E3D0]">
+                    สมัครเพื่อเริ่มต้นการเดินทางผ่านหนังสือจีน
+                </p>
+            </div>
 
-            <input type="text" name="lname" placeholder="Last name" required>
+            <div class="p-6">
+                <form id="registerForm" class="grid gap-4 sm:grid-cols-2">
 
-            <input type="number" name="birthyear" placeholder="Birth year" required>
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ชื่อ</label>
+                        <input type="text" name="fname" placeholder="กรอกชื่อ" required
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
 
-            <input type="text" name="address" placeholder="Address" required>
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">นามสกุล</label>
+                        <input type="text" name="lname" placeholder="กรอกนามสกุล" required
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
 
-            <input type="text" name="tel" placeholder="Telephone" required>
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ปีเกิด</label>
+                        <input type="number" name="birthyear" placeholder="กรอกปีเกิด" required
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
 
-            <input type="text" name="username" placeholder="Username" required>
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">เบอร์โทรศัพท์</label>
+                        <input type="text" name="tel" placeholder="กรอกเบอร์โทรศัพท์" required
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
 
-            <input type="password" name="password" placeholder="Password" required>
+                    <div class="sm:col-span-2">
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ที่อยู่</label>
+                        <input type="text" name="address" placeholder="กรอกที่อยู่" required
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
 
-            <button type="submit">
-                Register
-            </button>
+                    <div class="sm:col-span-2">
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ชื่อผู้ใช้</label>
+                        <input type="text" name="username" placeholder="ตั้งชื่อผู้ใช้" required
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
 
-        </form>
+                    <div class="sm:col-span-2">
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">รหัสผ่าน</label>
+                        <input type="password" name="password" placeholder="ตั้งรหัสผ่าน" required
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none transition focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
 
-        <div id="registerResult"></div>
+                    <div class="sm:col-span-2">
+                        <button type="submit"
+                            class="w-full rounded-xl bg-[#80513D] px-5 py-3 font-semibold text-white transition hover:bg-[#633A29]">
+                            สมัครสมาชิก
+                        </button>
+                    </div>
 
+                </form>
+
+                <div id="registerResult" class="mt-4 text-center text-sm text-[#806D5D]"></div>
+            </div>
+        </div>
     </section>
+
 
     </br></br>
     </br></br>
