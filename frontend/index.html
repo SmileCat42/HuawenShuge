@@ -148,36 +148,93 @@
 
     <h2>Account Profile</h2>
 
-    <div id="profile"></div>
+    
+<section class="mx-auto my-8 max-w-3xl px-4">
+    <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
 
-    <button id="editProfileBtn">
-        Edit Profile
-    </button>
-    <div id="editProfileFormContainer" hidden>
+        <div class="bg-[#80513D] px-6 py-5">
+            <p class="text-xs tracking-[0.2em] text-[#F2E3D0]">MY ACCOUNT</p>
+            <h2 class="mt-1 text-2xl font-bold text-white">ข้อมูลบัญชี</h2>
+        </div>
 
-        <h3>Edit Profile</h3>
+        <div class="p-6">
+            <div class="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
 
-        <form id="editProfileForm">
+                <img
+                    id="profileImage"
+                    alt="Profile"
+                    class="h-32 w-32 rounded-full border-4 border-[#F7F1E5] bg-white object-cover shadow-sm"
+                >
 
-            <input type="text" name="fname" placeholder="First name">
+                <div class="min-w-0 flex-1">
+                    <h3 class="mb-3 text-lg font-semibold text-[#80513D]">
+                        ข้อมูลส่วนตัว
+                    </h3>
 
-            <input type="text" name="lname" placeholder="Last name">
+                    <div id="profile" class="space-y-2 text-sm leading-relaxed text-[#806D5D]"></div>
 
-            <input type="number" name="birthyear" placeholder="Birth year">
+                    <button
+                        id="editProfileBtn"
+                        type="button"
+                        class="mt-5 rounded-xl bg-[#80513D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#633A29]"
+                    >
+                        แก้ไขโปรไฟล์
+                    </button>
+                </div>
+            </div>
 
-            <input type="text" name="address" placeholder="Address">
+            <div id="editProfileFormContainer" hidden
+                class="mt-6 border-t border-[#E8D9C8] pt-6">
 
-            <input type="text" name="tel" placeholder="Telephone">
+                <h3 class="mb-4 text-lg font-bold text-[#80513D]">
+                    แก้ไขข้อมูลส่วนตัว
+                </h3>
 
-            <button type="submit">
-                Save
-            </button>
+                <form id="editProfileForm" class="grid gap-4 sm:grid-cols-2">
 
-        </form>
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ชื่อ</label>
+                        <input type="text" name="fname" placeholder="ชื่อ"
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
 
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">นามสกุล</label>
+                        <input type="text" name="lname" placeholder="นามสกุล"
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ปีเกิด</label>
+                        <input type="number" name="birthyear" placeholder="ปีเกิด"
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">เบอร์โทรศัพท์</label>
+                        <input type="text" name="tel" placeholder="เบอร์โทรศัพท์"
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="mb-1 block text-sm font-medium text-[#80513D]">ที่อยู่</label>
+                        <input type="text" name="address" placeholder="ที่อยู่"
+                            class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 sm:col-span-2">
+                        <button type="submit"
+                            class="rounded-xl bg-[#80513D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#633A29]">
+                            บันทึกข้อมูล
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
     </div>
+</section>
 
-    <img id="profileImage" alt="Profile" style="width:150px;">
     <div id="booklist">
 
 
