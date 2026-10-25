@@ -28,6 +28,8 @@ let wishlist = []
 let currentUser =
   JSON.parse(sessionStorage.getItem("currentUser")) || null
 
+updateLoginUI()
+
 async function loadUserData() {
 
   if (!currentUser) {
@@ -44,27 +46,70 @@ async function loadUserData() {
 
       console.log("Account >>", account)
 
-      document.getElementById("profile").innerHTML = `
-        <div>
-          Username: ${account.username}
-        </div>
+      
+document.getElementById("profile").innerHTML = `
+  <div class="rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm">
 
-        <div>
-          Name: ${account.fname} ${account.lname}
-        </div>
+    <div class="mb-6 border-b border-[#E8D9C8] pb-4">
+      <p class="text-sm tracking-widest text-[#9A806C]">
+        MY ACCOUNT
+      </p>
 
-        <div>
-          Birth Year: ${account.birthyear}
-        </div>
+      <h2 class="mt-2 text-2xl font-bold text-[#80513D]">
+        ข้อมูลส่วนตัว
+      </h2>
 
-        <div>
-          Address: ${account.address}
-        </div>
-
-        <div>
-        Tel: ${account.tel}
+      <div class="mt-3 inline-block rounded-full bg-[#F3E7D8] px-4 py-1.5 text-sm font-medium text-[#80513D]">
+        ตำแหน่ง: ${
+          currentUser.role === "customer" ? "ลูกค้า" :
+          currentUser.role === "employee" ? "พนักงาน" :
+          currentUser.role === "manager" ? "ผู้จัดการ" :
+          currentUser.role ?? "ไม่ระบุ"
+        }
+      </div>
     </div>
-      `
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+      <div class="rounded-xl bg-[#F8F1E8] p-4">
+        <p class="text-sm text-[#9A806C]">ชื่อผู้ใช้</p>
+        <p class="mt-1 break-words font-semibold text-[#543827]">
+          ${account.username ?? "-"}
+        </p>
+      </div>
+
+      <div class="rounded-xl bg-[#F8F1E8] p-4">
+        <p class="text-sm text-[#9A806C]">ชื่อ-นามสกุล</p>
+        <p class="mt-1 break-words font-semibold text-[#543827]">
+          ${account.fname ?? "-"} ${account.lname ?? ""}
+        </p>
+      </div>
+
+      <div class="rounded-xl bg-[#F8F1E8] p-4">
+        <p class="text-sm text-[#9A806C]">ปีเกิด</p>
+        <p class="mt-1 font-semibold text-[#543827]">
+          ${account.birthyear ?? "-"}
+        </p>
+      </div>
+
+      <div class="rounded-xl bg-[#F8F1E8] p-4">
+        <p class="text-sm text-[#9A806C]">เบอร์โทรศัพท์</p>
+        <p class="mt-1 break-words font-semibold text-[#543827]">
+          ${account.tel ?? "-"}
+        </p>
+      </div>
+
+      <div class="rounded-xl bg-[#F8F1E8] p-4 sm:col-span-2">
+        <p class="text-sm text-[#9A806C]">ที่อยู่</p>
+        <p class="mt-1 break-words font-semibold text-[#543827]">
+          ${account.address ?? "-"}
+        </p>
+      </div>
+
+    </div>
+  </div>
+`
+
       const form =
         document.getElementById("editProfileForm")
 
@@ -590,7 +635,6 @@ function showBooks(data) {
 })
 } loadBooks()
   .then((data) => {
-    console.log(data)
     books = data
     showBooks(data)
     updateWishlistButtons()
@@ -1745,30 +1789,39 @@ document
 
 //+++++++++++++++++++++++++DELETE+++++++++++++++++++++++++++++++
 
-document.getElementById("delForm")
-  .addEventListener("submit", (event) => {
+const delForm = document.getElementById("delForm")
+
+if (delForm) {
+  delForm.addEventListener("submit", async (event) => {
     event.preventDefault()
+
     const form = event.currentTarget
     const num1 = form.querySelector('[name="id"]')
     const id = Number(num1.value)
-    delBook(id)
-      .then((data) => {
-        console.log(data)
-        return loadBooks()
-      })
-      .then((data) => {
-        showBooks(data)
-      })
+
+    try {
+      await delBook(id)
+
+      const data = await loadBooks()
+      books = data
+      showBooks(data)
+      updateBookActionButtons()
+
+      alert("ลบหนังสือสำเร็จแล้ว")
+    } catch (error) {
+      console.error("Delete book error:", error)
+      alert("ลบหนังสือไม่สำเร็จ: " + error.message)
+    }
   })
+}
 
-document.getElementById(
-  "editProfileBtn"
-).addEventListener("click", () => {
+const editProfileBtn = document.getElementById("editProfileBtn")
 
-  document.getElementById(
-    "editProfileFormContainer"
-  ).hidden = false
-})
+if (editProfileBtn) {
+  editProfileBtn.addEventListener("click", () => {
+    document.getElementById("editProfileFormContainer").hidden = false
+  })
+}
 
 document
   .getElementById("logoutBtn")
@@ -1777,6 +1830,10 @@ document
     sessionStorage.removeItem("currentUser")
 
     currentUser = null
+
+    updateLoginUI()
+
+    document.getElementById("LoginContainer").hidden = true
 
     cart = []
     wishlist = []
@@ -1799,3 +1856,87 @@ document
 
     alert("Logout successful")
   })
+
+
+const LoginBtn = document.getElementById("LoginBtn")
+
+if (LoginBtn) {
+  LoginBtn.addEventListener("click", () => {
+    document.getElementById("LoginContainer").hidden = false
+  })
+}
+
+const ProfileBtn = document.getElementById("ProfileBtn")
+
+if (ProfileBtn) {
+  ProfileBtn.addEventListener("click", () => {
+    document.getElementById("ProfileCon").hidden = false
+  })
+}
+
+
+document.getElementById("loginForm")
+  .addEventListener("submit", event => {
+
+    event.preventDefault()
+
+    const form = event.currentTarget
+
+    const username =
+      form.querySelector('[name="username"]').value
+
+    const password =
+      form.querySelector('[name="password"]').value
+
+    login(username, password)
+      .then(async data => {
+
+        console.log("Login success >>", data)
+        alert("เข้าสู่ระบบสำเร็จ")
+
+        currentUser = data
+
+        sessionStorage.setItem(
+          "currentUser",
+          JSON.stringify(currentUser)
+        )
+
+        updateLoginUI()
+
+        document.getElementById("LoginContainer").hidden = true
+
+        await loadUserData()
+
+        const booksData = await loadBooks()
+
+        showBooks(booksData)
+
+        updateRoleBasedUI()
+
+        document.getElementById("loginResult")
+          .innerHTML = `
+            <div>Login success</div>
+            <div>User: ${data.username}</div>
+            <div>Customer ID: ${data.id_cust ?? "-"}</div>
+            <div>Employee ID: ${data.id_emp ?? "-"}</div>
+            <div>Role: ${data.role ?? "-"}</div>
+          `
+      })
+      .catch(error => {
+
+        console.error(error)
+
+        document.getElementById("loginResult")
+          .innerHTML = `
+            <div>${error.message}</div>
+          `
+      })
+  })
+
+  function updateLoginUI() {
+    const isLoggedIn = currentUser !== null
+
+    document.getElementById("LoginBtn").hidden = isLoggedIn
+    document.getElementById("ProfileBtn").hidden = !isLoggedIn
+    document.getElementById("logoutBtn").hidden = !isLoggedIn
+}

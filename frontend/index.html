@@ -84,15 +84,26 @@
                 คำสั่งซื้อ
             </a>
 
-            <a href="#loginForm"
+            <button id="ProfileBtn" type="button" hidden
+                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
+                Profile
+            </button>
+
+            <button id="LoginBtn" type="button"
                 class="ml-auto rounded-lg bg-cream px-4 py-2 text-sm font-medium text-walnut transition hover:bg-[#633A29] hover:text-white">
                 เข้าสู่ระบบ
-            </a>
+            </button>
+
+            <button id="logoutBtn" type="button" hidden
+                class="rounded-lg bg-cream px-4 py-2 text-sm font-medium text-walnut transition hover:bg-[#633A29] hover:text-white">
+                Logout
+            </button>
         </div>
     </nav>
 
 
-    <section class="mx-auto my-8 max-w-md rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm">
+    <section id="LoginContainer"
+        class="mx-auto my-8 max-w-md rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm" hidden>
         <div class="mb-5 text-center">
             <p class="text-sm tracking-[0.2em] text-[#9A806C]">WELCOME BACK</p>
             <h2 class="mt-2 text-2xl font-bold text-[#80513D]">เข้าสู่ระบบ</h2>
@@ -118,7 +129,7 @@
             </button>
         </form>
 
-        <button id="logoutBtn"
+        <button id="logoutBtn" type="button"
             class="mt-3 w-full rounded-xl border border-[#DCCAB6] px-4 py-2 text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]">
             ออกจากระบบ
         </button>
@@ -126,17 +137,10 @@
         <div id="loginResult" class="mt-3 text-center text-sm text-[#806D5D]"></div>
     </section>
 
-
-    <button id="logoutBtn">
-        Logout
-    </button>
-
     <div id="loginResult"></div>
 
-    <h2>Account Profile</h2>
 
-
-    <section class="mx-auto my-8 max-w-3xl px-4">
+    <section id="ProfileCon" hidden class="mx-auto my-8 max-w-3xl px-4">
         <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
 
             <div class="bg-[#80513D] px-6 py-5">
@@ -151,9 +155,6 @@
                         class="h-32 w-32 rounded-full border-4 border-[#F7F1E5] bg-white object-cover shadow-sm">
 
                     <div class="min-w-0 flex-1">
-                        <h3 class="mb-3 text-lg font-semibold text-[#80513D]">
-                            ข้อมูลส่วนตัว
-                        </h3>
 
                         <div id="profile" class="space-y-2 text-sm leading-relaxed text-[#806D5D]"></div>
 

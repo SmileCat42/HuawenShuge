@@ -1,0 +1,227 @@
+
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | HuawenShuge</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: "#F7F1E5",
+            ivory: "#FFFDF8",
+            walnut: "#80513D",
+            olive: "#72765A",
+          },
+        },
+      },
+    };
+  </script>
+</head>
+
+<body class="min-h-screen bg-cream text-stone-800">
+
+   <header class="relative isolate border-b border-[#E8D9C8] text-walnut shadow-md">
+
+        <!-- Background: อยู่ภายใน Header เท่านั้น -->
+        <div aria-hidden="true"
+            class="pointer-events-none absolute inset-0 hidden bg-center bg-no-repeat opacity-70 sm:block" style="
+            background-image: url('/images/wall5.png');
+            background-size: 100% 100%;
+        "></div>
+
+        <!-- Header content: อยู่เหนือภาพพื้นหลัง -->
+        <div class="relative z-10 mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5">
+
+            <img src="/images/book558.png" alt="HuawenShuge Logo" class="h-auto w-64 shrink-0 object-contain" />
+
+            <p class="shrink-0 text-sm text-walnut">
+                ค้นพบเรื่องราวผ่านหนังสือจีน
+            </p>
+
+        </div>
+    </header>
+
+  <nav class="sticky top-0 z-40 border-b border-[#E8D9C8] bg-walnut/95 shadow-sm">
+        <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-5 py-3">
+            <a href="./index.html"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
+                หนังสือทั้งหมด
+            </a>
+
+            <a href="#wishlistList"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
+                รายการโปรด
+            </a>
+
+            <a href="#cartList"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
+                ตะกร้าสินค้า
+            </a>
+
+            <a href="#customerOrderList"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
+                คำสั่งซื้อ
+            </a>
+
+            <a href="./profile.html"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
+                Profile
+            </a>
+
+            <button id="LoginBtn" href="#LoginContainer"
+                class="ml-auto rounded-lg bg-cream px-4 py-2 text-sm font-medium text-walnut transition hover:bg-[#633A29] hover:text-white">
+                เข้าสู่ระบบ
+        </button>
+        </div>
+    </nav>
+
+  <main class="mx-auto max-w-5xl space-y-8 px-4 py-8">
+
+    <!-- ข้อมูลบัญชี -->
+    <section class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
+      <div class="bg-[#80513D] px-6 py-5 text-white">
+        <p class="text-xs tracking-widest text-[#F2E3D0]">MY ACCOUNT</p>
+        <h1 class="mt-1 text-2xl font-bold">ข้อมูลบัญชีของฉัน</h1>
+      </div>
+
+      <div class="flex flex-col gap-5 p-6 sm:flex-row">
+        <img id="profileImage"
+             alt="รูปโปรไฟล์"
+             class="h-32 w-32 rounded-full border-4 border-cream bg-white object-cover">
+
+        <div class="min-w-0 flex-1">
+          <div id="profile" class="space-y-3 text-sm leading-relaxed text-[#806D5D]">
+            กำลังโหลดข้อมูลบัญชี...
+          </div>
+
+          <button id="editProfileBtn" type="button"
+             class="mt-5 rounded-xl bg-[#80513D] px-5 py-3 text-sm font-semibold text-white hover:bg-[#633A29]">
+            แก้ไขโปรไฟล์
+          </button>
+        </div>
+      </div>
+
+      <!-- ฟอร์มแก้ไข: คัดฟอร์มเดิมมาใส่ตรงนี้ -->
+      <div id="editProfileFormContainer" hidden class="border-t border-[#E8D9C8] p-6">
+        <h2 class="mb-4 text-lg font-bold text-[#80513D]">แก้ไขข้อมูลส่วนตัว</h2>
+
+        <form id="editProfileForm" class="grid gap-4 sm:grid-cols-2">
+          <input name="fname" required placeholder="ชื่อ"
+            class="rounded-xl border border-[#DCCAB6] bg-white px-4 py-3">
+          <input name="lname" required placeholder="นามสกุล"
+            class="rounded-xl border border-[#DCCAB6] bg-white px-4 py-3">
+          <input name="birthyear" type="number" required placeholder="ปีเกิด"
+            class="rounded-xl border border-[#DCCAB6] bg-white px-4 py-3">
+          <input name="tel" required placeholder="เบอร์โทรศัพท์"
+            class="rounded-xl border border-[#DCCAB6] bg-white px-4 py-3">
+          <input name="address" required placeholder="ที่อยู่"
+            class="rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 sm:col-span-2">
+
+          <div class="flex gap-2 sm:col-span-2">
+            <button type="submit"
+              class="rounded-xl bg-[#80513D] px-5 py-3 font-semibold text-white">
+              บันทึกข้อมูล
+            </button>
+            <button id="cancelEditProfileBtn" type="button"
+              class="rounded-xl border border-[#DCCAB6] px-5 py-3">
+              ยกเลิก
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+
+
+    <section class="mx-auto my-8 max-w-3xl px-4">
+        <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
+
+            <div class="bg-[#80513D] px-6 py-5">
+                <p class="text-xs tracking-[0.2em] text-[#F2E3D0]">MY ACCOUNT</p>
+                <h2 class="mt-1 text-2xl font-bold text-white">ข้อมูลบัญชี</h2>
+            </div>
+
+            <div class="p-6">
+                <div class="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
+
+                    <img id="profileImage" alt="Profile"
+                        class="h-32 w-32 rounded-full border-4 border-[#F7F1E5] bg-white object-cover shadow-sm">
+
+                    <div class="min-w-0 flex-1">
+                        <h3 class="mb-3 text-lg font-semibold text-[#80513D]">
+                            ข้อมูลส่วนตัว
+                        </h3>
+
+                        <div id="profile" class="space-y-2 text-sm leading-relaxed text-[#806D5D]"></div>
+
+                        <button id="editProfileBtn" type="button"
+                            class="mt-5 rounded-xl bg-[#80513D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#633A29]">
+                            แก้ไขโปรไฟล์
+                        </button>
+                    </div>
+                </div>
+
+                <div id="editProfileFormContainer" hidden class="mt-6 border-t border-[#E8D9C8] pt-6">
+
+                    <h3 class="mb-4 text-lg font-bold text-[#80513D]">
+                        แก้ไขข้อมูลส่วนตัว
+                    </h3>
+
+                    <form id="editProfileForm" class="grid gap-4 sm:grid-cols-2">
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">ชื่อ</label>
+                            <input type="text" name="fname" placeholder="ชื่อ"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">นามสกุล</label>
+                            <input type="text" name="lname" placeholder="นามสกุล"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">ปีเกิด</label>
+                            <input type="number" name="birthyear" placeholder="ปีเกิด"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">เบอร์โทรศัพท์</label>
+                            <input type="text" name="tel" placeholder="เบอร์โทรศัพท์"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="mb-1 block text-sm font-medium text-[#80513D]">ที่อยู่</label>
+                            <input type="text" name="address" placeholder="ที่อยู่"
+                                class="w-full rounded-xl border border-[#DCCAB6] bg-white px-4 py-3 outline-none focus:border-[#80513D] focus:ring-2 focus:ring-[#80513D]/20">
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 sm:col-span-2">
+                            <button type="submit"
+                                class="rounded-xl bg-[#80513D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#633A29]">
+                                บันทึกข้อมูล
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- แสดงผลการเข้าสู่ระบบ / สถานะ -->
+    <p id="profileMessage" class="text-sm text-[#806D5D]"></p>
+
+  </main>
+
+  <script type="module" src="./profile.js"></script>
+</body>
+</html>
