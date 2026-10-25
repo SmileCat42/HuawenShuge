@@ -46,8 +46,8 @@ async function loadUserData() {
 
       console.log("Account >>", account)
 
-      
-document.getElementById("profile").innerHTML = `
+
+      document.getElementById("profile").innerHTML = `
   <div class="rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm">
 
     <div class="mb-6 border-b border-[#E8D9C8] pb-4">
@@ -59,14 +59,23 @@ document.getElementById("profile").innerHTML = `
         ข้อมูลส่วนตัว
       </h2>
 
-      <div class="mt-3 inline-block rounded-full bg-[#F3E7D8] px-4 py-1.5 text-sm font-medium text-[#80513D]">
-        ตำแหน่ง: ${
-          currentUser.role === "customer" ? "ลูกค้า" :
-          currentUser.role === "employee" ? "พนักงาน" :
-          currentUser.role === "manager" ? "ผู้จัดการ" :
-          currentUser.role ?? "ไม่ระบุ"
-        }
-      </div>
+        
+
+<div class="mt-3 inline-block rounded-full bg-[#F3E7D8] px-4 py-1.5 text-sm font-medium text-[#80513D]">
+  Status : ${
+    ({
+      2001: "Customer",
+      2002: "Staff",
+      2003: "Rider",
+      2004: "Manager",
+      2005: "Admin"
+    })[Number(currentUser.id_role)] ?? "Customer"
+  }
+</div>
+
+
+
+
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -608,31 +617,31 @@ function showBooks(data) {
 
 
   buttonEdit.forEach(button => {
-  button.addEventListener("click", () => {
+    button.addEventListener("click", () => {
 
-    const id = Number(button.dataset.id)
+      const id = Number(button.dataset.id)
 
-    const book = books.find(
-      book => Number(book.id) === id
-    )
+      const book = books.find(
+        book => Number(book.id) === id
+      )
 
-    if (!book) {
-      alert("ไม่พบข้อมูลหนังสือ")
-      return
-    }
+      if (!book) {
+        alert("ไม่พบข้อมูลหนังสือ")
+        return
+      }
 
-    const form = document.getElementById("EditForm")
+      const form = document.getElementById("EditForm")
 
-    form.querySelector('[name="id"]').value = book.id
-    form.querySelector('[name="name"]').value = book.name
-    form.querySelector('[name="price"]').value = book.price
-    form.querySelector('[name="author"]').value = book.author
-    form.querySelector('[name="detail"]').value = book.detail
+      form.querySelector('[name="id"]').value = book.id
+      form.querySelector('[name="name"]').value = book.name
+      form.querySelector('[name="price"]').value = book.price
+      form.querySelector('[name="author"]').value = book.author
+      form.querySelector('[name="detail"]').value = book.detail
 
-    console.log("Book to edit >>", book)
+      console.log("Book to edit >>", book)
 
+    })
   })
-})
 } loadBooks()
   .then((data) => {
     books = data
@@ -1834,6 +1843,7 @@ document
     updateLoginUI()
 
     document.getElementById("LoginContainer").hidden = true
+    document.getElementById("ProfileCon").hidden = true
 
     cart = []
     wishlist = []
@@ -1863,6 +1873,7 @@ const LoginBtn = document.getElementById("LoginBtn")
 if (LoginBtn) {
   LoginBtn.addEventListener("click", () => {
     document.getElementById("LoginContainer").hidden = false
+    document.getElementById("registerSection").hidden = true
   })
 }
 
@@ -1892,6 +1903,7 @@ document.getElementById("loginForm")
       .then(async data => {
 
         console.log("Login success >>", data)
+        
         alert("เข้าสู่ระบบสำเร็จ")
 
         currentUser = data
@@ -1933,10 +1945,19 @@ document.getElementById("loginForm")
       })
   })
 
-  function updateLoginUI() {
-    const isLoggedIn = currentUser !== null
+function updateLoginUI() {
+  const isLoggedIn = currentUser !== null
 
-    document.getElementById("LoginBtn").hidden = isLoggedIn
-    document.getElementById("ProfileBtn").hidden = !isLoggedIn
-    document.getElementById("logoutBtn").hidden = !isLoggedIn
+  document.getElementById("LoginBtn").hidden = isLoggedIn
+  document.getElementById("ProfileBtn").hidden = !isLoggedIn
+  document.getElementById("logoutBtn").hidden = !isLoggedIn
+}
+
+const RegisterBtn = document.getElementById("RegisterBtn")
+
+if (RegisterBtn) {
+  RegisterBtn.addEventListener("click", () => {
+    document.getElementById("registerSection").hidden = false
+    document.getElementById("LoginContainer").hidden = true
+  })
 }

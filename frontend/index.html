@@ -85,8 +85,8 @@
             </a>
 
             <button id="ProfileBtn" type="button" hidden
-                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
-                Profile
+                class="ml-auto rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-[#D48660] hover:text-walnut">
+                <img src="/images/user.png" class="h-5">
             </button>
 
             <button id="LoginBtn" type="button"
@@ -95,7 +95,7 @@
             </button>
 
             <button id="logoutBtn" type="button" hidden
-                class="rounded-lg bg-cream px-4 py-2 text-sm font-medium text-walnut transition hover:bg-[#633A29] hover:text-white">
+                class="rounded-lg bg-cream px-4 py-2 text-sm font-medium text-[#CC3333] transition hover:bg-[#CC6666] hover:text-white">
                 Logout
             </button>
         </div>
@@ -129,6 +129,11 @@
             </button>
         </form>
 
+        <button id="RegisterBtn" type="button"
+            class="mt-3 w-full rounded-xl border border-[#DCCAB6] px-4 py-2 text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]">
+            ลงทะเบียน
+        </button>
+
         <button id="logoutBtn" type="button"
             class="mt-3 w-full rounded-xl border border-[#DCCAB6] px-4 py-2 text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]">
             ออกจากระบบ
@@ -151,7 +156,7 @@
             <div class="p-6">
                 <div class="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
 
-                    <img id="profileImage" alt="Profile"
+                    <img src = "/images/PFM.png" id="profileImage" alt="Profile"
                         class="h-32 w-32 rounded-full border-4 border-[#F7F1E5] bg-white object-cover shadow-sm">
 
                     <div class="min-w-0 flex-1">
@@ -215,59 +220,8 @@
             </div>
         </div>
     </section>
-
-    <div id="booklist">
-
-
-    </div>
-    </br></br>
-
-    <div id="paymentArea"></div>
-    </br></br>
-
-    <section data-role="customer">
-
-        <h3>WishList</h3>
-        <div id="wishlistList"></div>
-
-        <h2>Cart</h2>
-        <div id="cartList"></div>
-
-        <button id="createOrderBtn">
-            Create Order
-        </button>
-
-        <div id="orderResult"></div>
-
-        <h2>My Orders</h2>
-        <div id="customerOrderList"></div>
-
-    </section>
-
-    <section data-role="employee">
-
-        <h2>Employee - Order Management</h2>
-        <div id="employeeOrderList"></div>
-
-        <h2>My Orders</h2>
-        <div id="myOrderList"></div>
-
-        <h2>Order Detail</h2>
-        <div id="employeeOrderDetail"></div>
-
-    </section>
-
-    </br></br>
-    <section data-role="manager" hidden>
-        <h2>Manage Employee</h2>
-
-        <div id="eligibleCustomerList"></div>
-    </section>
-    </br></br>
-
-
-
-    <section id="registerSection" class="mx-auto my-10 max-w-2xl px-4">
+    
+    <section id="registerSection" hidden class="mx-auto my-10 max-w-2xl px-4">
 
         <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
 
@@ -275,7 +229,7 @@
                 <p class="text-xs tracking-[0.2em] text-[#F2E3D0]">JOIN OUR BOOKSTORE</p>
                 <h2 class="mt-1 text-2xl font-bold text-white">สมัครสมาชิก</h2>
                 <p class="mt-2 text-sm text-[#F2E3D0]">
-                    สมัครเพื่อเริ่มต้นการเดินทางผ่านหนังสือจีน
+                    ลงทะเบียนเพื่อสั่งซื้อสินค้า
                 </p>
             </div>
 
@@ -338,11 +292,62 @@
         </div>
     </section>
 
+    <div id="booklist">
+
+
+    </div>
+    </br></br>
+
+    <div id="paymentArea"></div>
+    </br></br>
+
+    <section data-role="customer">
+
+        <h3>WishList</h3>
+        <div id="wishlistList"></div>
+
+        <h2>Cart</h2>
+        <div id="cartList"></div>
+
+        <button id="createOrderBtn">
+            Create Order
+        </button>
+
+        <div id="orderResult"></div>
+
+        <h2>My Orders</h2>
+        <div id="customerOrderList"></div>
+
+    </section>
+
+    <section data-role="employee">
+
+        <h2>Employee - Order Management</h2>
+        <div id="employeeOrderList"></div>
+
+        <h2>My Orders</h2>
+        <div id="myOrderList"></div>
+
+        <h2>Order Detail</h2>
+        <div id="employeeOrderDetail"></div>
+
+    </section>
+
+    </br></br>
+    <section data-role="manager" hidden>
+        <h2>Manage Employee</h2>
+
+        <div id="eligibleCustomerList"></div>
+    </section>
+    </br></br>
+
+
+
+    
+
 
     </br></br>
     </br></br>
-    ```html
-    ```html
     <section data-role="employee" class="mx-auto my-10 max-w-5xl px-4">
         <div class="mb-6">
             <p class="text-xs tracking-[0.2em] text-[#9A806C]">STAFF WORKSPACE</p>

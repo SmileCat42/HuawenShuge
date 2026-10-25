@@ -100,7 +100,6 @@ app.get("/account/:id_acc", async (req, res) => {
                 ON a.id_person = p.id_person
             WHERE a.id_acc = $1
             `, [id_acc]);
-        console.log("re sult >>", result);
         if (result.rows.length === 0) {
             res.status(404).json({
                 message: "Account not found"
@@ -485,7 +484,7 @@ app.post("/login", async (req, res) => {
                 a.password,
                 c.id_cust AS id_cust,
                 e.id_emp,
-                r.role_name
+                e.id_role
             FROM account a
             JOIN person p
                 ON a.id_person = p.id_person
@@ -516,7 +515,7 @@ app.post("/login", async (req, res) => {
             username: account.username,
             id_cust: account.id_cust,
             id_emp: account.id_emp,
-            role: account.role_name
+            id_role: account.id_role
         });
     }
     catch (error) {
