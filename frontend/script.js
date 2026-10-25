@@ -328,80 +328,87 @@ function updateWishlistButtons() {
     })
 }
 
+
 function showWishlist(data) {
+    const list = document.getElementById("wishlistItems")
 
-  const list =
-    document.getElementById("wishlistList")
+    if (!list) return
 
-  list.innerHTML = ""
+    list.innerHTML = ""
 
-  data.forEach(item => {
+    // กรณีไม่มีหนังสือใน Wishlist
+    if (!data || data.length === 0) {
+        list.innerHTML = `
+            <div class="py-10 text-center">
+                <div class="mb-3 text-5xl text-[#DCCAB6]">♡</div>
 
-    list.innerHTML += `
-            
-<div class="flex flex-col gap-4 rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-4 shadow-sm transition hover:shadow-md sm:flex-row">
+                <h3 class="text-lg font-semibold text-[#80513D]">
+                    ยังไม่มีหนังสือในรายการโปรด
+                </h3>
 
-  <img
-    src="${item.image}"
-    alt="${item.name}"
-    class="h-40 w-28 rounded-lg object-cover"
-  >
-
-  <div class="flex flex-1 flex-col">
-
-    <h3 class="text-lg font-bold text-[#80513D]">
-      ${item.name}
-    </h3>
-
-    <p class="mt-1 text-sm text-[#806D5D]">
-      ผู้เขียน: ${item.author || "ไม่ระบุ"}
-    </p>
-
-    <p class="mt-2 font-semibold text-[#72765A]">
-      ${Number(item.price).toLocaleString("th-TH")} บาท
-    </p>
-
-    <div class="mt-auto pt-4">
-      <button
-        class="removeWishlistBtn rounded-lg border border-rose-200 px-4 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-50"
-        data-id="${item.id_wishlist}">
-        remove
-      </button>
-    </div>
-
-  </div>
-</div>
-
+                <p class="mt-2 text-sm text-[#9A806C]">
+                    เลือกหนังสือที่คุณชอบ แล้วกดหัวใจเพื่อบันทึกไว้ได้เลย
+                </p>
+            </div>
         `
-  })
+        return
+    }
 
-  document
-    .querySelectorAll(".removeWishlistBtn")
-    .forEach(button => {
+    data.forEach(item => {
+        list.innerHTML += `
+            <div class="flex flex-col gap-4 rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-4 shadow-sm transition hover:shadow-md sm:flex-row">
 
-      button.addEventListener("click", () => {
+                <img
+                    src="${item.image || "/images/newbook.png"}"
+                    alt="${item.name}"
+                    class="h-40 w-28 rounded-lg object-cover"
+                >
 
-        const id =
-          Number(button.dataset.id)
+                <div class="flex flex-1 flex-col">
+                    <h3 class="text-lg font-bold text-[#80513D]">
+                        ${item.name}
+                    </h3>
 
-        deleteWishlist(id)
-          .then(() => {
+                    <p class="mt-1 text-sm text-[#806D5D]">
+                        ผู้เขียน: ${item.author || "ไม่ระบุ"}
+                    </p>
 
-            return getWishlist(currentUser.id_cust)
+                    <p class="mt-2 font-semibold text-[#72765A]">
+                        ฿${Number(item.price).toLocaleString("th-TH")}
+                    </p>
 
-          })
-          .then(data => {
+                    <div class="mt-4">
+                        <button
+                            type="button"
+                            class="removeWishlistBtn rounded-lg border border-[#DCCAB6] px-4 py-2 text-sm font-medium text-[#CC3333] transition hover:bg-[#CC6666] hover:text-white"
+                            data-id="${item.id_wishlist}">
+                            remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `
+    })
 
-            wishlist = data
+    list.querySelectorAll(".removeWishlistBtn").forEach(button => {
+        button.addEventListener("click", async () => {
+            const id = Number(button.dataset.id)
 
-            showWishlist(data)
+            try {
+                await deleteWishlist(id)
 
-            updateWishlistButtons()
+                wishlist = await getWishlist(currentUser.id_cust)
 
-          })
-      })
+                showWishlist(wishlist)
+                updateWishlistButtons()
+            } catch (error) {
+                console.error(error)
+                alert(error.message)
+            }
+        })
     })
 }
+
 
 if (currentUser && currentUser.id_cust) {
   getWishlist(currentUser.id_cust)
@@ -442,7 +449,7 @@ function showBooks(data) {
 
     list.innerHTML += `
       
-  <div class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+  <div class="group flex h-full mt-10 flex-col overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
   <div class="relative flex h-64 items-center justify-center overflow-hidden bg-[#F7F1E5] p-4">
     <img
       src="${book.image}"
@@ -1882,6 +1889,14 @@ const ProfileBtn = document.getElementById("ProfileBtn")
 if (ProfileBtn) {
   ProfileBtn.addEventListener("click", () => {
     document.getElementById("ProfileCon").hidden = false
+  })
+}
+
+const wishlistBtn = document.getElementById("wishlistBtn")
+
+if (wishlistBtn) {
+  wishlistBtn.addEventListener("click", () => {
+    document.getElementById("wishlistList").hidden = false
   })
 }
 

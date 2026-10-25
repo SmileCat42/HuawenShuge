@@ -69,15 +69,15 @@
                 หนังสือทั้งหมด
             </a>
 
-            <a href="#wishlistList"
+            <button id="wishlistBtn" href="#wishlistList" type="button"
                 class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
                 รายการโปรด
-            </a>
+        </button>
 
-            <a href="#cartList"
+            <button href="#cartList" type="button"
                 class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
                 ตะกร้าสินค้า
-            </a>
+        </button>
 
             <a href="#customerOrderList"
                 class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
@@ -100,7 +100,6 @@
             </button>
         </div>
     </nav>
-
 
     <section id="LoginContainer"
         class="mx-auto my-8 max-w-md rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm" hidden>
@@ -294,8 +293,10 @@
 
     <div id="booklist">
 
-
+        
     </div>
+    </br></br>
+    <img src="/images/wall9.png" class="mt-10">
     </br></br>
 
     <div id="paymentArea"></div>
@@ -303,8 +304,41 @@
 
     <section data-role="customer">
 
-        <h3>WishList</h3>
-        <div id="wishlistList"></div>
+        
+<section id="wishlistList" hidden
+    class="mx-auto my-8 max-w-5xl px-4">
+
+    <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
+
+        <!-- Header -->
+        <div class="flex items-center gap-4 border-b border-[#E8D9C8] bg-[#F8F1E8] px-6 py-5">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-[#80513D] text-white">
+                <span class="text-2xl">♥</span>
+            </div>
+
+            <div>
+                <p class="text-xs tracking-[0.2em] text-[#9A806C]">
+                    MY WISHLIST
+                </p>
+                <h2 class="mt-1 text-2xl font-bold text-[#80513D]">
+                    หนังสือเล่มโปรด
+                </h2>
+                <p class="mt-1 text-sm text-[#806D5D]">
+                    รวมหนังสือที่คุณอยากอ่านไว้ในที่เดียว
+                </p>
+            </div>
+        </div>
+
+        <!-- Wishlist items จะถูกสร้างโดย JavaScript -->
+        <div id="wishlistItems" class="space-y-4 p-5">
+            <p class="py-8 text-center text-[#9A806C]">
+                ยังไม่มีหนังสือในรายการโปรด
+            </p>
+        </div>
+
+    </div>
+</section>
+
 
         <h2>Cart</h2>
         <div id="cartList"></div>
