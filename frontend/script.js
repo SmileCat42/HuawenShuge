@@ -1025,31 +1025,47 @@ function showEmployeeOrders(data) {
 
   data.forEach(order => {
 
+
     list.innerHTML += `
-      <div>
+  <div class="mb-4 rounded-xl border border-[#E8D9C8] bg-white p-5 shadow-sm transition hover:shadow-md">
 
-        <h3>Order #${order.id_order}</h3>
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-[#E8D9C8] pb-3">
+      <h3 class="text-lg font-bold text-[#80513D]">
+        Order #${order.id_order}
+      </h3>
 
-        <div>
-          Customer: ${order.id_cust}
-        </div>
+      <span class="rounded-full bg-[#F7F1E5] px-3 py-1 text-sm font-medium text-[#80513D]">
+        ${order.status}
+      </span>
+    </div>
 
-        <div>
-          Total: ${order.total} บาท
-        </div>
-
-        <div>
-          Status: ${order.status}
-        </div>
-
-        <button
-          class="assignOrderBtn"
-          data-id="${order.id_order}">
-          รับ Order
-        </button>
-
+    <div class="space-y-3">
+      <div class="flex items-start justify-between gap-3">
+        <span class="text-sm text-[#806D5D]">Customer</span>
+        <span class="text-right font-medium text-[#80513D]">
+          ${order.id_cust}
+        </span>
       </div>
-    `
+
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-sm text-[#806D5D]">Total</span>
+        <span class="text-lg font-bold text-[#80513D]">
+          ${order.total} บาท
+        </span>
+      </div>
+    </div>
+
+    <div class="mt-5 flex justify-end border-t border-[#E8D9C8] pt-4">
+      <button
+        class="assignOrderBtn rounded-lg bg-[#80513D] px-5 py-2.5 font-medium text-white transition hover:bg-[#65402F] focus:outline-none focus:ring-2 focus:ring-[#B99478] focus:ring-offset-2"
+        data-id="${order.id_order}">
+        รับ Order
+      </button>
+    </div>
+
+  </div>
+`
+
   })
 
   document
@@ -1344,8 +1360,8 @@ function showCustomerOrders(data) {
 
     let paymentQR = "";
 
-if (order.status === "Pending") {
-  paymentQR = `
+    if (order.status === "Pending") {
+      paymentQR = `
     <div class="paymentQR hidden mt-4 rounded-xl border border-[#D8D3C5] bg-white p-4 text-center"
          data-id="${order.id_order}">
       <h3 class="mb-3 font-bold text-[#80513D]">Scan QR to Pay</h3>
@@ -1365,7 +1381,7 @@ if (order.status === "Pending") {
       </p>
     </div>
   `;
-}
+    }
 
     if (
       order.status === "Pending" ||
@@ -1460,6 +1476,11 @@ if (order.status === "Pending") {
       data-id="${order.id_order}">
       ดูรายละเอียด
     </button>
+    
+    <div
+  id="customerOrderDetail-${order.id_order}"
+  class="customerOrderDetail mt-4 hidden w-full basis-full">
+</div>
 
     ${qrButton ? `${qrButton}` : ""}
 
@@ -1492,49 +1513,133 @@ if (order.status === "Pending") {
   })
 
   document
-    .querySelectorAll(".customerViewOrderBtn")
-    .forEach(button => {
+  .querySelectorAll(".customerViewOrderBtn")
+  .forEach(button => {
 
-      button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
 
-        const id_order =
-          Number(button.dataset.id)
+      const id_order = Number(button.dataset.id);
 
-        getOrder(id_order)
-          .then(order => {
+      const detail = document.getElementById(
+        `customerOrderDetail-${id_order}`
+      );
 
-            console.log(
-              "Customer order detail >>",
-              order
-            )
+      if (!detail) {
+        console.error(
+          "ไม่พบพื้นที่แสดงรายละเอียด Order #",
+          id_order
+        );
+        return;
+      }
 
-            showOrderDetail(order)
+      // ถ้าเปิดอยู่แล้ว ให้ซ่อน
+      if (!detail.classList.contains("hidden")) {
+        detail.classList.add("hidden");
+        return;
+      }
 
-          })
-          .catch(error => {
+      try {
+        const order = await getOrder(id_order);
 
-            console.error(error)
+        console.log(
+          "Customer order detail >>",
+          order
+        );
 
-          })
-      })
-    })
+        // แสดงรายละเอียดในพื้นที่ของออเดอร์ที่กดเท่านั้น
+        detail.innerHTML = `
+          <div class="rounded-xl border border-[#E8D9C8] bg-white p-4">
+            <h3 class="mb-4 border-b border-[#E8D9C8] pb-3 text-lg font-bold text-[#80513D]">
+              Order #${order.id_order} Details
+            </h3>
 
-    document.querySelectorAll(".payNowBtn").forEach(button => {
-  button.addEventListener("click", () => {
-    const id = button.dataset.id;
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between gap-3">
+                <span class="text-[#806D5D]">Customer</span>
+                <span class="font-medium text-[#80513D]">
+                  ${order.id_cust}
+                </span>
+              </div>
 
-    const qr = document.querySelector(
-      `.paymentQR[data-id="${id}"]`
-    );
+              <div class="flex justify-between gap-3">
+                <span class="text-[#806D5D]">Employee</span>
+                <span class="font-medium text-[#80513D]">
+                  ${order.id_emp ?? "Not assigned"}
+                </span>
+              </div>
 
-    if (!qr) {
-      console.error("ไม่พบ QR ของออเดอร์", id);
-      return;
-    }
+              <div class="flex justify-between gap-3">
+                <span class="text-[#806D5D]">Status</span>
+                <span class="font-medium text-[#80513D]">
+                  ${order.status}
+                </span>
+              </div>
 
-    qr.classList.toggle("hidden");
+              <div class="flex justify-between gap-3">
+                <span class="text-[#806D5D]">Order Date</span>
+                <span class="font-medium text-[#80513D]">
+                  ${order.order_date}
+                </span>
+              </div>
+            </div>
+
+            <h4 class="mb-3 mt-5 border-b border-[#E8D9C8] pb-2 font-bold text-[#80513D]">
+              Items
+            </h4>
+
+            <div class="space-y-3">
+              ${order.items.map(item => `
+                <div class="rounded-lg bg-[#F7F1E5] p-3">
+                  <p class="font-medium text-[#80513D]">
+                    ${item.name}
+                  </p>
+
+                  <div class="mt-2 flex flex-wrap justify-between gap-2 text-sm text-[#806D5D]">
+                    <span>
+                      ${item.quantity} × ${item.price} บาท
+                    </span>
+
+                    <span class="font-semibold text-[#80513D]">
+                      ${item.subtotal} บาท
+                    </span>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+
+            <div class="mt-4 rounded-lg bg-[#80513D] p-4 text-right text-white">
+              <span class="text-sm">Total</span>
+              <p class="text-xl font-bold">
+                ${order.total} บาท
+              </p>
+            </div>
+          </div>
+        `;
+
+        detail.classList.remove("hidden");
+
+      } catch (error) {
+        console.error(error);
+      }
+    });
   });
-});
+
+  document.querySelectorAll(".payNowBtn").forEach(button => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.id;
+
+      const qr = document.querySelector(
+        `.paymentQR[data-id="${id}"]`
+      );
+
+      if (!qr) {
+        console.error("ไม่พบ QR ของออเดอร์", id);
+        return;
+      }
+
+      qr.classList.toggle("hidden");
+    });
+  });
 
   document
     .querySelectorAll(".uploadSlipBtn")
@@ -1689,24 +1794,6 @@ loadUserData()
     updateRoleBasedUI()
 
   })
-
-document.getElementById(
-  "paymentArea"
-).innerHTML = `
-    <h3>
-        Scan QR to Pay
-    </h3>
-
-    <img
-        src="./images/qr2.png"
-        alt="Payment QR"
-        style="width:200px;"
-    >
-
-    <p>
-        Amount: 1,190 บาท
-    </p>
-`
 
 // +++++++++++++++++++++++++++++ POST +++++++++++++++++++++++++++++
 

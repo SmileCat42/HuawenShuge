@@ -69,15 +69,15 @@
                 หนังสือทั้งหมด
             </a>
 
-            <button id="wishlistBtn" href="#wishlistList" type="button"
+            <a id="wishlistBtn" href="#wishlistList"
                 class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
                 รายการโปรด
-            </button>
+            </a>
 
-            <button href="#cartList" type="button"
+            <a href="#cartList" href="#cartSection"
                 class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
                 ตะกร้าสินค้า
-            </button>
+            </a>
 
             <a href="#customerOrderList"
                 class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
@@ -89,15 +89,15 @@
                 🔐 Account
             </button>
 
-            <button id="ProfileBtn" type="button" hidden
+            <a id="ProfileBtn" href="#ProfileCon" hidden
                 class="ml-auto rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-[#D48660] hover:text-walnut">
                 <img src="/images/user.png" class="h-5">
-            </button>
+            </a>
 
-            <button id="LoginBtn" type="button"
+            <a id="LoginBtn" href="#LoginContainer"
                 class="ml-auto rounded-lg bg-cream px-4 py-2 text-sm font-medium text-walnut transition hover:bg-[#633A29] hover:text-white">
                 เข้าสู่ระบบ
-            </button>
+            </a>
 
             <button id="logoutBtn" type="button" hidden
                 class="rounded-lg bg-cream px-4 py-2 text-sm font-medium text-[#CC3333] transition hover:bg-[#CC6666] hover:text-white">
@@ -335,11 +335,8 @@
                             MY WISHLIST
                         </p>
                         <h2 class="mt-1 text-2xl font-bold text-[#80513D]">
-                            หนังสือเล่มโปรด
+                            รายการโปรด
                         </h2>
-                        <p class="mt-1 text-sm text-[#806D5D]">
-                            รวมหนังสือที่คุณอยากอ่านไว้ในที่เดียว
-                        </p>
                     </div>
                 </div>
 
@@ -367,24 +364,154 @@
         </section>
 
 
-        <h2>Cart</h2>
-        <div id="cartList"></div>
 
-        <button id="createOrderBtn">
-            Create Order
-        </button>
+        <section id="cartSection" class="mx-auto my-10 max-w-5xl px-4 sm:px-6">
+
+            <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
+
+                <!-- Panel Header -->
+                <div class="flex flex-col gap-3 bg-[#80513D] px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-xs font-medium tracking-[0.25em] text-[#F2E3D0]">
+                            HUAWENSHUGE · SHOPPING
+                        </p>
+
+                        <h2 class="mt-2 text-2xl font-bold text-white sm:text-3xl">
+                            My Cart
+                        </h2>
+
+                        <p class="mt-1 text-sm text-[#F2E3D0]">
+                            ตรวจสอบหนังสือที่เลือกก่อนดำเนินการสั่งซื้อ
+                        </p>
+                    </div>
+
+                    <div
+                        class="flex h-14 w-14 items-center justify-center self-start rounded-full border border-white/20 bg-white/10 text-3xl sm:self-center">
+                        🛒
+                    </div>
+                </div>
+
+                <!-- Panel Content -->
+                <div class="p-4 sm:p-6">
+
+                    <div class="mb-5 border-b border-[#E8D9C8] pb-4">
+                        <h3 class="font-semibold text-[#80513D]">
+                            รายการสินค้าในตะกร้า
+                        </h3>
+
+                        <p class="mt-1 text-sm text-[#806D5D]">
+                            หนังสือที่คุณเลือกซื้อจากร้าน
+                        </p>
+                    </div>
+
+                    <!-- คง ID เดิมให้ JavaScript ใช้งาน -->
+                    <div id="cartList" class="space-y-4">
+
+                        <!-- JavaScript จะแสดงรายการสินค้าในส่วนนี้ -->
+
+                    </div>
+                    <button id="createOrderBtn"
+                        class="rounded-lg bg-[#72765A] px-4 py-2 text-sm font-medium text-white hover:bg-[#5C6047]">
+                        Create Order
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+
+
 
         <div id="orderResult"></div>
 
-        <h2>My Orders</h2>
-        <div id="customerOrderList"></div>
+
+        <section id="customerOrders" class="mx-auto my-10 max-w-5xl px-4 sm:px-6">
+
+            <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
+
+                <!-- Panel Header -->
+                <div class="flex flex-col gap-3 bg-[#80513D] px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-xs font-medium tracking-[0.25em] text-[#F2E3D0]">
+                            HUAWENSHUGE · MY ACCOUNT
+                        </p>
+
+                        <h2 class="mt-2 text-2xl font-bold text-white sm:text-3xl">
+                            My Orders
+                        </h2>
+
+                        <p class="mt-1 text-sm text-[#F2E3D0]">
+                            ตรวจสอบรายการสั่งซื้อและสถานะการจัดส่งของคุณ
+                        </p>
+                    </div>
+
+                    <div
+                        class="flex h-14 w-14 items-center justify-center self-start rounded-full border border-white/20 bg-white/10 sm:self-center">
+                        <img src="/images/order.png" alt="" class="h-8 w-8 object-contain"
+                            onerror="this.style.display='none'">
+                        <span class="text-2xl">📚</span>
+                    </div>
+                </div>
+
+                <!-- Panel Content -->
+                <div class="p-4 sm:p-6">
+
+                    <div class="mb-5 flex items-center justify-between gap-3 border-b border-[#E8D9C8] pb-4">
+                        <div>
+                            <h3 class="font-semibold text-[#80513D]">
+                                รายการสั่งซื้อของฉัน
+                            </h3>
+                            <p class="mt-1 text-sm text-[#806D5D]">
+                                รายละเอียด ยอดชำระ และหลักฐานการชำระเงิน
+                            </p>
+                        </div>
+
+                        <span class="shrink-0 rounded-full bg-[#F7F1E5] px-3 py-1 text-xs font-medium text-[#80513D]">
+                            Orders
+                        </span>
+                    </div>
+
+                    <!-- คง ID เดิมไว้ให้ JavaScript ใช้งาน -->
+                    <div id="customerOrderList" class="space-y-5">
+
+                        <!-- JavaScript จะสร้างรายการออเดอร์ตรงนี้ -->
+
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
 
     </section>
 
     <section data-role="employee">
 
-        <h2>Employee - Order Management</h2>
-        <div id="employeeOrderList"></div>
+
+
+        <section class="mx-auto my-8 max-w-4xl rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-5 shadow-sm sm:p-8">
+
+            <div class="mb-6 border-b border-[#E8D9C8] pb-5">
+                <p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#A1846D]">
+                    Employee Workspace
+                </p>
+
+                <h2 class="text-2xl font-bold text-[#80513D] sm:text-3xl">
+                    Order Detail
+                </h2>
+                
+
+                <p class="mt-2 text-sm text-[#806D5D]">
+                    ตรวจสอบรายการสั่งซื้อและรับ Order ที่ได้รับมอบหมาย
+                </p>
+            </div>
+
+            <div id="employeeOrderList"></div>
+
+        </section>
+
+
 
         <h2>My Orders</h2>
         <div id="myOrderList"></div>
