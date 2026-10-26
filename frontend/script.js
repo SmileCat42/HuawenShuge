@@ -32,6 +32,8 @@ let currentUser =
 
 updateLoginUI()
 
+
+
 async function loadUserData() {
 
   if (!currentUser) {
@@ -70,8 +72,7 @@ async function loadUserData() {
           2003: "Rider",
           2004: "Manager",
           2005: "Admin"
-        })[Number(currentUser.id_role)] ?? "Customer"
-        }
+        })[Number(currentUser?.id_role)] ?? "Customer"}
 </div>
 
 
@@ -325,6 +326,7 @@ async function loadAllAccounts() {
   }
 }
 
+
 function showAllAccounts(accounts) {
   const list = document.getElementById("accountList")
 
@@ -350,77 +352,115 @@ function showAllAccounts(accounts) {
     const info = document.createElement("p")
     info.className = "mt-2 text-sm text-[#806D5D]"
     info.textContent =
-      `Username: ${account.username} | Account ID: ${account.id_acc} | Role: ${account.role}`
+      `Username: ${account.username} | Account ID: ${account.id_acc}`
 
-    card.append(heading, info)
+    const roleRow = document.createElement("div")
+    roleRow.className =
+      "mt-3 flex flex-wrap items-center gap-3"
 
-    let nextRole = null
+    const roleLabel = document.createElement("label")
+    roleLabel.className = "text-sm text-[#806D5D]"
+    roleLabel.textContent = "Role:"
 
-    if (account.role === "customer") {
-      nextRole = "staff"
-    } else if (account.role === "staff") {
-      nextRole = "manager"
+    const roleSelect = document.createElement("select")
+    roleSelect.className =
+      "rounded-lg border border-[#E8D9C8] bg-white px-3 py-2 text-sm text-[#80513D]"
+
+    const roles = [
+      { value: "customer", label: "Customer" },
+      { value: "staff", label: "Staff" },
+      { value: "manager", label: "Manager" }
+    ]
+
+    roles.forEach(role => {
+      const option = document.createElement("option")
+      option.value = role.value
+      option.textContent = role.label
+      roleSelect.append(option)
+    })
+
+    // ตั้งค่า Dropdown เป็น Role ปัจจุบัน
+    roleSelect.value = account.role
+
+    const saveButton = document.createElement("button")
+    saveButton.type = "button"
+    saveButton.className =
+      "rounded-lg bg-[#72765A] px-4 py-2 text-sm text-white hover:bg-[#5E6249]"
+    saveButton.textContent = "Save"
+
+    // ปิดการแก้ไข Role ของ Admin
+    if (account.role === "admin") {
+      roleSelect.disabled = true
+      saveButton.disabled = true
+      saveButton.classList.add("opacity-50", "cursor-not-allowed")
     }
 
-    if (nextRole) {
-      const button = document.createElement("button")
-      button.type = "button"
-      button.className =
-        "mt-3 rounded-lg bg-[#72765A] px-4 py-2 text-sm text-white"
-      button.textContent =
-        nextRole === "staff"
-          ? "Promote to Staff"
-          : "Promote to Manager"
+    saveButton.addEventListener("click", async () => {
+      if (Number(currentUser?.id_role) !== 2005) return
 
-      button.addEventListener("click", async () => {
-        if (Number(currentUser?.id_role) !== 2005) return
+      const newRole = roleSelect.value
 
-        if (!confirm(
-          `เปลี่ยน ${account.username} เป็น ${nextRole}?`
-        )) return
+      if (newRole === account.role) {
+        alert("Role ยังไม่มีการเปลี่ยนแปลง")
+        return
+      }
 
-        try {
-          const result = await changeAccountRole(
-            currentUser.id_emp,
-            account.id_person,
-            nextRole
-          )
+      if (!confirm(
+        `เปลี่ยน ${account.username} จาก ${account.role} เป็น ${newRole}?`
+      )) {
+        roleSelect.value = account.role
+        return
+      }
 
-          alert(result.message)
-          await loadAllAccounts()
-        } catch (error) {
-          console.error(error)
-          alert(error.message)
-        }
-      })
+      saveButton.disabled = true
+      saveButton.textContent = "Saving..."
 
-      card.append(button)
-    }
+      try {
+        const result = await changeAccountRole(
+          currentUser.id_emp,
+          account.id_person,
+          newRole
+        )
 
+        alert(result.message)
+        await loadAllAccounts()
+      } catch (error) {
+        console.error(error)
+        alert(error.message)
+        roleSelect.value = account.role
+      } finally {
+        saveButton.disabled = false
+        saveButton.textContent = "Save"
+      }
+    })
+
+    roleLabel.append(roleSelect)
+    roleRow.append(roleLabel, saveButton)
+    card.append(heading, info, roleRow)
     list.append(card)
   })
 }
 
 document.getElementById("accountBtn")
-    ?.addEventListener("click", async () => {
+  ?.addEventListener("click", async () => {
 
-        if (Number(currentUser?.id_role) !== 2005) {
-            return
-        }
+    if (Number(currentUser?.id_role) !== 2005) {
+      return
+    }
 
-        const section = document.getElementById("accountManagement")
+    const section = document.getElementById("accountManagement")
 
-        if (!section) return
+    if (!section) return
 
-        section.hidden = false
+    section.hidden = false
 
-        await loadAllAccounts()
+    await loadAllAccounts()
 
-        section.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        })
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
     })
+  })
 
 function updateWishlistButtons() {
   document
@@ -1287,6 +1327,46 @@ function showCustomerOrders(data) {
     let cancelButton = ""
     let paymentButton = ""
 
+    let qrButton = ""
+
+
+    if (order.status === "Pending") {
+      qrButton = `
+    <button
+      type="button"
+      class="payNowBtn rounded-lg bg-[#E6C29C] px-4 py-2 text-sm font-medium text-walnut hover:bg-[#E3CDA6] hover:text-walnut"
+      data-id="${order.id_order}"
+      data-amount="${Number(order.total)}">
+      ชำระเงิน
+    </button>
+  `
+    }
+
+    let paymentQR = "";
+
+if (order.status === "Pending") {
+  paymentQR = `
+    <div class="paymentQR hidden mt-4 rounded-xl border border-[#D8D3C5] bg-white p-4 text-center"
+         data-id="${order.id_order}">
+      <h3 class="mb-3 font-bold text-[#80513D]">Scan QR to Pay</h3>
+
+      <img
+        src="./images/qr2.png"
+        alt="Payment QR"
+        class="mx-auto mb-3 w-[200px]"
+      >
+
+      <p class="text-[#80513D]">
+        Amount:
+        <span class="font-bold">
+          ${Number(order.total).toLocaleString("th-TH")}
+        </span>
+        บาท
+      </p>
+    </div>
+  `;
+}
+
     if (
       order.status === "Pending" ||
       order.status === "Processing" ||
@@ -1370,31 +1450,42 @@ function showCustomerOrders(data) {
           </span>
         </div>
 
-        <div class="mt-5 flex flex-wrap gap-2">
+        <div class="mt-5">
 
-          <button
-            class="customerViewOrderBtn rounded-lg bg-[#80513D] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#633A29]"
-            data-id="${order.id_order}">
-            ดูรายละเอียด
-          </button>
+  <!-- แถวปุ่ม -->
+  <div class="flex flex-wrap gap-2">
 
-          ${paymentButton ? `
-            <div class="w-full space-y-2 rounded-xl bg-[#F7F1E5] p-3">
-              <label class="block text-sm font-medium text-[#80513D]">
-                แนบหลักฐานการชำระเงิน
-              </label>
-              ${paymentButton}
-            </div>
-          ` : ""}
+    <button
+      class="customerViewOrderBtn rounded-lg bg-[#80513D] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#633A29]"
+      data-id="${order.id_order}">
+      ดูรายละเอียด
+    </button>
 
-          ${cancelButton ? `
-            <div class="ml-auto">
-              ${cancelButton}
-            </div>
-          ` : ""}
+    ${qrButton ? `${qrButton}` : ""}
 
-        </div>
+    ${cancelButton ? `
+      <div class="ml-auto">
+        ${cancelButton}
+      </div>
+    ` : ""}
 
+  </div>
+
+  <!-- QR อยู่ใต้ปุ่ม แต่เหนือแนบสลิป -->
+  ${paymentQR}
+
+  <!-- ส่วนแนบสลิป -->
+  ${paymentButton ? `
+    <div class="mt-3 w-full space-y-2 rounded-xl bg-[#F7F1E5] p-3">
+      <label class="block text-sm font-medium text-[#80513D]">
+        แนบหลักฐานการชำระเงิน
+      </label>
+      ${paymentButton}
+    </div>
+  ` : ""}
+
+</div>
+      
       </article>
     `;
 
@@ -1427,6 +1518,23 @@ function showCustomerOrders(data) {
           })
       })
     })
+
+    document.querySelectorAll(".payNowBtn").forEach(button => {
+  button.addEventListener("click", () => {
+    const id = button.dataset.id;
+
+    const qr = document.querySelector(
+      `.paymentQR[data-id="${id}"]`
+    );
+
+    if (!qr) {
+      console.error("ไม่พบ QR ของออเดอร์", id);
+      return;
+    }
+
+    qr.classList.toggle("hidden");
+  });
+});
 
   document
     .querySelectorAll(".uploadSlipBtn")
@@ -1590,7 +1698,7 @@ document.getElementById(
     </h3>
 
     <img
-        src="./images/qr.png"
+        src="./images/qr2.png"
         alt="Payment QR"
         style="width:200px;"
     >
@@ -2031,24 +2139,24 @@ if (wishlistBtn) {
 const accountBtn = document.getElementById("accountBtn")
 
 if (accountBtn) {
-    accountBtn.hidden = Number(currentUser?.id_role) !== 2005
+  accountBtn.hidden = Number(currentUser?.id_role) !== 2005
 }
 
 document.getElementById("accountBtn")
-    ?.addEventListener("click", async () => {
-        if (Number(currentUser?.id_role) !== 2005) return
+  ?.addEventListener("click", async () => {
+    if (Number(currentUser?.id_role) !== 2005) return
 
-        const section = document.getElementById("accountManagement")
-        if (!section) return
+    const section = document.getElementById("accountManagement")
+    if (!section) return
 
-        section.hidden = false
-        await loadAllAccounts()
+    section.hidden = false
+    await loadAllAccounts()
 
-        section.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        })
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
     })
+  })
 
 
 document.getElementById("loginForm")

@@ -1249,9 +1249,9 @@ app.put(
             return
         }
 
-        if (!["staff", "manager"].includes(role_name)) {
+        if (!["customer", "staff", "manager"].includes(role_name)) {
             res.status(400).json({
-                message: "This route only supports Staff and Manager promotion"
+                message: "Invalid role. Choose Customer, Staff, or Manager"
             })
             return
         }
@@ -1310,42 +1310,49 @@ app.put(
                 return
             }
 
-            const roleResult = await client.query(
-                `SELECT id_role FROM roles WHERE role_name = $1`,
-                [role_name]
-            )
-
-            if (roleResult.rows.length === 0) {
-                await client.query("ROLLBACK")
-                res.status(404).json({ message: "Role not found" })
-                return
-            }
-
-            if (person.employee_id) {
-                await client.query(
-                    `
-                    UPDATE employees
-                    SET id_role = $1
-                    WHERE id_person = $2
-                    `,
-                    [roleResult.rows[0].id_role, id_person]
-                )
+            if (role_name === "customer") {
+                // เปลี่ยนกลับเป็น Customer โดยลบเฉพาะข้อมูลพนักงาน
+                if (person.employee_id) {
+                    await client.query(
+                        `DELETE FROM employees WHERE id_person = $1`,
+                        [id_person]
+                    )
+                }
             } else {
-                if (!person.id_cust || role_name !== "staff") {
+                // Staff หรือ Manager ต้องมี id_role ในตาราง roles
+                const roleResult = await client.query(
+                    `SELECT id_role FROM roles WHERE role_name = $1`,
+                    [role_name]
+                )
+
+                if (roleResult.rows.length === 0) {
                     await client.query("ROLLBACK")
-                    res.status(400).json({
-                        message: "Only an existing Customer can be promoted to Staff"
-                    })
+                    res.status(404).json({ message: "Role not found" })
                     return
                 }
 
-                await client.query(
-                    `
-                    INSERT INTO employees (id_person, id_role)
-                    VALUES ($1, $2)
-                    `,
-                    [id_person, roleResult.rows[0].id_role]
-                )
+                const newRoleId = roleResult.rows[0].id_role
+
+                if (person.employee_id) {
+                    // พนักงานเดิม: เปลี่ยน Role
+                    await client.query(
+                        `
+            UPDATE employees
+            SET id_role = $1
+            WHERE id_person = $2
+            `,
+                        [newRoleId, id_person]
+                    )
+                } else {
+                    // บุคคลที่ยังไม่มีข้อมูลพนักงาน: เพิ่มแถวใหม่
+                    await client.query(
+                        `
+            INSERT INTO employees (id_person, id_role)
+            VALUES ($1, $2)
+            `,
+                        [id_person, newRoleId]
+                    )
+                }
             }
 
             await client.query("COMMIT")
