@@ -72,17 +72,22 @@
             <button id="wishlistBtn" href="#wishlistList" type="button"
                 class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
                 รายการโปรด
-        </button>
+            </button>
 
             <button href="#cartList" type="button"
                 class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
                 ตะกร้าสินค้า
-        </button>
+            </button>
 
             <a href="#customerOrderList"
                 class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
                 คำสั่งซื้อ
             </a>
+
+            <button id="accountBtn" type="button" hidden
+                class="rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-cream hover:text-walnut">
+                🔐 Account
+            </button>
 
             <button id="ProfileBtn" type="button" hidden
                 class="ml-auto rounded-lg px-4 py-2 text-sm font-medium text-ivory transition hover:bg-[#D48660] hover:text-walnut">
@@ -155,7 +160,7 @@
             <div class="p-6">
                 <div class="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
 
-                    <img src = "/images/PFM.png" id="profileImage" alt="Profile"
+                    <img src="/images/PFM.png" id="profileImage" alt="Profile"
                         class="h-32 w-32 rounded-full border-4 border-[#F7F1E5] bg-white object-cover shadow-sm">
 
                     <div class="min-w-0 flex-1">
@@ -219,7 +224,7 @@
             </div>
         </div>
     </section>
-    
+
     <section id="registerSection" hidden class="mx-auto my-10 max-w-2xl px-4">
 
         <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
@@ -291,9 +296,22 @@
         </div>
     </section>
 
+    <section id="accountManagement" hidden class="mx-auto my-8 max-w-5xl px-4">
+
+        <div class="rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm">
+            <h2 class="mb-5 text-2xl font-bold text-[#80513D]">
+                จัดการตำแหน่งบัญชี
+            </h2>
+
+            <div id="accountList" class="space-y-4">
+                <p class="text-[#9A806C]">กำลังโหลดบัญชี...</p>
+            </div>
+        </div>
+    </section>
+
     <div id="booklist">
 
-        
+
     </div>
     </br></br>
     <img src="/images/wall9.png" class="mt-10">
@@ -304,40 +322,52 @@
 
     <section data-role="customer">
 
-        
-<section id="wishlistList" hidden
-    class="mx-auto my-8 max-w-5xl px-4">
 
-    <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
+        <section id="wishlistList" hidden class="mx-auto my-8 max-w-5xl px-4">
 
-        <!-- Header -->
-        <div class="flex items-center gap-4 border-b border-[#E8D9C8] bg-[#F8F1E8] px-6 py-5">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-[#80513D] text-white">
-                <span class="text-2xl">♥</span>
+            <div class="overflow-hidden rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] shadow-sm">
+
+                <!-- Header -->
+                <div class="flex items-center gap-4 border-b border-[#E8D9C8] bg-[#F8F1E8] px-6 py-5">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-[#80513D] text-white">
+                        <span class="text-2xl">♥</span>
+                    </div>
+
+                    <div>
+                        <p class="text-xs tracking-[0.2em] text-[#9A806C]">
+                            MY WISHLIST
+                        </p>
+                        <h2 class="mt-1 text-2xl font-bold text-[#80513D]">
+                            หนังสือเล่มโปรด
+                        </h2>
+                        <p class="mt-1 text-sm text-[#806D5D]">
+                            รวมหนังสือที่คุณอยากอ่านไว้ในที่เดียว
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Wishlist items จะถูกสร้างโดย JavaScript -->
+                <div id="wishlistItems" class="space-y-4 p-5">
+                    <p class="py-8 text-center text-[#9A806C]">
+                        ยังไม่มีหนังสือในรายการโปรด
+                    </p>
+                </div>
+
             </div>
+        </section>
 
-            <div>
-                <p class="text-xs tracking-[0.2em] text-[#9A806C]">
-                    MY WISHLIST
-                </p>
-                <h2 class="mt-1 text-2xl font-bold text-[#80513D]">
-                    หนังสือเล่มโปรด
+        <section id="accountManagement" hidden class="mx-auto my-8 max-w-5xl px-4">
+
+            <div class="rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-6 shadow-sm">
+                <h2 class="mb-5 text-2xl font-bold text-[#80513D]">
+                    จัดการบัญชีผู้ใช้
                 </h2>
-                <p class="mt-1 text-sm text-[#806D5D]">
-                    รวมหนังสือที่คุณอยากอ่านไว้ในที่เดียว
-                </p>
+
+                <div id="accountList" class="space-y-4">
+                    <p class="text-[#9A806C]">กำลังโหลดบัญชี...</p>
+                </div>
             </div>
-        </div>
-
-        <!-- Wishlist items จะถูกสร้างโดย JavaScript -->
-        <div id="wishlistItems" class="space-y-4 p-5">
-            <p class="py-8 text-center text-[#9A806C]">
-                ยังไม่มีหนังสือในรายการโปรด
-            </p>
-        </div>
-
-    </div>
-</section>
+        </section>
 
 
         <h2>Cart</h2>
@@ -377,7 +407,7 @@
 
 
 
-    
+
 
 
     </br></br>

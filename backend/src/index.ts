@@ -17,6 +17,68 @@ const upload = multer({
 
 // +++++++++++++++++++++++++++++++++  GET  +++++++++++++++++++++++++++++++++++++
 
+app.get("/admin/:id_emp/accounts", async (req, res) => {
+    const id_emp = Number(req.params.id_emp)
+
+    if (!Number.isInteger(id_emp) || id_emp <= 0) {
+        res.status(400).json({ message: "Invalid admin id" })
+        return
+    }
+
+    try {
+        const adminCheck = await pool.query(
+            `
+            SELECT e.id_emp
+            FROM employees e
+            JOIN roles r ON e.id_role = r.id_role
+            WHERE e.id_emp = $1
+              AND r.role_name = 'admin'
+            `,
+            [id_emp]
+        )
+
+        if (adminCheck.rows.length === 0) {
+            res.status(403).json({
+                message: "Only Admin can view accounts"
+            })
+            return
+        }
+
+        const result = await pool.query(
+            `
+            SELECT
+                a.id_acc,
+                a.username,
+                a.id_person,
+                p.fname,
+                p.lname,
+                c.id_cust,
+                e.id_emp AS employee_id,
+                r.role_name AS employee_role,
+                CASE
+                    WHEN e.id_emp IS NOT NULL THEN r.role_name
+                    WHEN c.id_cust IS NOT NULL THEN 'customer'
+                    ELSE 'unknown'
+                END AS role
+            FROM account a
+            JOIN person p ON a.id_person = p.id_person
+            LEFT JOIN customer c ON a.id_person = c.id_person
+            LEFT JOIN employees e ON a.id_person = e.id_person
+            LEFT JOIN roles r ON e.id_role = r.id_role
+            ORDER BY a.id_acc
+            `
+        )
+
+        res.json(result.rows)
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            message: "Failed to get accounts"
+        })
+    }
+})
+
 app.get(
     "/order/:id_order/slip",
     async (req, res) => {
@@ -1171,6 +1233,139 @@ app.put("/account/:id_acc", async (req, res) => {
         })
     }
 })
+
+app.put(
+    "/admin/:id_emp/accounts/:id_person/role",
+    async (req, res) => {
+        const id_emp = Number(req.params.id_emp)
+        const id_person = Number(req.params.id_person)
+        const { role_name } = req.body
+
+        if (
+            !Number.isInteger(id_emp) || id_emp <= 0 ||
+            !Number.isInteger(id_person) || id_person <= 0
+        ) {
+            res.status(400).json({ message: "Invalid id" })
+            return
+        }
+
+        if (!["staff", "manager"].includes(role_name)) {
+            res.status(400).json({
+                message: "This route only supports Staff and Manager promotion"
+            })
+            return
+        }
+
+        const client = await pool.connect()
+
+        try {
+            await client.query("BEGIN")
+
+            const adminCheck = await client.query(
+                `
+                SELECT e.id_emp
+                FROM employees e
+                JOIN roles r ON e.id_role = r.id_role
+                WHERE e.id_emp = $1
+                  AND r.role_name = 'admin'
+                `,
+                [id_emp]
+            )
+
+            if (adminCheck.rows.length === 0) {
+                await client.query("ROLLBACK")
+                res.status(403).json({
+                    message: "Only Admin can change roles"
+                })
+                return
+            }
+
+            const personCheck = await client.query(
+                `
+                SELECT p.id_person, c.id_cust, e.id_emp AS employee_id,
+                       r.role_name AS current_role
+                FROM person p
+                LEFT JOIN customer c ON p.id_person = c.id_person
+                LEFT JOIN employees e ON p.id_person = e.id_person
+                LEFT JOIN roles r ON e.id_role = r.id_role
+                WHERE p.id_person = $1
+                FOR UPDATE OF p
+                `,
+                [id_person]
+            )
+
+            if (personCheck.rows.length === 0) {
+                await client.query("ROLLBACK")
+                res.status(404).json({ message: "Person not found" })
+                return
+            }
+
+            const person = personCheck.rows[0]
+
+            if (person.current_role === "admin") {
+                await client.query("ROLLBACK")
+                res.status(403).json({
+                    message: "Changing Admin roles is not allowed here"
+                })
+                return
+            }
+
+            const roleResult = await client.query(
+                `SELECT id_role FROM roles WHERE role_name = $1`,
+                [role_name]
+            )
+
+            if (roleResult.rows.length === 0) {
+                await client.query("ROLLBACK")
+                res.status(404).json({ message: "Role not found" })
+                return
+            }
+
+            if (person.employee_id) {
+                await client.query(
+                    `
+                    UPDATE employees
+                    SET id_role = $1
+                    WHERE id_person = $2
+                    `,
+                    [roleResult.rows[0].id_role, id_person]
+                )
+            } else {
+                if (!person.id_cust || role_name !== "staff") {
+                    await client.query("ROLLBACK")
+                    res.status(400).json({
+                        message: "Only an existing Customer can be promoted to Staff"
+                    })
+                    return
+                }
+
+                await client.query(
+                    `
+                    INSERT INTO employees (id_person, id_role)
+                    VALUES ($1, $2)
+                    `,
+                    [id_person, roleResult.rows[0].id_role]
+                )
+            }
+
+            await client.query("COMMIT")
+
+            res.json({
+                message: `Role changed to ${role_name} successfully`
+            })
+
+        } catch (error) {
+            await client.query("ROLLBACK")
+            console.error(error)
+
+            res.status(500).json({
+                message: "Failed to change role"
+            })
+        } finally {
+            client.release()
+        }
+    }
+)
 
 // ++++++++++++++++++++++++++++++++++++++ DELETE +++++++++++++++++++++++++++++
 

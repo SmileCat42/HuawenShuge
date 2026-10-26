@@ -461,3 +461,38 @@ export function promoteCustomerToStaff(id_emp, id_cust) {
             return data
         })
 }
+
+export async function getAllAccounts(id_emp) {
+    const response = await fetch(
+        `http://localhost:3000/admin/${id_emp}/accounts`
+    )
+
+    const data = await response.json()
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to get accounts")
+    }
+
+    return data
+}
+
+export async function changeAccountRole(id_emp, id_person, role_name) {
+    const response = await fetch(
+        `http://localhost:3000/admin/${id_emp}/accounts/${id_person}/role`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ role_name })
+        }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok) {
+        throw new Error(data.message || "Failed to change role")
+    }
+
+    return data
+}

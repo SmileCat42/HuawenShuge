@@ -25,6 +25,65 @@ app.use(express.json());
 
 //++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++++++++++
 
+app.get("/manager/:id_emp/accounts", async (req, res) => {
+    const id_emp = Number(req.params.id_emp)
+
+    if (!Number.isInteger(id_emp) || id_emp <= 0) {
+        res.status(400).json({ message: "Invalid manager id" })
+        return
+    }
+
+    try {
+        const managerCheck = await pool.query(
+            `
+            SELECT e.id_emp
+            FROM employees e
+            JOIN roles r ON e.id_role = r.id_role
+            WHERE e.id_emp = $1
+              AND r.role_name = 'manager'
+            `,
+            [id_emp]
+        )
+
+        if (managerCheck.rows.length === 0) {
+            res.status(403).json({
+                message: "Only Manager can view all accounts"
+            })
+            return
+        }
+
+        const result = await pool.query(
+            `
+            SELECT
+                a.id_acc,
+                a.username,
+                p.fname,
+                p.lname,
+                c.id_cust,
+                e.id_emp,
+                CASE
+                    WHEN e.id_emp IS NOT NULL THEN r.role_name
+                    WHEN c.id_cust IS NOT NULL THEN 'customer'
+                    ELSE 'unknown'
+                END AS role
+            FROM account a
+            JOIN person p ON a.id_person = p.id_person
+            LEFT JOIN customer c ON a.id_person = c.id_person
+            LEFT JOIN employees e ON a.id_person = e.id_person
+            LEFT JOIN roles r ON e.id_role = r.id_role
+            ORDER BY a.id_acc
+            `
+        )
+
+        res.json(result.rows)
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            message: "Failed to get all accounts"
+        })
+    }
+})
 
 
 app.get("/order", async (req, res) => {

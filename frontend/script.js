@@ -19,7 +19,9 @@ import {
   register,
   uploadPaymentSlip,
   getEligibleCustomers,
-  promoteCustomerToStaff
+  promoteCustomerToStaff,
+  getAllAccounts,
+  changeAccountRole
 } from "./api.js"
 
 let cart = []
@@ -62,15 +64,14 @@ async function loadUserData() {
         
 
 <div class="mt-3 inline-block rounded-full bg-[#F3E7D8] px-4 py-1.5 text-sm font-medium text-[#80513D]">
-  Status : ${
-    ({
-      2001: "Customer",
-      2002: "Staff",
-      2003: "Rider",
-      2004: "Manager",
-      2005: "Admin"
-    })[Number(currentUser.id_role)] ?? "Customer"
-  }
+  Status : ${({
+          2001: "Customer",
+          2002: "Staff",
+          2003: "Rider",
+          2004: "Manager",
+          2005: "Admin"
+        })[Number(currentUser.id_role)] ?? "Customer"
+        }
 </div>
 
 
@@ -308,6 +309,119 @@ function showEligibleCustomers(customers) {
 
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
 
+async function loadAllAccounts() {
+  const list = document.getElementById("accountList")
+
+  if (Number(currentUser?.id_role) !== 2005) return
+
+  list.textContent = "กำลังโหลดบัญชี..."
+
+  try {
+    const accounts = await getAllAccounts(currentUser.id_emp)
+    showAllAccounts(accounts)
+  } catch (error) {
+    console.error(error)
+    list.textContent = error.message
+  }
+}
+
+function showAllAccounts(accounts) {
+  const list = document.getElementById("accountList")
+
+  if (!list) return
+
+  list.replaceChildren()
+
+  if (accounts.length === 0) {
+    list.textContent = "ไม่พบบัญชี"
+    return
+  }
+
+  accounts.forEach(account => {
+    const card = document.createElement("div")
+    card.className =
+      "rounded-xl border border-[#E8D9C8] bg-white p-4"
+
+    const heading = document.createElement("h3")
+    heading.className = "font-bold text-[#80513D]"
+    heading.textContent =
+      `${account.fname} ${account.lname}`
+
+    const info = document.createElement("p")
+    info.className = "mt-2 text-sm text-[#806D5D]"
+    info.textContent =
+      `Username: ${account.username} | Account ID: ${account.id_acc} | Role: ${account.role}`
+
+    card.append(heading, info)
+
+    let nextRole = null
+
+    if (account.role === "customer") {
+      nextRole = "staff"
+    } else if (account.role === "staff") {
+      nextRole = "manager"
+    }
+
+    if (nextRole) {
+      const button = document.createElement("button")
+      button.type = "button"
+      button.className =
+        "mt-3 rounded-lg bg-[#72765A] px-4 py-2 text-sm text-white"
+      button.textContent =
+        nextRole === "staff"
+          ? "Promote to Staff"
+          : "Promote to Manager"
+
+      button.addEventListener("click", async () => {
+        if (Number(currentUser?.id_role) !== 2005) return
+
+        if (!confirm(
+          `เปลี่ยน ${account.username} เป็น ${nextRole}?`
+        )) return
+
+        try {
+          const result = await changeAccountRole(
+            currentUser.id_emp,
+            account.id_person,
+            nextRole
+          )
+
+          alert(result.message)
+          await loadAllAccounts()
+        } catch (error) {
+          console.error(error)
+          alert(error.message)
+        }
+      })
+
+      card.append(button)
+    }
+
+    list.append(card)
+  })
+}
+
+document.getElementById("accountBtn")
+    ?.addEventListener("click", async () => {
+
+        if (Number(currentUser?.id_role) !== 2005) {
+            return
+        }
+
+        const section = document.getElementById("accountManagement")
+
+        if (!section) return
+
+        section.hidden = false
+
+        await loadAllAccounts()
+
+        section.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        })
+    })
+
 function updateWishlistButtons() {
   document
     .querySelectorAll(".wishlistBtn")
@@ -330,15 +444,15 @@ function updateWishlistButtons() {
 
 
 function showWishlist(data) {
-    const list = document.getElementById("wishlistItems")
+  const list = document.getElementById("wishlistItems")
 
-    if (!list) return
+  if (!list) return
 
-    list.innerHTML = ""
+  list.innerHTML = ""
 
-    // กรณีไม่มีหนังสือใน Wishlist
-    if (!data || data.length === 0) {
-        list.innerHTML = `
+  // กรณีไม่มีหนังสือใน Wishlist
+  if (!data || data.length === 0) {
+    list.innerHTML = `
             <div class="py-10 text-center">
                 <div class="mb-3 text-5xl text-[#DCCAB6]">♡</div>
 
@@ -351,11 +465,11 @@ function showWishlist(data) {
                 </p>
             </div>
         `
-        return
-    }
+    return
+  }
 
-    data.forEach(item => {
-        list.innerHTML += `
+  data.forEach(item => {
+    list.innerHTML += `
             <div class="flex flex-col gap-4 rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-4 shadow-sm transition hover:shadow-md sm:flex-row">
 
                 <img
@@ -388,25 +502,25 @@ function showWishlist(data) {
                 </div>
             </div>
         `
+  })
+
+  list.querySelectorAll(".removeWishlistBtn").forEach(button => {
+    button.addEventListener("click", async () => {
+      const id = Number(button.dataset.id)
+
+      try {
+        await deleteWishlist(id)
+
+        wishlist = await getWishlist(currentUser.id_cust)
+
+        showWishlist(wishlist)
+        updateWishlistButtons()
+      } catch (error) {
+        console.error(error)
+        alert(error.message)
+      }
     })
-
-    list.querySelectorAll(".removeWishlistBtn").forEach(button => {
-        button.addEventListener("click", async () => {
-            const id = Number(button.dataset.id)
-
-            try {
-                await deleteWishlist(id)
-
-                wishlist = await getWishlist(currentUser.id_cust)
-
-                showWishlist(wishlist)
-                updateWishlistButtons()
-            } catch (error) {
-                console.error(error)
-                alert(error.message)
-            }
-        })
-    })
+  })
 }
 
 
@@ -517,6 +631,11 @@ function showBooks(data) {
 
     button.addEventListener("click", async () => {
 
+      if (!currentUser) {
+        alert("กรุณาเข้าสู่ระบบ")
+        return
+      }
+
       const id_product =
         Number(button.dataset.id)
 
@@ -571,6 +690,11 @@ function showBooks(data) {
   buttonsAddCart.forEach(button => {
 
     button.addEventListener("click", () => {
+
+      if (!currentUser) {
+        alert("กรุณาเข้าสู่ระบบ")
+        return
+      }
 
       console.log("Button cart work on >>")
 
@@ -1419,6 +1543,8 @@ function updateRoleBasedUI() {
   const isEmployee =
     !!currentUser?.id_emp
 
+
+
   document
     .querySelectorAll('[data-role="customer"]')
     .forEach(element => {
@@ -1439,6 +1565,12 @@ function updateRoleBasedUI() {
     .forEach(element => {
       element.hidden = !isManager
     })
+
+  const accountBtn = document.getElementById("accountBtn")
+
+  if (accountBtn) {
+    accountBtn.hidden = currentUser?.id_role !== 2005
+  }
 
   updateBookActionButtons()
 }
@@ -1537,16 +1669,12 @@ document
       document.getElementById(
         "registerResult"
       ).innerHTML = `
-        <div>
+        <div class="text-green">
           Register successful
         </div>
 
         <div>
-          Customer ID: ${data.id_cust}
-        </div>
-
-        <div>
-          Username: ${data.account.username}
+        Welcome... ${data.fname}
         </div>
       `
 
@@ -1900,6 +2028,28 @@ if (wishlistBtn) {
   })
 }
 
+const accountBtn = document.getElementById("accountBtn")
+
+if (accountBtn) {
+    accountBtn.hidden = Number(currentUser?.id_role) !== 2005
+}
+
+document.getElementById("accountBtn")
+    ?.addEventListener("click", async () => {
+        if (Number(currentUser?.id_role) !== 2005) return
+
+        const section = document.getElementById("accountManagement")
+        if (!section) return
+
+        section.hidden = false
+        await loadAllAccounts()
+
+        section.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        })
+    })
+
 
 document.getElementById("loginForm")
   .addEventListener("submit", event => {
@@ -1918,10 +2068,14 @@ document.getElementById("loginForm")
       .then(async data => {
 
         console.log("Login success >>", data)
-        
+
         alert("เข้าสู่ระบบสำเร็จ")
 
         currentUser = data
+
+        console.log("Current user:", currentUser)
+        console.log("Role:", currentUser.id_role)
+        console.log("Employee ID:", currentUser.id_emp)
 
         sessionStorage.setItem(
           "currentUser",
