@@ -349,10 +349,38 @@ function showAllAccounts(accounts) {
     heading.textContent =
       `${account.fname} ${account.lname}`
 
-    const info = document.createElement("p")
-    info.className = "mt-2 text-sm text-[#806D5D]"
-    info.textContent =
-      `Username: ${account.username} | Account ID: ${account.id_acc}`
+    const info = document.createElement("div")
+    info.className =
+      "mt-3 grid grid-cols-1 gap-3 text-sm text-[#806D5D] sm:grid-cols-2"
+
+    const details = [
+      ["Username", account.username],
+      ["Account ID", account.id_acc],
+      ["ปีเกิด", account.birthyear],
+      ["เบอร์โทรศัพท์", account.tel],
+      ["ที่อยู่", account.address]
+    ]
+
+    details.forEach(([label, value]) => {
+      const item = document.createElement("div")
+      item.className = "rounded-lg bg-[#F8F1E8] p-3"
+
+      const title = document.createElement("p")
+      title.className = "text-xs text-[#9A806C]"
+      title.textContent = label
+
+      const text = document.createElement("p")
+      text.className = "mt-1 break-words font-medium text-[#543827]"
+      text.textContent = value ?? "-"
+
+      item.append(title, text)
+
+      if (label === "ที่อยู่") {
+        item.classList.add("sm:col-span-2")
+      }
+
+      info.append(item)
+    })
 
     const roleRow = document.createElement("div")
     roleRow.className =
@@ -389,9 +417,12 @@ function showAllAccounts(accounts) {
     saveButton.textContent = "Save"
 
     // ปิดการแก้ไข Role ของ Admin
-    if (account.role === "admin") {
+    const isAdmin = Number(currentUser?.id_role) === 2005
+
+    if (!isAdmin || account.role === "admin") {
       roleSelect.disabled = true
       saveButton.disabled = true
+      roleSelect.classList.add("opacity-50", "cursor-not-allowed")
       saveButton.classList.add("opacity-50", "cursor-not-allowed")
     }
 
@@ -444,7 +475,7 @@ function showAllAccounts(accounts) {
 document.getElementById("accountBtn")
   ?.addEventListener("click", async () => {
 
-    if (Number(currentUser?.id_role) !== 2005) {
+    if (![2004, 2005].includes(Number(currentUser?.id_role))) {
       return
     }
 
@@ -588,8 +619,8 @@ function updateBookActionButtons() {
     .forEach(button => {
       button.classList.toggle("hidden", !isEmployee)
     })
-  
-    
+
+
   document
     .querySelectorAll('section[data-role="employee"]')
     .forEach(element => {
@@ -1163,8 +1194,8 @@ function showMyOrders(data) {
             `
     }
 
-    
-list.innerHTML += `
+
+    list.innerHTML += `
     <div class="rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-5 shadow-sm transition hover:shadow-md sm:p-6">
 
         <div class="mb-4 flex flex-col gap-3 border-b border-[#E8D9C8] pb-4 sm:flex-row sm:items-center sm:justify-between">
@@ -1541,41 +1572,41 @@ function showCustomerOrders(data) {
   })
 
   document
-  .querySelectorAll(".customerViewOrderBtn")
-  .forEach(button => {
+    .querySelectorAll(".customerViewOrderBtn")
+    .forEach(button => {
 
-    button.addEventListener("click", async () => {
+      button.addEventListener("click", async () => {
 
-      const id_order = Number(button.dataset.id);
+        const id_order = Number(button.dataset.id);
 
-      const detail = document.getElementById(
-        `customerOrderDetail-${id_order}`
-      );
-
-      if (!detail) {
-        console.error(
-          "ไม่พบพื้นที่แสดงรายละเอียด Order #",
-          id_order
-        );
-        return;
-      }
-
-      // ถ้าเปิดอยู่แล้ว ให้ซ่อน
-      if (!detail.classList.contains("hidden")) {
-        detail.classList.add("hidden");
-        return;
-      }
-
-      try {
-        const order = await getOrder(id_order);
-
-        console.log(
-          "Customer order detail >>",
-          order
+        const detail = document.getElementById(
+          `customerOrderDetail-${id_order}`
         );
 
-        // แสดงรายละเอียดในพื้นที่ของออเดอร์ที่กดเท่านั้น
-        detail.innerHTML = `
+        if (!detail) {
+          console.error(
+            "ไม่พบพื้นที่แสดงรายละเอียด Order #",
+            id_order
+          );
+          return;
+        }
+
+        // ถ้าเปิดอยู่แล้ว ให้ซ่อน
+        if (!detail.classList.contains("hidden")) {
+          detail.classList.add("hidden");
+          return;
+        }
+
+        try {
+          const order = await getOrder(id_order);
+
+          console.log(
+            "Customer order detail >>",
+            order
+          );
+
+          // แสดงรายละเอียดในพื้นที่ของออเดอร์ที่กดเท่านั้น
+          detail.innerHTML = `
           <div class="rounded-xl border border-[#E8D9C8] bg-white p-4">
             <h3 class="mb-4 border-b border-[#E8D9C8] pb-3 text-lg font-bold text-[#80513D]">
               Order #${order.id_order} Details
@@ -1644,13 +1675,13 @@ function showCustomerOrders(data) {
           </div>
         `;
 
-        detail.classList.remove("hidden");
+          detail.classList.remove("hidden");
 
-      } catch (error) {
-        console.error(error);
-      }
+        } catch (error) {
+          console.error(error);
+        }
+      });
     });
-  });
 
   document.querySelectorAll(".payNowBtn").forEach(button => {
     button.addEventListener("click", () => {
@@ -2254,12 +2285,16 @@ if (wishlistBtn) {
 const accountBtn = document.getElementById("accountBtn")
 
 if (accountBtn) {
-  accountBtn.hidden = Number(currentUser?.id_role) !== 2005
+  const roleId = Number(currentUser?.id_role)
+
+  accountBtn.hidden = ![2004, 2005].includes(roleId)
 }
 
 document.getElementById("accountBtn")
   ?.addEventListener("click", async () => {
-    if (Number(currentUser?.id_role) !== 2005) return
+    const roleId = Number(currentUser?.id_role)
+
+    if (![2004, 2005].includes(roleId)) return
 
     const section = document.getElementById("accountManagement")
     if (!section) return
@@ -2343,6 +2378,12 @@ function updateLoginUI() {
   document.getElementById("LoginBtn").hidden = isLoggedIn
   document.getElementById("ProfileBtn").hidden = !isLoggedIn
   document.getElementById("logoutBtn").hidden = !isLoggedIn
+
+  const accountBtn = document.getElementById("accountBtn")
+  if (accountBtn) {
+    const roleId = Number(currentUser?.id_role)
+    accountBtn.hidden = !isLoggedIn || ![2004, 2005].includes(roleId)
+  }
 }
 
 const RegisterBtn = document.getElementById("RegisterBtn")
