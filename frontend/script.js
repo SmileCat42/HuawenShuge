@@ -30,8 +30,8 @@ let wishlist = []
 let currentUser =
   JSON.parse(sessionStorage.getItem("currentUser")) || null
 
-updateLoginUI()
-
+updateLoginUI();
+updateEmployeeButtons();
 
 
 async function loadUserData() {
@@ -310,10 +310,13 @@ function showEligibleCustomers(customers) {
 
 // ++++++++++++++++++++++++++++++++++ GET +++++++++++++++++++++++
 
+
 async function loadAllAccounts() {
   const list = document.getElementById("accountList")
 
-  if (Number(currentUser?.id_role) !== 2005) return
+  if (![2004, 2005].includes(Number(currentUser?.id_role))) return
+
+  if (!list) return
 
   list.textContent = "กำลังโหลดบัญชี..."
 
@@ -325,6 +328,7 @@ async function loadAllAccounts() {
     list.textContent = error.message
   }
 }
+
 
 
 function showAllAccounts(accounts) {
@@ -491,6 +495,30 @@ document.getElementById("accountBtn")
       block: "start"
     })
   })
+
+document.getElementById("productBtn")?.addEventListener("click", () => {
+  document.getElementById("productMng")?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+function updateEmployeeButtons() {
+  const accountBtn = document.getElementById("accountBtn");
+  const productBtn = document.getElementById("productBtn");
+
+  const isEmployee = [2002, 2004, 2005].includes(
+    Number(currentUser?.id_role)
+  );
+
+  if (accountBtn) {
+    accountBtn.hidden = !isEmployee;
+  }
+
+  if (productBtn) {
+    productBtn.hidden = !isEmployee;
+  }
+}
 
 function updateWishlistButtons() {
   document
@@ -684,12 +712,12 @@ function showBooks(data) {
 
       <div class="mt-2 flex gap-2">
         <a href="#EditForm"
-          class="editBtn hidden  flex-1 rounded-lg border border-[#DCCAB6] px-3 py-2 text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]"
-          data-id="${book.id}"
-          data-name="${book.name}"
-          data-price="${book.price}"
-          data-role="employee"
-        >แก้ไข</a>
+   class="editBtn hidden inline-flex flex-1 items-center justify-center rounded-lg border border-[#DCCAB6] px-3 py-2 text-center text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]"
+   data-id="${book.id}"
+   data-name="${book.name}"
+   data-price="${book.price}"
+   data-role="employee"
+>แก้ไข</a>
 
         <button
           class="delBtn hidden flex-1 rounded-lg border border-rose-200 px-3 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-50"
@@ -1839,10 +1867,10 @@ function updateRoleBasedUI() {
 
   const accountBtn = document.getElementById("accountBtn")
 
-if (accountBtn) {
-  const roleId = Number(currentUser?.id_role)
-  accountBtn.hidden = !currentUser || ![2004, 2005].includes(roleId)
-}
+  if (accountBtn) {
+    const roleId = Number(currentUser?.id_role)
+    accountBtn.hidden = !currentUser || ![2004, 2005].includes(roleId)
+  }
 
   updateBookActionButtons()
 }
@@ -1920,6 +1948,8 @@ document
         data
       )
 
+      alert("สมัครสมาชิกสำเร็จ")
+
       document.getElementById(
         "registerResult"
       ).innerHTML = `
@@ -1941,7 +1971,7 @@ document
       document.getElementById(
         "registerResult"
       ).innerHTML = `
-        <div>
+        <div class="text-[#F20A0A]">
           ${error.message}
         </div>
       `
@@ -2081,34 +2111,6 @@ createOrderBtn.addEventListener("click", () => {
 
     })
 })
-//+++++++++++++++++++++++++++++ Edit +++++++++++++++++++++++++++++++++
-document.getElementById("EditForm")
-  .addEventListener("submit", (event) => {
-    event.preventDefault()
-    console.log("Edit submit")
-    const form = event.currentTarget
-    const input1 = form.querySelector('[name="id"]')
-    const input2 = form.querySelector('[name="name"]')
-    const input3 = form.querySelector('[name="price"]')
-    const input4 = form.querySelector('[name="author"]')
-    const input5 = form.querySelector('[name="detail"]')
-    const input6 = form.querySelector('[name="image"]')
-    const id = Number(input1.value)
-    const name = input2.value
-    const price = Number(input3.value)
-    const author = input4.value
-    const detail = input5.value
-    const image = input6.value
-    console.log(image)
-    editBook(id, name, price, author, detail, image)
-      .then((data) => {
-        console.log(data)
-        return loadBooks()
-      })
-      .then((data) => {
-        showBooks(data)
-      })
-  })
 
 document
   .getElementById("editProfileForm")
@@ -2221,40 +2223,20 @@ if (editProfileBtn) {
   })
 }
 
-document
-  .getElementById("logoutBtn")
-  .addEventListener("click", () => {
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  sessionStorage.removeItem("currentUser");
 
-    sessionStorage.removeItem("currentUser")
+  currentUser = null;
 
-    currentUser = null
+  updateLoginUI();
+  updateEmployeeButtons();
 
-    updateLoginUI()
+  document.getElementById("LoginContainer").hidden = true;
+  document.getElementById("ProfileCon").hidden = true;
+  document.getElementById("accountManagement").hidden = true;
 
-    document.getElementById("LoginContainer").hidden = true
-    document.getElementById("ProfileCon").hidden = true
-
-    cart = []
-    wishlist = []
-
-    updateRoleBasedUI()
-
-    document.getElementById("profile").innerHTML = ""
-
-    document.getElementById("wishlistList").innerHTML = ""
-
-    document.getElementById("customerOrderList").innerHTML = ""
-
-    document.getElementById("employeeOrderList").innerHTML = ""
-
-    document.getElementById("myOrderList").innerHTML = ""
-
-    document.getElementById("employeeOrderDetail").innerHTML = ""
-
-    document.getElementById("loginResult").innerHTML = ""
-
-    alert("Logout successful")
-  })
+  alert("Logout success")
+});
 
 
 const LoginBtn = document.getElementById("LoginBtn")
@@ -2289,6 +2271,7 @@ if (accountBtn) {
 
   accountBtn.hidden = ![2004, 2005].includes(roleId)
 }
+
 
 document.getElementById("accountBtn")
   ?.addEventListener("click", async () => {
@@ -2341,6 +2324,7 @@ document.getElementById("loginForm")
         )
 
         updateLoginUI()
+        updateEmployeeButtons();
 
         document.getElementById("LoginContainer").hidden = true
 
@@ -2367,7 +2351,7 @@ document.getElementById("loginForm")
 
         document.getElementById("loginResult")
           .innerHTML = `
-            <div>${error.message}</div>
+            <div class="text-[#F20A0A]">${error.message}</div>
           `
       })
   })
@@ -2384,6 +2368,15 @@ function updateLoginUI() {
     const roleId = Number(currentUser?.id_role)
     accountBtn.hidden = !isLoggedIn || ![2004, 2005].includes(roleId)
   }
+}
+
+const productBtn = document.getElementById("productBtn");
+
+// แสดงปุ่มเฉพาะพนักงาน
+if ([2002, 2004, 2005].includes(Number(currentUser?.id_role))) {
+  productBtn.hidden = false;
+} else {
+  productBtn.hidden = true;
 }
 
 const RegisterBtn = document.getElementById("RegisterBtn")

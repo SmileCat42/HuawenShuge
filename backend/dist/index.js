@@ -129,7 +129,6 @@ app.get("/wishlist/customer/:id_cust", async (req, res) => {
     }
 });
 app.get("/account/:id_acc", async (req, res) => {
-    console.log("GET account");
     const id_acc = Number(req.params.id_acc);
     if (Number.isNaN(id_acc)) {
         res.status(400).json({
@@ -319,7 +318,6 @@ app.get("/order/:id", async (req, res) => {
         return;
     }
     try {
-        console.log("into try");
         const result = await pool.query(`SELECT
         o.id_order,
         o.id_cust,
@@ -338,7 +336,6 @@ app.get("/order/:id", async (req, res) => {
         ON od.id_product = p.id
      WHERE o.id_order = $1
      ORDER BY od.id_order_detail`, [id]);
-        console.log("afte try result >> ", result);
         if (result.rows.length === 0) {
             res.status(404).json({
                 message: "Not found data"
@@ -552,14 +549,14 @@ app.post("/login", async (req, res) => {
             `, [username]);
         if (result.rows.length === 0) {
             res.status(401).json({
-                message: "Username or password is incorrect"
+                message: "ไม่พบบัญชีผู้ใช้ หรือกรอก username password ผิด"
             });
             return;
         }
         const account = result.rows[0];
         if (password !== account.password) {
             res.status(401).json({
-                message: "Username or password is incorrect"
+                message: "ไม่พบบัญชีผู้ใช้ หรือกรอก username password ผิด"
             });
             return;
         }
@@ -1213,7 +1210,6 @@ app.post("/manager/:id_emp/promote/:id_cust", async (req, res) => {
 });
 //++++++++++++++++++++++++++++++++++++++++ ASSIGN ++++++++++++++++++++++++++++++++++++++++
 app.patch("/order/:id/assign", async (req, res) => {
-    console.log(">>> ASSIGN ORDER ROUTE <<<");
     const id_order = Number(req.params.id);
     const { id_emp } = req.body;
     if (Number.isNaN(id_order)) {
