@@ -416,7 +416,6 @@ function showAllAccounts(accounts) {
       "rounded-lg bg-[#72765A] px-4 py-2 text-sm text-white hover:bg-[#5E6249]"
     saveButton.textContent = "Save"
 
-    // ปิดการแก้ไข Role ของ Admin
     const isAdmin = Number(currentUser?.id_role) === 2005
 
     if (!isAdmin || account.role === "admin") {
@@ -1840,9 +1839,10 @@ function updateRoleBasedUI() {
 
   const accountBtn = document.getElementById("accountBtn")
 
-  if (accountBtn) {
-    accountBtn.hidden = currentUser?.id_role !== 2005
-  }
+if (accountBtn) {
+  const roleId = Number(currentUser?.id_role)
+  accountBtn.hidden = !currentUser || ![2004, 2005].includes(roleId)
+}
 
   updateBookActionButtons()
 }

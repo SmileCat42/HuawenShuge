@@ -23,7 +23,7 @@ app.get("/admin/:id_emp/accounts", async (req, res) => {
             FROM employees e
             JOIN roles r ON e.id_role = r.id_role
             WHERE e.id_emp = $1
-              AND r.role_name = 'admin'
+              AND r.role_name IN ('admin', 'manager')
             `, [id_emp]);
         if (adminCheck.rows.length === 0) {
             res.status(403).json({
