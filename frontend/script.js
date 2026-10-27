@@ -588,6 +588,14 @@ function updateBookActionButtons() {
     .forEach(button => {
       button.classList.toggle("hidden", !isEmployee)
     })
+  
+    
+  document
+    .querySelectorAll('section[data-role="employee"]')
+    .forEach(element => {
+      element.hidden = !isEmployee
+    })
+
 }
 
 function showBooks(data) {
@@ -645,13 +653,13 @@ function showBooks(data) {
       >เพิ่มลงตะกร้า</button>
 
       <div class="mt-2 flex gap-2">
-        <button
-          class="editBtn hidden flex-1 rounded-lg border border-[#DCCAB6] px-3 py-2 text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]"
+        <a href="#EditForm"
+          class="editBtn hidden  flex-1 rounded-lg border border-[#DCCAB6] px-3 py-2 text-sm font-medium text-[#80513D] transition hover:bg-[#F7F1E5]"
           data-id="${book.id}"
           data-name="${book.name}"
           data-price="${book.price}"
           data-role="employee"
-        >แก้ไข</button>
+        >แก้ไข</a>
 
         <button
           class="delBtn hidden flex-1 rounded-lg border border-rose-200 px-3 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-50"
@@ -1112,7 +1120,7 @@ function showMyOrders(data) {
     if (order.has_slip) {
       slipButton = `
         <button
-            class="viewSlipBtn"
+            class="viewSlipBtn rounded-lg bg-[#D9A380] px-4 py-2 text-sm font-medium text-white hover:bg-[#5C6047]"
             data-id="${order.id_order}">
             View Slip
         </button>
@@ -1125,7 +1133,7 @@ function showMyOrders(data) {
 
       button = `
                 <button
-                    class="statusBtn"
+                    class="statusBtn rounded-lg bg-[#72765A] px-4 py-2 text-sm font-medium text-white hover:bg-[#5C6047]"
                     data-id="${order.id_order}"
                     data-status="PAID">
                     Mark as PAID
@@ -1136,7 +1144,7 @@ function showMyOrders(data) {
 
       button = `
                 <button
-                    class="statusBtn"
+                    class="statusBtn rounded-lg bg-[#72765A] px-4 py-2 text-sm font-medium text-white hover:bg-[#5C6047]"
                     data-id="${order.id_order}"
                     data-status="SHIPPED">
                     Mark as SHIPPED
@@ -1147,7 +1155,7 @@ function showMyOrders(data) {
 
       button = `
                 <button
-                    class="statusBtn"
+                    class="statusBtn rounded-lg bg-[#72765A] px-4 py-2 text-sm font-medium text-white hover:bg-[#5C6047]"
                     data-id="${order.id_order}"
                     data-status="DELIVERED">
                     Mark as DELIVERED
@@ -1155,39 +1163,59 @@ function showMyOrders(data) {
             `
     }
 
-    list.innerHTML += `
-            <div>
+    
+list.innerHTML += `
+    <div class="rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-5 shadow-sm transition hover:shadow-md sm:p-6">
 
-                <h3>
-                    Order #${order.id_order}
-                </h3>
+        <div class="mb-4 flex flex-col gap-3 border-b border-[#E8D9C8] pb-4 sm:flex-row sm:items-center sm:justify-between">
 
-                <div>
-                    Customer: ${order.id_cust}
-                </div>
+            <h3 class="text-lg font-bold text-[#80513D] sm:text-xl">
+                Order #${order.id_order}
+            </h3>
 
-                <div>
-                    Total: ${order.total} บาท
-                </div>
+            <span class="w-fit rounded-full bg-[#F1E9DC] px-3 py-1 text-sm font-semibold text-[#80513D]">
+                ${order.status}
+            </span>
 
-                <div>
-                    Status: ${order.status}
-                </div>
+        </div>
 
-                <button
-  class="viewOrderBtn"
-  data-id="${order.id_order}">
-  View Detail
-</button>
+        <div class="space-y-3 text-sm text-[#806D5D]">
 
-                ${slipButton}
-
-                ${button}
-
-                
-
+            <div class="flex flex-wrap justify-between gap-2">
+                <span class="font-medium text-[#80513D]">
+                    Customer
+                </span>
+                <span>${order.id_cust}</span>
             </div>
-        `
+
+            <div class="flex flex-wrap justify-between gap-2">
+                <span class="font-medium text-[#80513D]">
+                    Total
+                </span>
+                <span class="font-semibold text-[#80513D]">
+                    ${order.total} บาท
+                </span>
+            </div>
+
+        </div>
+
+        <div class="mt-5 flex flex-wrap gap-2 border-t border-[#E8D9C8] pt-4">
+
+            <button
+                class="viewOrderBtn rounded-xl bg-[#80513D] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#633A29]"
+                data-id="${order.id_order}">
+                View Detail
+            </button>
+
+            ${slipButton}
+
+            ${button}
+
+        </div>
+
+    </div>
+`
+
   })
 
   document

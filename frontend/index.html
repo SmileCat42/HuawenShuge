@@ -486,7 +486,18 @@
 
     </section>
 
-    <section data-role="employee">
+    <section data-role="employee" hidden class="bg-[#F1E9DC] px-4 py-8 sm:px-6 sm:py-10">
+
+    <!-- Staff Header -->
+   <div class="mx-auto mb-8 max-w-4xl overflow-hidden rounded-2xl shadow-md">
+    <img
+        src="/images/employee-workspace.png"
+        alt="HUA WEN SHUGE Employee Workspace"
+        class="block h-auto w-full"
+    >
+</div>
+
+    <!-- Panel Assign Order เดิมของคุณวางต่อจากตรงนี้ -->
 
 
 
@@ -498,7 +509,7 @@
                 </p>
 
                 <h2 class="text-2xl font-bold text-[#80513D] sm:text-3xl">
-                    Order Detail
+                    Assign Order
                 </h2>
                 
 
@@ -513,11 +524,54 @@
 
 
 
-        <h2>My Orders</h2>
-        <div id="myOrderList"></div>
+        
+<!-- Panel My Orders -->
+<section class="mx-auto my-8 max-w-4xl rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-5 shadow-sm sm:p-8">
 
-        <h2>Order Detail</h2>
-        <div id="employeeOrderDetail"></div>
+    <div class="mb-6 border-b border-[#E8D9C8] pb-5">
+        <p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#A1846D]">
+            Employee Workspace
+        </p>
+
+        <h2 class="text-2xl font-bold text-[#80513D] sm:text-3xl">
+            ติดตามออเดอร์
+        </h2>
+
+        <p class="mt-2 text-sm text-[#806D5D]">
+            ตรวจสอบคำสั่งซื้อ หลักฐานการชำระเงิน และอัปเดตสถานะออเดอร์
+        </p>
+    </div>
+
+    <div id="myOrderList" class="space-y-4">
+        <!-- JavaScript แสดงรายการออเดอร์ตรงนี้ -->
+    </div>
+
+</section>
+
+
+<!-- Panel Order Detail -->
+<section class="mx-auto my-8 max-w-4xl rounded-2xl border border-[#E8D9C8] bg-[#FFFDF8] p-5 shadow-sm sm:p-8">
+
+    <div class="mb-6 border-b border-[#E8D9C8] pb-5">
+        <p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#A1846D]">
+            Employee Workspace
+        </p>
+
+        <h2 class="text-2xl font-bold text-[#80513D] sm:text-3xl">
+            Order Detail
+        </h2>
+
+        <p class="mt-2 text-sm text-[#806D5D]">
+            รายละเอียดของคำสั่งซื้อที่เลือก
+        </p>
+    </div>
+
+    <div id="employeeOrderDetail">
+        <!-- JavaScript แสดงรายละเอียดตรงนี้ -->
+    </div>
+
+</section>
+
 
     </section>
 
@@ -536,7 +590,10 @@
 
     </br></br>
     </br></br>
-    <section data-role="employee" class="mx-auto my-10 max-w-5xl px-4">
+
+    
+
+    <section data-role="employee" hidden class="mx-auto my-10 max-w-5xl px-4">
         <div class="mb-6">
             <p class="text-xs tracking-[0.2em] text-[#9A806C]">STAFF WORKSPACE</p>
             <h2 class="mt-1 text-2xl font-bold text-[#80513D]">จัดการหนังสือ</h2>
