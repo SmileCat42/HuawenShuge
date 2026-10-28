@@ -1271,37 +1271,73 @@ function showMyOrders(data) {
 
         </div>
 
+        <div
+            id="employeeOrderDetail-${order.id_order}"
+            class="employeeOrderDetail mt-4 hidden w-full rounded-xl border border-[#E8D9C8] bg-[#F8F1E8] p-4">
+        </div>
     </div>
 `
 
   })
 
   document
-    .querySelectorAll(".viewOrderBtn")
-    .forEach(button => {
+  .querySelectorAll("#myOrderList .viewOrderBtn")
+  .forEach(button => {
+    button.addEventListener("click", async () => {
+      const id_order = Number(button.dataset.id);
 
-      button.addEventListener("click", () => {
+      const detail = document.getElementById(
+        `employeeOrderDetail-${id_order}`
+      );
 
-        const id_order =
-          Number(button.dataset.id)
+      if (!detail) return;
 
-        getOrder(id_order)
-          .then(order => {
+      // ถ้าเปิดอยู่แล้ว ให้ซ่อน
+      if (!detail.classList.contains("hidden")) {
+        detail.classList.add("hidden");
+        return;
+      }
 
-            console.log("Order detail >>", order)
+      try {
+        const order = await getOrder(id_order);
 
-            showOrderDetail(order)
+        detail.innerHTML = `
+          <h3 class="mb-3 text-lg font-bold text-[#80513D]">
+            Order #${order.id_order}
+          </h3>
 
-          })
-          .catch(error => {
+          <div class="space-y-2 text-sm text-[#806D5D]">
+            <p>Customer: ${order.id_cust}</p>
+            <p>Employee: ${order.id_emp ?? "Not assigned"}</p>
+            <p>Status: ${order.status}</p>
+            <p>Order Date: ${order.order_date}</p>
+          </div>
 
-            console.error(error)
+          <hr class="my-4 border-[#DCCAB6]">
 
-            alert("Cannot get order detail")
+          <h4 class="mb-2 font-semibold text-[#80513D]">Items</h4>
 
-          })
-      })
-    })
+          ${order.items.map(item => `
+            <div class="mb-2 flex flex-wrap justify-between gap-2 text-sm text-[#806D5D]">
+              <span>${item.name} × ${item.quantity}</span>
+              <span>${item.subtotal} บาท</span>
+            </div>
+          `).join("")}
+
+          <hr class="my-4 border-[#DCCAB6]">
+
+          <p class="text-right font-bold text-[#80513D]">
+            Total: ${order.total} บาท
+          </p>
+        `;
+
+        detail.classList.remove("hidden");
+      } catch (error) {
+        console.error(error);
+        alert("Cannot get order detail");
+      }
+    });
+  });
 
   document
     .querySelectorAll(".viewSlipBtn")
@@ -2112,6 +2148,45 @@ createOrderBtn.addEventListener("click", () => {
     })
 })
 
+const passwordInput = document.getElementById("passwordInput");
+const togglePassword = document.getElementById("togglePassword");
+
+togglePassword?.addEventListener("click", () => {
+  if (!passwordInput) return;
+
+  const isPassword = passwordInput.type === "password";
+
+  passwordInput.type = isPassword ? "text" : "password";
+
+  togglePassword.setAttribute(
+    "aria-label",
+    isPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"
+  );
+
+  togglePassword.setAttribute("aria-pressed", String(isPassword));
+
+  togglePassword.innerHTML = isPassword
+    ? `
+            <svg xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.8"
+                class="h-5 w-5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M9.9 5.2A10.7 10.7 0 0112 5c6 0 9.5 7 9.5 7a17 17 0 01-3.1 3.9M6.2 6.2C3.8 7.8 2.5 12 2.5 12s3.5 7 9.5 7c1.1 0 2.1-.2 3-.6"/>
+            </svg>
+        `
+    : `
+            <svg xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.8"
+                class="h-5 w-5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+            </svg>
+        `;
+});
+
 document
   .getElementById("editProfileForm")
   .addEventListener("submit", async event => {
@@ -2312,6 +2387,8 @@ document.getElementById("loginForm")
 
         alert("เข้าสู่ระบบสำเร็จ")
 
+        document.getElementById("loginResult").innerHTML = ""
+
         currentUser = data
 
         console.log("Current user:", currentUser)
@@ -2335,15 +2412,6 @@ document.getElementById("loginForm")
         showBooks(booksData)
 
         updateRoleBasedUI()
-
-        document.getElementById("loginResult")
-          .innerHTML = `
-            <div>Login success</div>
-            <div>User: ${data.username}</div>
-            <div>Customer ID: ${data.id_cust ?? "-"}</div>
-            <div>Employee ID: ${data.id_emp ?? "-"}</div>
-            <div>Role: ${data.role ?? "-"}</div>
-          `
       })
       .catch(error => {
 
