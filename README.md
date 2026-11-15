@@ -22,12 +22,16 @@ The main purpose of this project is to apply System Analysis and Design concepts
 
 Develop an online bookstore for Chinese books translated into Thai.
 
-Provide convenient book browsing and ordering functions for customers.
+• Provide convenient book browsing and ordering functions for customers.
 
-Support book and order management for employees.
+• Support book and order management for employees.
 
-Separate system access based on user roles.
+• Separate system access based on user roles.
 
-Design a structured database for storing and managing system information.
+• Design a structured database for storing and managing system information.
 
-Apply client-server architecture and API communication in web development.
+• Apply client-server architecture and API communication in web development.
+
+<h2>3. System Analysis</h2>
+
+This section describes the analysis and design of the system before and during implementation.
