@@ -17,3 +17,17 @@ Huawen Shuge (华文书阁) is a web-based bookstore designed to provide a platf
 The system also provides employee functions for managing books, customer orders, and user accounts.
 
 The main purpose of this project is to apply System Analysis and Design concepts to a real-world web application, from requirement analysis and system design to implementation.
+
+2. Project Objectives
+
+Develop an online bookstore for Chinese books translated into Thai.
+
+Provide convenient book browsing and ordering functions for customers.
+
+Support book and order management for employees.
+
+<h2>Separate system access based on user roles.</h2>
+
+Design a structured database for storing and managing system information.
+
+Apply client-server architecture and API communication in web development.
