@@ -47,27 +47,13 @@ For employees, the system provides tools to manage book information and process 
 <h3>3.2 System Actors</h3>
 
 The system consists of the following actors:
+## Actor Descriptions
 
-Actor
-
-Description
-
-Guest
-
-Users who visit the website without logging in.
-
-Customer
-
-Users who can manage their profiles, browse books, create orders, and track their orders.
-
-Staff
-
-Employees who manage books and process assigned orders.
-
-Manager
-
-Users with employee-level management permissions.
-
-Admin
-
+| Actor | Description |
+| :--- | :--- |
+| **Guest** | Users who visit the website without logging in. |
+| **Customer** | Users who can manage their profiles, browse books, create orders, and track their orders. |
+| **Staff** | Employees who manage books and process assigned orders. |
+| **Manager** | Users with employee-level management permissions. |
+| **Admin** | Users who manage accounts and user roles. |
 Users who manage accounts and user roles.
