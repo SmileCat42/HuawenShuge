@@ -35,3 +35,15 @@ Develop an online bookstore for Chinese books translated into Thai.
 <h2>3. System Analysis</h2>
 
 This section describes the analysis and design of the system before and during implementation.
+
+<h3>3.1 Problem Statement</h3>
+
+Traditional book purchasing may require customers to visit a physical bookstore or contact sellers directly to check book information and availability.
+
+The system aims to provide a centralized platform where customers can browse books, manage their shopping activities, and track orders.
+
+For employees, the system provides tools to manage book information and process customer orders more systematically.
+
+<h3>3.2 System Actors</h3>
+
+The system consists of the following actors:
