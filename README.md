@@ -130,18 +130,18 @@ Frontend displays the returned data to the user.
 
 flowchart TD
 
-    A[User / Actor] --> B[Frontend]
+A[User / Actor] --> B[Frontend]
     
-    B --> C[API Request]
+B --> C[API Request]
     
-    C --> D[Backend - Express.js]
+C --> D[Backend - Express.js]
     
-    D --> E[PostgreSQL Database]
+D --> E[PostgreSQL Database]
     
-    E --> D
+E --> D
     
-    D --> F[API Response]
+D --> F[API Response]
     
-    F --> B
+F --> B
     
-    B --> G[Display Information]
+B --> G[Display Information]
