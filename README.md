@@ -10,7 +10,7 @@ A web-based bookstore system for Chinese books translated into Thai.
 
 This project focuses on System Analysis and Design, including system requirements, user roles, system workflows, database design, and web application development.
 
-<h2>1. Project Overview</h2>
+<br><h2>1. Project Overview</h2>
 
 Huawen Shuge (华文书阁) is a web-based bookstore designed to provide a platform for customers to browse and purchase Chinese books translated into Thai.
 
@@ -129,11 +129,19 @@ Frontend displays the returned data to the user.
 <h3>3.6 System Architecture</h3>
 
 flowchart TD
+
     A[User / Actor] --> B[Frontend]
+    
     B --> C[API Request]
+    
     C --> D[Backend - Express.js]
+    
     D --> E[PostgreSQL Database]
+    
     E --> D
+    
     D --> F[API Response]
+    
     F --> B
+    
     B --> G[Display Information]
