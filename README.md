@@ -18,7 +18,7 @@ The system also provides employee functions for managing books, customer orders,
 
 The main purpose of this project is to apply System Analysis and Design concepts to a real-world web application, from requirement analysis and system design to implementation.
 
-<h2>2. Project Objectives</h2>
+<br><h2>2. Project Objectives</h2>
 
 Develop an online bookstore for Chinese books translated into Thai.
 
@@ -32,7 +32,7 @@ Develop an online bookstore for Chinese books translated into Thai.
 
 • Apply client-server architecture and API communication in web development.
 
-<h2>3. System Analysis</h2>
+<br><h2>3. System Analysis</h2>
 
 This section describes the analysis and design of the system before and during implementation.
 
@@ -56,7 +56,7 @@ The system consists of the following actors:
 | **Manager** | Users with employee-level management permissions. |
 | **Admin** | Users who manage accounts and user roles. |
 
-<br><h3>3.3 Functional Requirements</h3>
+<h3>3.3 Functional Requirements</h3>
 
 <h4>Customer Functions</h4>
 
@@ -106,7 +106,7 @@ The system consists of the following actors:
 
 • Manage user roles according to permissions.
 
-<br><h3>3.4 Use Case Diagram</h3>
+<h3>3.4 Use Case Diagram</h3>
 
 The Use Case Diagram describes the interactions between system actors and the functions available to them.
 
