@@ -55,3 +55,57 @@ The system consists of the following actors:
 | **Staff** | Employees who manage books and process assigned orders. |
 | **Manager** | Users with employee-level management permissions. |
 | **Admin** | Users who manage accounts and user roles. |
+
+<h3>3.3 Functional Requirements</h3>
+
+<h4>Customer Functions</h4>
+
+• Register a new account.
+
+• Log in and log out.
+
+• View and edit personal information.
+
+• Browse available books.
+
+• View book details.
+
+• Add books to the wishlist.
+
+• Manage shopping activities.
+
+• Create orders.
+
+• Upload payment slips.
+
+• View order history and track order status.
+
+<h4>Employee Functions</h4>
+
+• View book information.
+
+• Add new books.
+
+• Edit book information.
+
+• Delete books.
+
+• View customer orders.
+
+• View order details.
+
+• Assign orders to employees.
+
+• Update order status.
+
+<h4>Manager and Admin Functions</h4>
+
+• Access employee management functions.
+
+• View account information.
+
+• Manage user roles according to permissions.
+
+<h3>3.4 Use Case Diagram</h3>
+
+The Use Case Diagram describes the interactions between system actors and the functions available to them.
