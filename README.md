@@ -56,7 +56,7 @@ The system consists of the following actors:
 | **Manager** | Users with employee-level management permissions. |
 | **Admin** | Users who manage accounts and user roles. |
 
-<h3>3.3 Functional Requirements</h3>
+<br><h3>3.3 Functional Requirements</h3>
 
 <h4>Customer Functions</h4>
 
@@ -106,6 +106,34 @@ The system consists of the following actors:
 
 • Manage user roles according to permissions.
 
-<h3>3.4 Use Case Diagram</h3>
+<br><h3>3.4 Use Case Diagram</h3>
 
 The Use Case Diagram describes the interactions between system actors and the functions available to them.
+
+<h3>3.5 System Workflow</h3>
+
+The system uses a client-server architecture.
+
+The user interacts with the Frontend through the website.
+
+Frontend sends an HTTP Request to the specified API endpoint.
+
+Backend receives the request and processes it according to the HTTP Method and endpoint.
+
+Backend communicates with PostgreSQL to retrieve or modify data.
+
+Backend sends an HTTP Response back to Frontend.
+
+Frontend displays the returned data to the user.
+
+<h3>3.6 System Architecture</h3>
+
+flowchart TD
+    A[User / Actor] --> B[Frontend]
+    B --> C[API Request]
+    C --> D[Backend - Express.js]
+    D --> E[PostgreSQL Database]
+    E --> D
+    D --> F[API Response]
+    F --> B
+    B --> G[Display Information]
