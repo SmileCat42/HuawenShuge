@@ -166,7 +166,7 @@ F --> B
     
 B --> G[Display Information]
 
-<h2>4. System Implementation</h2>
+<br><h2>4. System Implementation</h2>
 
 <h3>4.1 Development Technologies</h3>
 
@@ -188,3 +188,11 @@ The Frontend is responsible for displaying information and handling user interac
 The website uses JavaScript Events to control interactive elements and panels. Some panels are initially hidden and become visible when users select the corresponding functions.
 
 The interface also displays different functions according to the user's role.
+
+<h3>4.3 Backend Implementation</h3>
+
+The Backend is developed using Node.js and Express.js.
+
+It provides API endpoints for handling requests from the Frontend.
+
+Examples of API endpoints:
