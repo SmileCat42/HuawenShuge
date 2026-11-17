@@ -108,8 +108,6 @@ The system consists of the following actors:
 
 <h3>3.4 Diagram</h3>
 
-The Use Case Diagram describes the interactions between system actors and the functions available to them.
-
 <h4>Use Case Diagram</h4>
 
 <img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UseCaseFinal.png" alt="UCMain">
@@ -167,3 +165,26 @@ D --> F[API Response]
 F --> B
     
 B --> G[Display Information]
+
+<h2>4. System Implementation</h2>
+
+<h3>4.1 Development Technologies</h3>
+
+## Technology Stack
+
+| Component | Technology |
+| :--- | :--- |
+| **Frontend** | HTML, JavaScript, Tailwind CSS |
+| **Backend** | Node.js, Express.js, TypeScript |
+| **Database** | PostgreSQL |
+| **API Communication** | HTTP / Fetch API |
+| **Development Environment** | Visual Studio Code |
+| **Version Control** | Git and GitHub |
+
+<h3>4.2 Frontend Implementation</h3>
+
+The Frontend is responsible for displaying information and handling user interactions.
+
+The website uses JavaScript Events to control interactive elements and panels. Some panels are initially hidden and become visible when users select the corresponding functions.
+
+The interface also displays different functions according to the user's role.
