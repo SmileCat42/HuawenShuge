@@ -106,15 +106,31 @@ The system consists of the following actors:
 
 • Manage user roles according to permissions.
 
-<h3>3.4 Use Case Diagram</h3>
+<h3>3.4 Diagram</h3>
 
 The Use Case Diagram describes the interactions between system actors and the functions available to them.
 
-<h4>Example Use Case Diagram</h4>
+<h4>Use Case Diagram</h4>
 
-<h4>Example Use Case Description</h4>
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UseCaseFinal.png" alt="UCMain">
 
-<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/messageImage_1794919617160.jpg" alt="WorkSpace">
+<h4>Use Case Description</h4>
+
+Example Create Order and Payment
+
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/messageImage_1794919617160.jpg" alt="UCDescription">
+
+<h4>Sequence Diagram</h4>
+
+Example Create Order and Payment
+
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Login%20(2).png" alt="UCDescription">
+
+<h4>Activity Diagram</h4>
+
+Example Create Order and Payment
+
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/EditProfile%20(1).png" alt="UCDescription">
 
 <h3>3.5 System Workflow</h3>
 
