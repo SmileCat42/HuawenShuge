@@ -196,3 +196,16 @@ The Backend is developed using Node.js and Express.js.
 It provides API endpoints for handling requests from the Frontend.
 
 Examples of API endpoints:
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/book` | Retrieve all books. |
+| `GET` | `/book/:id` | Retrieve a specific book. |
+| `POST` | `/book` | Add a new book. |
+| `PUT` | `/book/:id` | Update book information. |
+| `DELETE` | `/book/:id` | Delete a book. |
+| `POST` | `/login` | Authenticate a user. |
+| `POST` | `/order` | Create a new order. |
+| `GET` | `/order/:id` | Retrieve order details. |
