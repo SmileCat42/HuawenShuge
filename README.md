@@ -209,3 +209,33 @@ Examples of API endpoints:
 | `POST` | `/login` | Authenticate a user. |
 | `POST` | `/order` | Create a new order. |
 | `GET` | `/order/:id` | Retrieve order details. |
+
+<h3>4.4 Database Implementation</h3>
+
+PostgreSQL is used to store and manage system data.
+
+The Backend uses the pg library to communicate with the database and execute SQL queries.
+
+<h3>4.5 User Interface</h3>
+
+The website provides different interfaces according to the user's role and available functions.
+
+Main interfaces include:
+
+• Home Page
+
+• Login and Registration
+
+• Book Catalog
+
+• Book Details
+
+• Wishlist
+
+• Shopping Cart
+
+• Customer Order Management
+
+• Employee Workspace
+
+• Account Management
