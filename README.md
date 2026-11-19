@@ -232,7 +232,15 @@ Main interfaces include:
 
 • Register
 
-<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Register.png" alt="RegisterUIUI">
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Register.png" alt="RegisterUIUI">
+
+• Account Management
+
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Account.png" alt="CartUI">
+
+• Profile
+
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Profile.png" alt="CartUI">
 
 • Products
 
@@ -240,14 +248,17 @@ Main interfaces include:
 
 • Wishlist
 
-<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Wishlist.png" alt="WishlistUI">
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Wishlist.png" alt="WishlistUI">
 
 • Shopping Cart
 
-<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Cart.png" alt="CartUI">
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Cart.png" alt="CartUI">
 
 • Customer Order Management
 
-• Employee Workspace
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/MyOrder.png" alt="CustomerOrderUI">
 
-• Account Management
+• Order Tracking
+
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Status.png" alt="CartUI">
+
