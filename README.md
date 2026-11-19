@@ -224,15 +224,27 @@ Main interfaces include:
 
 • Home Page
 
-• Login and Registration
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Homepage.png" alt="HomepageUI">
 
-• Book Catalog
+• Login
 
-• Book Details
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Login.png" alt="LoginUI">
+
+• Register
+
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Register.png" alt="LoginUI">
+
+• Products
+
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Products.png" alt="ProductsUI">
 
 • Wishlist
 
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Wishlist.png" alt="WishlistUI">
+
 • Shopping Cart
+
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Cart.png" alt="CartUI">
 
 • Customer Order Management
 
