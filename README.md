@@ -228,11 +228,11 @@ Main interfaces include:
 
 • Login
 
-<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Login.png" alt="LoginUI">
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Login.png" alt="LoginUI">
 
 • Register
 
-<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Register.png" alt="LoginUI">
+<img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/Register.png" alt="RegisterUIUI">
 
 • Products
 
