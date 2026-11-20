@@ -262,3 +262,28 @@ Main interfaces include:
 
 <img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/UI/Status.png" alt="CartUI">
 
+<br><h2>5. Project Structure</h2>
+
+HuawenShuge/
+│
+├── frontend/
+│   ├── index.html
+│   ├── script.js
+│   ├── api.js
+│   ├── package.json
+│   └── images/
+│
+├── backend/
+│   ├── src/
+│   │   ├── index.ts
+│   │   └── db.ts
+│   └── package.json
+│
+├── docs/
+│   └── diagrams/
+│       ├── use-case-diagram.png
+│       ├── er-diagram.png
+│       └── class-diagram.png
+│
+└── README.md
+
