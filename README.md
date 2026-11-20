@@ -266,24 +266,44 @@ Main interfaces include:
 
 HuawenShuge/
 │
+
 ├── frontend/
+
 │   ├── index.html
+
 │   ├── script.js
+
 │   ├── api.js
+
 │   ├── package.json
+
 │   └── images/
+
 │
+
 ├── backend/
+
 │   ├── src/
+
 │   │   ├── index.ts
+
 │   │   └── db.ts
+
 │   └── package.json
+
 │
+
 ├── docs/
+
 │   └── diagrams/
+
 │       ├── use-case-diagram.png
+
 │       ├── er-diagram.png
+
 │       └── class-diagram.png
+
 │
+
 └── README.md
 
