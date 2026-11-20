@@ -264,8 +264,6 @@ Main interfaces include:
 
 <br><h2>5. Project Structure</h2>
 
-## Project Structure
-
 ```text
 HuawenShuge/
 │
