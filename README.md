@@ -264,46 +264,30 @@ Main interfaces include:
 
 <br><h2>5. Project Structure</h2>
 
+## Project Structure
+
+```text
 HuawenShuge/
 │
-
-├── frontend/
-
+├── frontend/               # Client-side application (HTML, JS, Tailwind CSS)
 │   ├── index.html
-
 │   ├── script.js
-
 │   ├── api.js
-
 │   ├── package.json
-
 │   └── images/
-
 │
-
-├── backend/
-
+├── backend/                # Server-side REST API (Node.js, Express, TypeScript)
 │   ├── src/
-
 │   │   ├── index.ts
-
 │   │   └── db.ts
-
 │   └── package.json
-
 │
-
-├── docs/
-
+├── docs/                   # System architecture and UML diagrams
 │   └── diagrams/
-
 │       ├── use-case-diagram.png
-
 │       ├── er-diagram.png
-
 │       └── class-diagram.png
-
 │
-
 └── README.md
+```
 
