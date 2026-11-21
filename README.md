@@ -288,4 +288,54 @@ HuawenShuge/
 │
 └── README.md
 ```
+<br><h2>6. Installation and Setup</h2>
 
+<h3>Prerequisites</h3>
+
+• Node.js
+
+• PostgreSQL
+
+• npm
+
+• Git
+
+<h3>Clone Repository</h3>
+
+git clone https://github.com/SmileCat42/HuawenShuge.git
+
+cd HuawenShuge
+
+<h3>Database Setup</h3>
+
+1. Install and start PostgreSQL.
+
+2. Create a database named HuawenShuge.
+
+3. Prepare the required database tables.
+
+4. Configure the database connection in the Backend.
+
+<h3>Frontend Setup</h3>
+
+cd frontend
+
+npm install
+
+npm run dev
+
+<h3>Backend Setup</h3>
+
+cd backend
+
+npm install
+
+<br>Configure the TypeScript execution/build command according to the project environment before starting the Backend server.
+
+<br>The Backend API is configured to use:
+
+<br>http://localhost:3000
+
+<br>The Frontend development server uses:
+
+<br>http://localhost:5173
