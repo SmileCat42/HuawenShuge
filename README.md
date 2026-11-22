@@ -108,8 +108,6 @@ The system consists of the following actors:
 
 <h3>3.4 Diagram</h3>
 
-## System Design Diagrams
-
 View the complete system design diagrams in the document below.
 
 [![View PDF](https://img.shields.io/badge/View-System%20Diagrams-F5E6D3?style=for-the-badge&logo=adobeacrobatreader&logoColor=4A3B32)](https://github.com/SmileCat42/HuawenShuge/raw/master/System%20Analysis.pdf)
