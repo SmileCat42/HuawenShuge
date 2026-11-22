@@ -1,6 +1,6 @@
 <div align="center">
   
-[![View PDF](https://img.shields.io/badge/Report-SystemAnalysis%20Diagrams-F5E6D3?style=for-the-badge&logo=adobeacrobatreader&logoColor=4A3B32)](https://github.com/SmileCat42/HuawenShuge/raw/master/System%20Analysis.pdf)
+[![View PDF](https://img.shields.io/badge/Report-System%20Analysis-F5E6D3?style=for-the-badge&logo=adobeacrobatreader&logoColor=4A3B32)](https://github.com/SmileCat42/HuawenShuge/raw/master/System%20Analysis.pdf)
 
 </div>
 
