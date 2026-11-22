@@ -350,7 +350,7 @@ npm install
 
 <br>http://localhost:5173
 
-<h2>7. Conclusion</h2>
+<br><h2>7. Conclusion</h2>
 
 Huawen Shuge demonstrates the application of System Analysis and Design concepts in developing a web-based bookstore.
 
