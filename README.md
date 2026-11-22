@@ -126,6 +126,14 @@ Example Create Order and Payment
 
 <h4>Activity Diagram</h4>
 
+
+## System Design Diagrams
+
+View the complete system design diagrams in the document below.
+
+[![View PDF](https://img.shields.io/badge/View-System%20Diagrams-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)]([docs/diagrams/system-design.pdf](https://github.com/SmileCat42/HuawenShuge/blob/master/System%20Analysis.pdf))
+
+
 Example Create Order and Payment
 
 <img src="https://github.com/SmileCat42/HuawenShuge/blob/master/frontend/public/images/EditProfile%20(1).png" alt="UCDescription">
