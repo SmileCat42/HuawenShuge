@@ -112,7 +112,7 @@ The system consists of the following actors:
 
 View the complete system design diagrams in the document below.
 
-[![View PDF](https://img.shields.io/badge/View-System%20Diagrams-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)]([docs/diagrams/system-design.pdf](https://github.com/SmileCat42/HuawenShuge/blob/master/System%20Analysis.pdf))
+[![View PDF](https://img.shields.io/badge/View-System%20Diagrams-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://github.com/SmileCat42/HuawenShuge/raw/master/System%20Analysis.pdf)
 
 <h4>Use Case Diagram</h4>
 
