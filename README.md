@@ -339,3 +339,15 @@ npm install
 <br>The Frontend development server uses:
 
 <br>http://localhost:5173
+
+<h2>7. Conclusion</h2>
+
+Huawen Shuge demonstrates the application of System Analysis and Design concepts in developing a web-based bookstore.
+
+<br>The project covers system requirement analysis, actor identification, functional design, database design, user interface development,
+
+API communication, and database integration.
+
+<br>Through this project, the development process provides practical experience in connecting system design concepts with actual software
+
+implementation.
